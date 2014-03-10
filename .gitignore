@@ -7,3 +7,9 @@
 *.opensdf
 *.sln
 *.filters
+*.exe
+*.ilk
+*.pdb
+*.suo
+*.obj
+*.log
