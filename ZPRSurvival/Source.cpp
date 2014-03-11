@@ -3,8 +3,8 @@
 
 int main() {
 	PerlinNoise map;
-	sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
-	sf::Image im = map.RenderMap(3000, 3000 , 500, 0.5, 255, 255, 255);
+	sf::RenderWindow window(sf::VideoMode(400, 300), "SFML works!");
+	sf::Image im = map.RenderMap(1200, 1200 , 150, 0.5, 255, 255, 255);
 	im.saveToFile("Screen.png");
 	sf::Texture tx;
 	sf::Sprite sprite;
