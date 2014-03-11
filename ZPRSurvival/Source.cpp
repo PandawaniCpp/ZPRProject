@@ -2,9 +2,10 @@
 #include "PerlinNoise.h"
 
 int main() {
-	PerlinNoise map;
-	sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
-	sf::Image im = map.RenderMap(3000, 3000 , 500, 0.5, 255, 255, 255);
+	PerlinNoise perlin(1200, 700, 150, 0.5, 255, 255, 255, 7);
+	sf::RenderWindow window(sf::VideoMode(1200, 700), "SFML works!");
+	perlin.RenderTerrainMap();
+	sf::Image im = perlin.GetImage();
 	im.saveToFile("Screen.png");
 	sf::Texture tx;
 	sf::Sprite sprite;
