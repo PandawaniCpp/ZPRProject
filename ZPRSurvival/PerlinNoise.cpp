@@ -4,8 +4,7 @@
 
 PerlinNoise::PerlinNoise() {
 	srand((int)time(NULL));
-	offsetX = rand() % 100000 / 100.0;
-	offsetY = rand() % 100000 / 100.0;
+	offset =  (int)rand() % 100000 ;
 }
 
 PerlinNoise::~PerlinNoise() {
@@ -14,7 +13,7 @@ PerlinNoise::~PerlinNoise() {
 //Pseudorandom number generator, return number between -1 and 1
 inline double PerlinNoise::CalculateNoise(double x, double y) {
 
-	int n = (int)x + (offsetX + (int)y) * 57;
+	int n = (int)x + (offset + (int)y) * 57;
 	n = (n << 13) ^ n;
 	int nn = (n*(n*n * 60493 + 19990303) + 1376312589) & 0x7fffffff;
 	return 1.0 - ((double)nn / 1073741824.0);
@@ -40,7 +39,7 @@ double PerlinNoise::Noise(double x, double y) {
 }
 
 sf::Image PerlinNoise::RenderMap(int w, int h, double zoom, double p, int r, int g, int b) {//                                        use 75. P stands for persistence, this controls the roughness of the picture, i use 1/2
-	int octaves = 5;
+	int octaves = 8;
 	sf::Image image;
 	image.create(w, h, sf::Color::Black);//Create an empty image.
 
@@ -75,29 +74,40 @@ sf::Image PerlinNoise::RenderMap(int w, int h, double zoom, double p, int r, int
 				getnoise += Noise(((double)x)*frequency / zoom, ((double)y) / zoom*frequency)*amplitude;//This uses our perlin noise functions. It calculates all our zoom and frequency and amplitude
 			}//                                         It gives a decimal value, you know, between the pixels. Like 4.2 or 5.1
 
-			int color = (int)((getnoise*128.0) + 128.0);//Convert to 0-256 values.
-			color = (int)(color * distanceFromCenter);
+			double color = (double)(int)((getnoise*128.0) + 128.0);//Convert to 0-256 values.
+			color = (double)(int)(color * distanceFromCenter);
 			if (color > 255){
 				color = 255;
 			}
-
-			if (color < 0) {
+			
+			if (color <= 0) {
 				color = 0;
 			}
-			if (color <= 10) {
-				image.setPixel(x, y, sf::Color(0,0,50)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			
+			if (color < 25) {
+				color = 25;
 			}
-			else if (color <= 40) {
-				image.setPixel(x, y, sf::Color(0, 30, 90)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			
+			color = color / 255.0;
+						
+			//if (color <= 0.04) {
+			//	image.setPixel(x, y, sf::Color(0, 0, 50*color)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			//}
+			if (color <= 0.35) {
+				image.setPixel(x, y, sf::Color(0, 180 *color , 250*color  )); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
 			}
-			else if (color <= 60) {
-				image.setPixel(x, y, sf::Color(250, 250, 20)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			else if (color <= 0.45) {
+				image.setPixel(x, y, sf::Color(400 * color, 400 * color, 220 * color)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
 			}
-			else if (color <= 180) {
-				image.setPixel(x, y, sf::Color(20, 130, 20)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			else if (color <= 0.85) {
+				image.setPixel(x, y, sf::Color(100 * color, 200 * color, 100 * color)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
 			}
-			else if (color <= 255) {
-				image.setPixel(x, y, sf::Color(0, 30, 0)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			else if (color <= 1) {
+				image.setPixel(x, y, sf::Color(20*color, 30 * color, 0)); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+			}
+			else {
+				image.setPixel(x, y, sf::Color::Magenta); // ((int)((r / 255.0)*(double)color), (int)((g / 255.0)*(double)color), (int)((b / 255.0)*(double)color)));//This colours the image with the RGB values
+
 			}
 		}//                                                          given at the beginning in the function.
 

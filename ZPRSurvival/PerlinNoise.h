@@ -12,6 +12,6 @@ private:
 	inline double CalculateNoise(double x, double y);
 	inline double Interpolate(double a, double b, double x);
 	double Noise(double x, double y);
-	double offsetX, offsetY;
+	int offset;
 };
 
