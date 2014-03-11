@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "PerlinNoise.h"
-#include "player/Player.h"
 
 int main() {
-	PerlinNoise map;
-	sf::RenderWindow window(sf::VideoMode(400, 300), "SFML works!");
-	sf::Image im = map.RenderMap(400, 300 , 150, 0.5, 255, 255, 255);
+	PerlinNoise perlin(1200, 700, 150, 0.5, 255, 255, 255, 7);
+	sf::RenderWindow window(sf::VideoMode(1200, 700), "SFML works!");
+	perlin.RenderTerrainMap();
+	sf::Image im = perlin.GetImage();
 	im.saveToFile("Screen.png");
 	sf::Texture tx;
 	sf::Sprite sprite;
@@ -24,20 +24,10 @@ int main() {
 				window.close();
 		}
 
-		//Example Player v 0.46.2
-		Player * player = new Player ();
-		player->SetPlayer ();		
-
 		window.clear();
 		window.draw(sprite);
-		window.draw (*player);
 		window.display();
-
-		delete player;
-
 	}
-
-	
 
 	return 0;
 }
