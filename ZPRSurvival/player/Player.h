@@ -6,13 +6,17 @@ using sf::Texture;
 using sf::Sprite;
 
 class Player : public AnimatedObject {
-private:
-	PlayerController playerController;
-	Texture texture;
-
 public:
 	Player ();
 	virtual ~Player ();
-	void SetPlayer (void);
+	void setPlayer (void);	//temporary method
+	void update ();
+	PlayerController playerController;
+
+private:
+	void setPlayerTexture ();
+
+private:
+	Texture texture;
 };
 
