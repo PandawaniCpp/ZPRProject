@@ -5,6 +5,12 @@ Game::Game () {
 	keyboard = new KeyboardInterface ();
 	player = new Player ();
 	state = INIT;
+	generator = new MapGenerator(4096, 4096);
+	mapTexture.loadFromImage(generator->GetMap()); 
+	mapSprite.setTexture(mapTexture);
+	#if (DEBUG)
+		generator->GetMap().saveToFile("Mapa.png)";
+	#endif
 	TimePerFrame = sf::seconds (1.f / 60.f);
 }
 
@@ -81,6 +87,7 @@ void Game::update (sf::Time deltaTime) {
 }
 
 void Game::draw () {
+	gameWindow ->draw(mapSprite);
 	gameWindow->draw (*player);
 }
 

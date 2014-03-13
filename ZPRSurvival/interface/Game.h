@@ -4,6 +4,7 @@
 #include "./../player/Player.h"
 #include "./../misc/EnumTypes.h"
 #include "KeyboardInterface.h"
+#include "./../MapGenerator.h"
 
 /*
 	Main game class. Responsible for rendering graphics, events handling,
@@ -31,6 +32,9 @@ private:
 	sf::RenderWindow * gameWindow;
 	sf::Time TimePerFrame;
 
+	MapGenerator * generator;
+	sf::Sprite mapSprite; //temporary
+	sf::Texture mapTexture; //temporary
 	Player * player;
 	gameState state;
 };

@@ -1,7 +1,15 @@
 #include "MapGenerator.h"
 
 
-MapGenerator::MapGenerator() {
+MapGenerator::MapGenerator(int w, int h) {
+
+	MidpointDisplacementNoise heightNoise(w, h, w/8, true, true, false);
+	MidpointDisplacementNoise tempNoise(w, h, w/2, true, true, true);
+	MidpointDisplacementNoise forestNoise(w, h, w/4, false, true, false);
+	MidpointDisplacementNoise rainNoise(w, h, w/4, false, false, false);
+
+	tempNoise.AddGradient();
+	this->Calculate(heightNoise.GetVector(), tempNoise.GetVector(), rainNoise.GetVector(), forestNoise.GetVector());
 }
 
 
