@@ -2,7 +2,10 @@
 
 
 PlayerController::PlayerController () {
-	speed = 0.2;
+	forSpeed = 0;
+	revSpeed = 0;
+	maxFSpeed = 300;
+	maxRSpeed = 150;
 }
 
 

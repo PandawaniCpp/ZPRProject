@@ -11,6 +11,8 @@ public:
 	playerState getState ();
 
 private:
+	const double MAX_PLAYER_FSPEED = 300.0;
+	const double MAX_PLAYER_RSPEED = 180.0;
 	playerState state = IDLE;
 };
 

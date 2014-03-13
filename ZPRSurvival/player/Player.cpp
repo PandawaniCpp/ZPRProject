@@ -19,7 +19,10 @@ void Player::update () {
 	//insert texture update
 	Vector2<double> position = playerController.getPosition ();
 	this->setPosition ((float)position.x, (float)position.y);
-	playerController.move ();
+	if ((playerController.getDirection () | 0) != 0) {
+		playerController.calculateMove ();
+		playerController.move ();
+	}
 }
 
 void Player::setPlayerTexture () {

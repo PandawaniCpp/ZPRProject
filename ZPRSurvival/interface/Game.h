@@ -22,13 +22,14 @@ public:
 private:
 	void processEvents ();
 	void render ();
-	void update ();
+	void update (sf::Time deltaTime);
 	void draw ();
 	
 
 private:
 	KeyboardInterface * keyboard;
 	sf::RenderWindow * gameWindow;
+	sf::Time TimePerFrame;
 
 	Player * player;
 	gameState state;

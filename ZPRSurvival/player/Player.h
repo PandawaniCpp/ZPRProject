@@ -2,9 +2,6 @@
 #include "../AnimatedObject.h"
 #include "../controller/PlayerController.h"
 
-using sf::Texture;
-using sf::Sprite;
-
 class Player : public AnimatedObject {
 public:
 	Player ();
@@ -17,6 +14,6 @@ private:
 	void setPlayerTexture ();
 
 private:
-	Texture texture;
+	sf::Texture texture;
 };
 

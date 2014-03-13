@@ -5,6 +5,7 @@ Game::Game () {
 	keyboard = new KeyboardInterface ();
 	player = new Player ();
 	state = INIT;
+	TimePerFrame = sf::seconds (1.f / 60.f);
 }
 
 
@@ -19,9 +20,17 @@ void Game::initialize () {
 }
 
 void Game::run () {
+	sf::Clock clock;
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	timeSinceLastUpdate += clock.restart ();
 	while (gameWindow->isOpen ()) {
 		processEvents ();
-		update ();
+		timeSinceLastUpdate += clock.restart ();
+		while (timeSinceLastUpdate > TimePerFrame) {
+			timeSinceLastUpdate -= TimePerFrame;
+			processEvents ();
+			update (TimePerFrame);
+		}
 		render ();
 	}
 }
@@ -66,7 +75,8 @@ void Game::render () {
 	gameWindow->display ();
 }
 
-void Game::update () {
+void Game::update (sf::Time deltaTime) {
+	player->playerController.setDeltaTime (deltaTime);
 	player->update ();
 }
 
