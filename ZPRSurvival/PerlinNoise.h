@@ -13,6 +13,7 @@ public:
 	sf::Image RenderTerrainMap(int xS, int yS, int size);
 	sf::Image RenderTemperatureMap(int w, int h, double zoom, double p, int r, int g, int b);
 	sf::Image GetImage();
+	void AddGradient();
 private:
 	sf::Image RenderNoise(int w, int h, double zoom, double p, int r, int g, int b);
 	inline double CalculateNoise(double x, double y);

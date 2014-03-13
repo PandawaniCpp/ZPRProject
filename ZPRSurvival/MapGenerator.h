@@ -5,7 +5,7 @@ using namespace std;
 
 class MapGenerator {
 public:
-	void Calculate(sf::Image heightMap);
+	void Calculate(vector<vector<int>> heightMap, vector<vector<int>> tempMap, vector<vector<int>> rainMap, vector<vector<int>> forestMap);
 	sf::Image GetMap();
 	MapGenerator();
 	~MapGenerator();
