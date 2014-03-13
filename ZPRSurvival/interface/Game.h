@@ -1,8 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "../player/Player.h"
-#include "../misc/EnumTypes.h"
+#include "./../player/Player.h"
+#include "./../misc/EnumTypes.h"
 #include "KeyboardInterface.h"
 
 /*

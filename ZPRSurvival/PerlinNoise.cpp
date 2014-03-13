@@ -6,7 +6,7 @@ PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int r, int g, int 
 	int color;
 	double getnoise, frequency, amplitude;
 	srand((int)time(NULL));
-	offset =  (int)rand() % 100000;
+	offset = (int)rand() % 100000;
 	mapVec.resize(w, vector<int>(h, 0));
 	noise.create(w, h, sf::Color::Black);//Create an empty image.
 
@@ -17,7 +17,7 @@ PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int r, int g, int 
 
 			for (int a = 0; a < octaves - 1; a++) {
 				frequency = pow(2, a);//This increases the frequency with every loop of the octave.
-				amplitude = pow(p, a+1);//This decreases the amplitude with every loop of the octave.
+				amplitude = pow(p, a + 1);//This decreases the amplitude with every loop of the octave.
 				getnoise += Noise(((double)x)*frequency / zoom, ((double)y) / zoom*frequency)*amplitude;//This uses our perlin noise functions. It calculates all our zoom and frequency and amplitude
 			}//                                         It gives a decimal value, you know, between the pixels. Like 4.2 or 5.1
 
@@ -45,7 +45,7 @@ inline double PerlinNoise::CalculateNoise(double x, double y) {
 	int n = (int)x + (offset + (int)y) * 57;
 	n = (n << 13) ^ n;
 	int nn = (n*(n*n * 60493 + 19990303) + 1376312589) & 0x7fffffff;
-	return 1.0 -((double)nn / 1073741824.0);
+	return 1.0 - ((double)nn / 1073741824.0);
 }
 
 inline double PerlinNoise::Interpolate(double a, double b, double x) {
@@ -68,5 +68,11 @@ double PerlinNoise::Noise(double x, double y) {
 }
 
 sf::Image PerlinNoise::GetImage() {
+	for (int y = 0; y < noise.getSize().y; y++) {//Loops to loop trough all the pixels
+		for (int x = 0; x < noise.getSize().x; x++) {
+			noise.setPixel(x, y, sf::Color(mapVec[x][y], mapVec[x][y], mapVec[x][y]));
+		}
+	}
+
 	return noise;
 }
