@@ -1,16 +1,22 @@
 #pragma once
-#include <string>
 #include "../AnimatedObject.h"
 #include "../controller/PlayerController.h"
 
-using namespace std;
+using sf::Texture;
+using sf::Sprite;
 
-class Player : public AnimatedObject
-{
-	private:
-	PlayerController playerController;
-	public:
+class Player : public AnimatedObject {
+public:
 	Player ();
 	virtual ~Player ();
+	void setPlayer (void);	//temporary method
+	void update ();
+	PlayerController playerController;
+
+private:
+	void setPlayerTexture ();
+
+private:
+	Texture texture;
 };
 
