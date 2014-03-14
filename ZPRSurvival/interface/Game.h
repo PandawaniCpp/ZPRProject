@@ -2,9 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "./../player/Player.h"
+#include "./../MapGenerator.h"
 #include "./../misc/EnumTypes.h"
 #include "KeyboardInterface.h"
-#include "./../MapGenerator.h"
+#include "MouseInterface.h"
 
 /*
 	Main game class. Responsible for rendering graphics, events handling,
@@ -29,6 +30,7 @@ private:
 
 private:
 	KeyboardInterface * keyboard;
+	MouseInterface * mouse;
 	sf::RenderWindow * gameWindow;
 	sf::Time TimePerFrame;
 
@@ -37,5 +39,7 @@ private:
 	sf::Texture mapTexture; //temporary
 	Player * player;
 	gameState state;
+
+	sf::Font font;
 };
 

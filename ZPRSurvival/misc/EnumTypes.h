@@ -4,7 +4,8 @@ enum gameState {
 	INIT,
 	IN_MENU,
 	PLAYING,
-	PAUSE
+	PAUSE,
+	EXIT
 };
 
 enum playerState {

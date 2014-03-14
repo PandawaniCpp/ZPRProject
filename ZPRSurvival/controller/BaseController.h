@@ -1,6 +1,9 @@
 #pragma once
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "../misc/EnumTypes.h"
+#include <sstream>
+#define PI 3.14159265
 
 using sf::Vector2;
 
@@ -18,7 +21,10 @@ public:
 		//getters
 	Vector2<double> getPosition ();
 	double getRotation ();
+	double getFSpeed ();
+	double getRSpeed ();
 	int getDirection ();
+	int getPhase ();
 
 protected:
 	double maxFSpeed;

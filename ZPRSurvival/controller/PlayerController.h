@@ -1,18 +1,22 @@
 #pragma once
 #include "BaseController.h"
-#include "../misc/EnumTypes.h"
 
 class PlayerController : public BaseController {
 public:
 	PlayerController ();
 	virtual ~PlayerController ();
+		//data manipulators
 	void setPlayerPosition (Vector2<double> position);
+	void setMousePosition (sf::Vector2i position);
+	void calculateRotation ();
 		//getters
 	playerState getState ();
+	Vector2<float> getSize ();
+	sf::Vector2i getMousePosition ();
 
 private:
-	const double MAX_PLAYER_FSPEED = 300.0;
-	const double MAX_PLAYER_RSPEED = 180.0;
 	playerState state = IDLE;
+	sf::Vector2i mousePosition;
+	Vector2<float> size;
 };
 

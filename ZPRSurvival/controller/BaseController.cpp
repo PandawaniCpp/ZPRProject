@@ -27,54 +27,58 @@ BaseController::~BaseController () {
 
 //object manipulators ==============================================
 void BaseController::prepareMove (int direction, bool isPressed) {
-	displacement.x = 0.f;		//reset displacement
-	displacement.y = 0.f;
-
 	if (isPressed)		//add or remove new directions
 		this->direction = this->direction | direction;
-	else
+	else 
 		this->direction = this->direction ^ direction;
 
 	switch (phase) {		//declare new movement phase
 		case STOP:
-			if (direction != 0) {		//want to move
-				if (~direction & DOWN) {
+			if (this->direction != 0) {		//want to move
+				if (~this->direction & DOWN) {
 					phase = ACCEL_FWD;		//move forward and/or left/right
 				}
-				else if ((direction & UP) == 0) {
+				else if ((this->direction & UP) == 0) {
 					phase = ACCEL_BWD;		//move backward
 				}
 			}
 			break;
 		case ACCEL_FWD:
-			if (direction == 0) {			//nothing is pressed
-				phase = DECEL_FWD;			//braking
-			}
-			else if (~direction & DOWN)			//any except DOWN
-				break;							//nothing to change
-			else if ((direction & UP) == 0) {		//DOWN and any except UP		
-				phase = ACCEL_BWD;					//rapidly slowing
+			if ((this->direction & 15) == 0)	//nothing is pressed
+				phase = DECEL_FWD;				//braking
+			else if (~this->direction & DOWN)		//any except DOWN
+				break;								//nothing to change
+			else if ((this->direction & UP) == 0) {		//DOWN and any except UP		
+				phase = ACCEL_BWD;						//rapidly slowing
 			}
 			break;
 		case ACCEL_BWD:
-			if (direction == 0) 			//nothing is pressed
-				phase = DECEL_BWD;			//braking
-			else if (~direction & UP)			//any except UP
-				break;							//nothing to change
-			else if ((direction & DOWN) == 0) 		//UP and any except DOWN		
-				phase = ACCEL_FWD;					//rapidly slowing
+			if ((this->direction & 15) == 0) 	//nothing is pressed
+				phase = DECEL_BWD;				//braking
+			else if (~this->direction & UP)			//any except UP
+				break;								//nothing to change
+			else if ((this->direction & DOWN) == 0) 		//UP and any except DOWN		
+				phase = ACCEL_FWD;						//rapidly slowing
 			break;
 		case DECEL_FWD:
-			if (direction == 0)				//nothing is pressed
-				break;						//still braking
-			else if (~direction & DOWN)			//any except DOWN
-				phase = ACCEL_FWD;				//start accelerating forward
-			else if ((direction & UP) == 0)			//DOWN and any except UP
-				phase = ACCEL_BWD;					//start accelerating
+			if (this->direction == 0)			//nothing is pressed
+				break;							//still braking
+			else if (~this->direction & DOWN)		//any except DOWN
+				phase = ACCEL_FWD;					//start accelerating forward
+			else if ((this->direction & UP) == 0)		//DOWN and any except UP
+				phase = ACCEL_BWD;						//start accelerating
+			break;
+		case DECEL_BWD:
+			if (this->direction == 0)			//nothing is pressed
+				break;							//still braking
+			else if (~this->direction & UP)			//any except UP
+				phase = ACCEL_BWD;					//start accelerating forward
+			else if ((this->direction & DOWN) == 0)		//UP and any except DOWN
+				phase = ACCEL_FWD;						//start accelerating
 			break;
 		default:
 			break;
-}	
+	}
 }
 
 void BaseController::calculateMove () {
@@ -85,28 +89,54 @@ void BaseController::calculateMove () {
 			if (forSpeed >= maxFSpeed)			//keep running
 				forSpeed = maxFSpeed;
 			else if (revSpeed > 0) {
-				revSpeed = revSpeed / 5;		//rapidly lowering reverse speed
+				revSpeed /= 5;		//rapidly lowering reverse speed
 				if (revSpeed < 1)
 					revSpeed = 0;
 			}
 			else if (forSpeed >= 0) {
-				forSpeed = forSpeed + 20; //accelerating forward
+				forSpeed += 50; //accelerating forward
 				if (forSpeed > maxFSpeed)
 					forSpeed = maxFSpeed;
 			}
+			break;
+		case ACCEL_BWD:
+			if (revSpeed >= maxRSpeed)
+				revSpeed = maxRSpeed;
+			else if (forSpeed > 0) {
+				forSpeed /= 5;
+				if (forSpeed < 1)
+					forSpeed = 0;
+			}
+			else if (revSpeed >= 0) {
+				revSpeed += 35;
+				if (revSpeed > maxRSpeed)
+					revSpeed = maxRSpeed;
+			}
+			break;
+		case DECEL_FWD:
+			if (forSpeed < 1) {
+				forSpeed = 0;
+				phase = STOP;
+			}
+			else if (forSpeed >= 1)
+				forSpeed /= 1.5;
+			break;
+		case DECEL_BWD:
+			if (revSpeed < 1) {
+				revSpeed = 0;
+				phase = STOP;
+			}
+			else if (revSpeed >= 1)
+				revSpeed /= 1.5;
 			break;
 		default:
 			break;
 	}
 
-	if (this->direction & UP)			//calculate new position
-		displacement.y = forSpeed;		//WRONG
-	if (this->direction & DOWN)
-		displacement.y = forSpeed;
-	if (this->direction & LEFT)
-		displacement.x = forSpeed;
-	if (this->direction & RIGHT)
-		displacement.x = forSpeed;
+	if (forSpeed)
+		this->displacement.x = forSpeed;
+	else if (revSpeed)
+		this->displacement.x = -revSpeed;
 }
 
 void BaseController::move () {
@@ -132,6 +162,18 @@ double BaseController::getRotation () {
 	return rotation;
 }
 
+double BaseController::getFSpeed () {
+	return forSpeed;
+}
+
+double BaseController::getRSpeed () {
+	return revSpeed;
+}
+
 int BaseController::getDirection () {
 	return direction;
+}
+
+int BaseController::getPhase () {
+	return phase;
 }
