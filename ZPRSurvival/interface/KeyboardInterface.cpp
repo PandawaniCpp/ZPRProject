@@ -25,7 +25,7 @@ int KeyboardInterface::inputHandle (sf::Keyboard::Key key, bool isPressed, int s
 				movingState = movingState | LEFT;
 			else if (key == sf::Keyboard::D)
 				movingState = movingState | RIGHT;	//...
-			player->playerController.prepareMove (movingState, isPressed);
+			player->playerController.preparePlayerMove (movingState, isPressed);
 			return PLAYING;
 		}
 		default: 

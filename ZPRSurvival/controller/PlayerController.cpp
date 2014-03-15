@@ -12,37 +12,92 @@ PlayerController::PlayerController () {
 PlayerController::~PlayerController () {
 }
 
-void PlayerController::setPlayerPosition (Vector2<double> position) {
-	this->position.x = position.x;
-	this->position.y = position.y;
+void PlayerController::preparePlayerMove (int direction, bool isPressed) {
+	if (isPressed)		//add or remove new directions
+		this->direction = this->direction | direction;
+	else
+		this->direction = this->direction ^ direction;
+
+	switch (phase) {		//declare new movement phase
+		case STOP:
+			if (this->direction != 0) {		//want to move
+				if (~this->direction & DOWN) {
+					phase = ACCEL_FWD;		//move forward and/or left/right
+				}
+				else if ((this->direction & UP) == 0) {
+					phase = ACCEL_BWD;		//move backward
+				}
+			}
+			break;
+		case ACCEL_FWD:
+			if ((this->direction & 15) == 0)	//nothing is pressed
+				phase = DECEL_FWD;				//braking
+			else if (~this->direction & DOWN)		//any except DOWN
+				break;								//nothing to change
+			else if ((this->direction & UP) == 0) {		//DOWN and any except UP		
+				phase = ACCEL_BWD;						//rapidly slowing
+			}
+			break;
+		case ACCEL_BWD:
+			if ((this->direction & 15) == 0) 	//nothing is pressed
+				phase = DECEL_BWD;				//braking
+			else if (~this->direction & UP)			//any except UP
+				break;								//nothing to change
+			else if ((this->direction & DOWN) == 0) 		//UP and any except DOWN		
+				phase = ACCEL_FWD;						//rapidly slowing
+			break;
+		case DECEL_FWD:
+			if (this->direction == 0)			//nothing is pressed
+				break;							//still braking
+			else if (~this->direction & DOWN)		//any except DOWN
+				phase = ACCEL_FWD;					//start accelerating forward
+			else if ((this->direction & UP) == 0)		//DOWN and any except UP
+				phase = ACCEL_BWD;						//start accelerating
+			break;
+		case DECEL_BWD:
+			if (this->direction == 0)			//nothing is pressed
+				break;							//still braking
+			else if (~this->direction & UP)			//any except UP
+				phase = ACCEL_BWD;					//start accelerating forward
+			else if ((this->direction & DOWN) == 0)		//UP and any except DOWN
+				phase = ACCEL_FWD;						//start accelerating
+			break;
+		default:
+			break;
+	}
 }
 
-void PlayerController::setMousePosition (sf::Vector2i position) {
+void PlayerController::setPlayerPosition (Vector2<int> position) {
+	this->position.x = (float)position.x;
+	this->position.y = (float)position.y;
+}
+
+void PlayerController::setMousePosition (Vector2i position) {
 	mousePosition = position;
 }
 
-void PlayerController::calculateRotation () {
-	float deltaX = mousePosition.x - (position.x);
-	float deltaY = mousePosition.y - (position.y);
+void PlayerController::calculatePlayerRotation () {
+	float deltaX = mousePosition.x - position.x;
+	float deltaY = mousePosition.y - position.y;
 
 		//calc. vector rotation. 0 degrees == "up", clockwise.
 	if (deltaX > 0) {
 		if (deltaY < 0) {					//(0; 90) degrees
-			rotation = atan (deltaX / -deltaY) * 180 / PI;
+			rotation = (float)(atan (deltaX / -deltaY) * 180 / PI);
 			return;
 		}
 		else {								//(90; 180) degrees
-			rotation = atan (deltaY / deltaX) * 180 / PI + 90;
+			rotation = (float)(atan (deltaY / deltaX) * 180 / PI + 90);
 			return;
 		}
 	}
 	else if (deltaX < 0) {
 		if (deltaY > 0) {					//(180; 270) degrees
-			rotation = atan (-deltaX / deltaY) * 180 / PI + 180;
+			rotation = (float)(atan (-deltaX / deltaY) * 180 / PI + 180);
 			return;
 		}
 		else {								//(270; 360) degrees
-			rotation = atan (-deltaY / -deltaX) * 180 / PI + 270;
+			rotation = (float)(atan (-deltaY / -deltaX) * 180 / PI + 270);
 			return;
 		}
 	}
@@ -73,6 +128,6 @@ Vector2<float> PlayerController::getSize () {
 	return size;
 }
 
-sf::Vector2i PlayerController::getMousePosition () {
+Vector2i PlayerController::getMousePosition () {
 	return mousePosition;
 }

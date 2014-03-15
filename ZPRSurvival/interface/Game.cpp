@@ -1,16 +1,19 @@
 #include "Game.h"
 
 Game::Game () {
-	gameWindow = new sf::RenderWindow (sf::VideoMode (1200, 700), "ZPR Survival");
-	keyboard = new KeyboardInterface ();
+		//all we need to play
+	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
+	keyboard = new KeyboardInterface ();	
 	mouse = new MouseInterface ();
 	player = new Player ();
 	state = INIT;
-	TimePerFrame = sf::seconds (1.f / 60.f);
+	TIME_PER_FRAME = seconds (1.f / 60.f);		//static frame (60 fps)
 	
-	/*generator = new MapGenerator(4096, 4096);
-	mapTexture.loadFromImage(generator->GetMap()); 
-	mapSprite.setTexture(mapTexture);*/
+	generator = new MapGenerator(2048, 2048);		//#TEMP
+	mapTexture.loadFromImage(generator->GetMap());  
+	mapSprite.setTexture(mapTexture);
+	mapSprite.setPosition (-1024+600, -1024+350);			
+													//.....
 
 	font.loadFromFile ("misc/segoeuil.ttf");	
 }
@@ -18,30 +21,44 @@ Game::Game () {
 Game::~Game () {
 	delete gameWindow;
 	delete player;
+	delete keyboard;
+	delete mouse;
+	delete generator;
 }
 
 void Game::initialize () {
-	player->setPlayer ();
-		//set position to the center of the screen
-	player->playerController.setPlayerPosition (sf::Vector2<double> ((double)gameWindow->getSize ().x / 2, (double)gameWindow->getSize ().y / 2));
+		//INIT
+	gameWindow->setPosition (Vector2<int> (0, 0));		//push the gameWindow to the left-top corner
 	this->state = IN_MENU;
+		
+		//IN_MENU
+		//empty (for now)
+
+		//PLAYING
+		//#TEMP later these calls will be in other methods
+
+	player->setPlayer ();	//prepares player for the game
+		//set player position to the center of the screen
+	player->playerController.setPlayerPosition (Vector2<int> (gameWindow->getSize ().x / 2, gameWindow->getSize ().y / 2));
 }
 
 void Game::run () {
-	sf::Clock clock;
-	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	Clock clock;
+	Time timeSinceLastUpdate = Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
+
 	while (gameWindow->isOpen ()) {
 		processEvents ();
-		timeSinceLastUpdate += clock.restart ();
-		while (timeSinceLastUpdate > TimePerFrame) {
-			timeSinceLastUpdate -= TimePerFrame;
+		timeSinceLastUpdate += clock.restart ();			//this whole idea is to prevent...
+
+		while (timeSinceLastUpdate > TIME_PER_FRAME) {
+			timeSinceLastUpdate -= TIME_PER_FRAME;
 			processEvents ();
 
 			if (state == EXIT)
 				gameWindow->close ();
 
-			update (TimePerFrame);
+			update (TIME_PER_FRAME);						//...game from occasional lags
 		}
 		render ();
 	}
@@ -56,17 +73,17 @@ void Game::processEvents () {
 	mouse->capturePosition (*gameWindow, player);
 
 		//handle keyboard input
-	sf::Event event;
+	Event event;
 	int newState = -1;
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-			case sf::Event::KeyPressed:
+			case Event::KeyPressed:			//inputHandle() returns proper new state
 				newState = keyboard->inputHandle (event.key.code, true, state, player);
 				break;
-			case sf::Event::KeyReleased:
+			case Event::KeyReleased:
 				newState = keyboard->inputHandle (event.key.code, false, state, player);
 				break;
-			case sf::Event::Closed:
+			case Event::Closed:
 				gameWindow->close ();
 				break;
 			default:
@@ -86,22 +103,27 @@ void Game::processEvents () {
 	}
 }
 
-void Game::update (sf::Time deltaTime) {
+void Game::update (Time deltaTime) {
 	player->playerController.setDeltaTime (deltaTime);
 	player->update ();
+		
+		//set the world displacement vector relatively to player
+	globalDisplacement = player->playerController.getDisplacement ();
+	mapSprite.move (-globalDisplacement);
+				 // ^ mind the sign!
 }
 
 void Game::render () {
 	gameWindow->clear ();
 	this->draw();
 	
-	//temporary test
+	//#TEMP test
 	stringstream ss;
 	ss << player->playerController.getFSpeed ();
 	std::string result(ss.str ());
-	sf::Text text (result, font);
+	Text text (result, font);
 	text.setCharacterSize (30);
-	text.setColor (sf::Color::White);
+	text.setColor (Color::White);
 	text.setPosition (10, 5);
 	gameWindow->draw (text);
 

@@ -1,11 +1,7 @@
 #include "Interface.h"
 
-
-Interface::Interface ()
-{
+Interface::Interface () {
 }
 
-
-Interface::~Interface ()
-{
+Interface::~Interface () {
 }

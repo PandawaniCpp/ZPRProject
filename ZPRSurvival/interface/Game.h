@@ -22,24 +22,27 @@ public:
 	void terminate ();
 
 private:
+		//in the run() function (they are executed all over again as long the gameWindow is open)
 	void processEvents ();
+	void update (Time deltaTime);
 	void render ();
-	void update (sf::Time deltaTime);
+		//other
 	void draw ();
 	
 
 private:
+	Time TIME_PER_FRAME;				//keep the frame duration fixed
+	RenderWindow * gameWindow;
 	KeyboardInterface * keyboard;
-	MouseInterface * mouse;
-	sf::RenderWindow * gameWindow;
-	sf::Time TimePerFrame;
-
-	MapGenerator * generator;
-	sf::Sprite mapSprite; //temporary
-	sf::Texture mapTexture; //temporary
+	MouseInterface * mouse;		 
+	
+	MapGenerator * generator;			//-> move to another class (which will be an object here) 
+	Sprite mapSprite; //temporary		
+	Texture mapTexture; //temporary		-> move somewhere else
 	Player * player;
-	gameState state;
-
-	sf::Font font;
+	gameState state;					//describe, in which state the game is in the moment
+	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
+										//every time the player wants to move.
+	Font font;
 };
 

@@ -9,24 +9,23 @@ Player::~Player () {
 
 void Player::setPlayer () {
 	setPlayerTexture ();
-	setOrigin (playerController.getSize ().x / 2, playerController.getSize ().y / 2);
-	update ();
+	setOrigin (playerController.getSize ().x / 2, playerController.getSize ().y / 2);	//to rotate relatively to the player center
 }
 
 void Player::update () {
 		//insert texture update
 
 		//rotation update
-	playerController.calculateRotation ();
-	this->setRotation ((float)playerController.getRotation ());
-		//position update
-	Vector2<double> position = playerController.getPosition ();
-	this->setPosition ((float)position.x, (float)position.y);
+	playerController.calculatePlayerRotation ();
+	this->setRotation (playerController.getRotation ());
 	
-	if ((playerController.getFSpeed() != 0) && (playerController.getRSpeed() != 0) || (playerController.getPhase() != STOP)) {
+		//displacement update
+	if ((playerController.getFSpeed() != 0) && (playerController.getRSpeed() != 0) || (playerController.getPhase() != STOP))
 		playerController.calculateMove ();
-		playerController.move ();
-	}
+
+		//position update
+	Vector2<float> position = playerController.getPosition ();
+	this->setPosition ((float)position.x, (float)position.y);
 }
 
 void Player::setPlayerTexture () {

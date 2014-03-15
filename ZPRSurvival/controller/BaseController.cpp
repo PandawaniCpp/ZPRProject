@@ -25,12 +25,9 @@ BaseController::BaseController (BaseController & baseController) {
 BaseController::~BaseController () {
 }
 
-//object manipulators ==============================================
-void BaseController::prepareMove (int direction, bool isPressed) {
-	if (isPressed)		//add or remove new directions
-		this->direction = this->direction | direction;
-	else 
-		this->direction = this->direction ^ direction;
+/************* object manipulators **************/
+void BaseController::prepareMove (int direction) {
+	this->direction = direction;
 
 	switch (phase) {		//declare new movement phase
 		case STOP:
@@ -132,41 +129,107 @@ void BaseController::calculateMove () {
 		default:
 			break;
 	}
+		
+		//calculate displacement vector
+	if (forSpeed) {
+		displacement.x = forSpeed * (float)sin (rotation * PI / 180);
+		displacement.y = -forSpeed * (float)cos (rotation * PI / 180);
+	}
+	else if (revSpeed) {		// !!! changed sign !!!
+		displacement.x = -revSpeed * (float)sin (rotation * PI / 180);
+		displacement.y = revSpeed * (float)cos (rotation * PI / 180);
+	}
+	else {
+		displacement.x = 0;
+		displacement.y = 0;
+	}
+	
+		//keep static frame
+	displacement *= deltaTime.asSeconds ();
+}
 
-	if (forSpeed)
-		this->displacement.x = forSpeed;
-	else if (revSpeed)
-		this->displacement.x = -revSpeed;
+void BaseController::calculateRotation (Vector2<float> destination) {
+	float deltaX = destination.x - position.x;
+	float deltaY = destination.y - position.y;
+
+	//calc. vector rotation. 0 degrees == "up", clockwise.
+	if (deltaX > 0) {
+		if (deltaY < 0) {					//(0; 90) degrees
+			rotation = (float)(atan (deltaX / -deltaY) * 180 / PI);
+			return;
+		}
+		else {								//(90; 180) degrees
+			rotation = (float)(atan (deltaY / deltaX) * 180 / PI + 90);
+			return;
+		}
+	}
+	else if (deltaX < 0) {
+		if (deltaY > 0) {					//(180; 270) degrees
+			rotation = (float)(atan (-deltaX / deltaY) * 180 / PI + 180);
+			return;
+		}
+		else {								//(270; 360) degrees
+			rotation = (float)(atan (-deltaY / -deltaX) * 180 / PI + 270);
+			return;
+		}
+	}
+
+	if (deltaX == 0) {			//check if 'zeros'
+		if (deltaY <= 0)
+			rotation = 0;		//UP, 0 deg.
+		else
+			rotation = 180;		//DOWN, 180 deg.
+		return;
+	}
+
+	if (deltaY == 0) {			//check if 'zeros'
+		if (deltaX < 0)
+			rotation = 270;		//LEFT, 270 deg.
+		else
+			rotation = 90;		//RIGHT, 90 deg.
+		return;
+	}
 }
 
 void BaseController::move () {
-	Vector2<double> tempDisplacement = displacement * (double)deltaTime.asSeconds ();
-	position.x += tempDisplacement.x;
-	position.y += tempDisplacement.y;
+	position.x += displacement.x;
+	position.y += displacement.y;
 }
 
-void BaseController::rotate (double newAngle) {
-	rotation = newAngle;
+void BaseController::setPosition (Vector2<float> position) {
+	this->position = position;
 }
 
-void BaseController::setDeltaTime (sf::Time deltaTime) {
+void BaseController::rotate (float angle) {
+	rotation += angle;
+}
+
+void BaseController::setRotation (float rotation) {
+	this->rotation = rotation;
+}
+
+void BaseController::setDeltaTime (Time deltaTime) {
 	this->deltaTime = deltaTime;
 }
 
-//getters ==========================================================
-Vector2<double> BaseController::getPosition () {
+/***********  getters ***********/
+Vector2<float> BaseController::getPosition () {
 	return position;
 }
 
-double BaseController::getRotation () {
+Vector2<float> BaseController::getDisplacement () {
+	return displacement;
+}
+
+float BaseController::getRotation () {
 	return rotation;
 }
 
-double BaseController::getFSpeed () {
+float BaseController::getFSpeed () {
 	return forSpeed;
 }
 
-double BaseController::getRSpeed () {
+float BaseController::getRSpeed () {
 	return revSpeed;
 }
 
