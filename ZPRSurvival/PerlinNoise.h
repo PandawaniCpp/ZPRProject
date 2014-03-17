@@ -8,11 +8,12 @@ using namespace std;
 
 class PerlinNoise {
 public:
-	PerlinNoise(int w, int h, double zoom, double p, int r, int g, int b, int octaves);
+	PerlinNoise(int w, int h, double zoom, double p, int octaves, bool isIsland);
 	~PerlinNoise();
 	sf::Image RenderTerrainMap(int xS, int yS, int size);
 	sf::Image RenderTemperatureMap(int w, int h, double zoom, double p, int r, int g, int b);
 	sf::Image GetImage();
+	vector<vector<int>> GetVector();
 	void AddGradient();
 private:
 	sf::Image RenderNoise(int w, int h, double zoom, double p, int r, int g, int b);

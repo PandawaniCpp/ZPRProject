@@ -2,9 +2,10 @@
 #include <cmath>
 #include <ctime>
 
-PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int r, int g, int b, int octaves) {
+PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int octaves, bool isIsland) {
 	int color;
-	double getnoise, frequency, amplitude;
+	int iter = 3;
+	float getnoise, frequency, amplitude;
 	srand((int)time(NULL));
 	offset = (int)rand() % 100000;
 	mapVec.resize(w, vector<int>(h, 0));
@@ -13,7 +14,27 @@ PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int r, int g, int 
 	for (int y = 0; y < h; y++) {//Loops to loop trough all the pixels
 		for (int x = 0; x < w; x++) {
 
-			getnoise = 0;
+			getnoise = 0.0f;
+
+			float distanceFromCenter = 1.0f;
+
+			if (x > 0.6f*w) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((x - w*0.6f), 2) / pow(w, 2);
+			}
+			if (y > 0.6f*h) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((y - h*0.6f), 2) / pow(h, 2);
+			}
+			if (x < 0.4f*w) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((w*0.4f - x), 2) / pow(w, 2);
+			}
+			if (y < 0.4f*h) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((h*0.4f - y), 2) / pow(h, 2);
+			}
+
+			if (distanceFromCenter < 0.0f) {
+				distanceFromCenter = 0.0f;
+			}
+
 
 			for (int a = 0; a < octaves - 1; a++) {
 				frequency = pow(2, a);//This increases the frequency with every loop of the octave.
@@ -21,18 +42,35 @@ PerlinNoise::PerlinNoise(int w, int h, double zoom, double p, int r, int g, int 
 				getnoise += Noise(((double)x)*frequency / zoom, ((double)y) / zoom*frequency)*amplitude;//This uses our perlin noise functions. It calculates all our zoom and frequency and amplitude
 			}//                                         It gives a decimal value, you know, between the pixels. Like 4.2 or 5.1
 
-			color = (int)((getnoise*128.0) + 128.0);//Convert to 0-256 values.
-			if (color > 255) {
-				color = 255;
+			color = (int)((getnoise*128.0f) + 128.0f);//Convert to 0-256 values.
+			if (color > 255.0f) {
+				color = 255.0f;
 			}
 
-			if (color <= 0) {
-				color = 0;
+			if (color <= 0.0f) {
+				color = 0.0f;
 			}
 
-			mapVec[x][y] = color;
+			mapVec[x][y] = color*distanceFromCenter;
 		}//                                                          given at the beginning in the function.
 
+	}
+
+	for (int k = 0; k < iter; k++) {
+		vector< vector<int>> mapVec2(mapVec);
+		for (int i = 1; i < w - 1; i++) {
+			for (int j = 1; j < w - 1; j++) {
+				mapVec2[i][j] = (mapVec[i - 1][j - 1] +
+								 mapVec[i - 1][j] +
+								 mapVec[i - 1][j + 1] +
+								 mapVec[i][j - 1] +
+								 mapVec[i][j + 1] +
+								 mapVec[i + 1][j - 1] +
+								 mapVec[i - 1][j] +
+								 mapVec[i + 1][j + 1]) / 8.0;
+			}
+		}
+		mapVec = mapVec2;
 	}
 }
 
@@ -49,9 +87,9 @@ inline double PerlinNoise::CalculateNoise(double x, double y) {
 }
 
 inline double PerlinNoise::Interpolate(double a, double b, double x) {
-	//double ft = x * 3.1415927;
-	//double f = (x/2)* 0.5;
-	return a*(1.0 - x) + b*x;
+	double ft = x * 3.1415927;
+	double f = (1.0 - cos(ft))* 0.5;
+	return a*(1.0 - f) + b*f;
 }
 
 double PerlinNoise::Noise(double x, double y) {
@@ -75,4 +113,8 @@ sf::Image PerlinNoise::GetImage() {
 	}
 
 	return noise;
+}
+
+vector< vector<int>> PerlinNoise::GetVector() {
+	return mapVec;
 }

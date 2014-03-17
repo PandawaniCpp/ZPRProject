@@ -5,7 +5,7 @@
 #include "interface/Game.h"
 #include "MidpointDisplacementNoise.h"
 #include "MapGenerator.h"
-
+#include <cstdio>
 int main() {
 	Game * game;
 	game = new Game ();
