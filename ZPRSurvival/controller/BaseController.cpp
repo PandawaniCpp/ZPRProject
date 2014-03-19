@@ -2,75 +2,60 @@
 
 
 BaseController::BaseController () {
-	position.x = 0;
-	position.y = 0;
-	rotation = 0;
-	forSpeed = 0.0;
-	revSpeed = 0.0;
-	direction = 0;
-	phase = STOP;
+	deltaTime = Time::Zero;
 }
 
-BaseController::BaseController (BaseController & baseController) {
-	position.x = baseController.position.x;
-	position.y = baseController.position.y;
-	rotation = baseController.rotation;
-	forSpeed = baseController.forSpeed;
-	revSpeed = baseController.revSpeed;
-	direction = baseController.direction;
-	phase = baseController.phase;
-}
-
+/*BaseController::BaseController (BaseController & baseController) {
+	deltaTime = baseController.deltaTime;
+}*/
 
 BaseController::~BaseController () {
 }
 
 /************* object manipulators **************/
-void BaseController::prepareMove (int direction) {
-	this->direction = direction;
-
+void BaseController::prepareMove (int & direction, MovingPhase & phase) {
 	switch (phase) {		//declare new movement phase
 		case STOP:
-			if (this->direction != 0) {		//want to move
-				if (~this->direction & DOWN) {
+			if (direction != 0) {		//want to move
+				if (~direction & DOWN) {
 					phase = ACCEL_FWD;		//move forward and/or left/right
 				}
-				else if ((this->direction & UP) == 0) {
+				else if ((direction & UP) == 0) {
 					phase = ACCEL_BWD;		//move backward
 				}
 			}
 			break;
 		case ACCEL_FWD:
-			if ((this->direction & 15) == 0)	//nothing is pressed
+			if ((direction & 15) == 0)	//nothing is pressed
 				phase = DECEL_FWD;				//braking
-			else if (~this->direction & DOWN)		//any except DOWN
+			else if (~direction & DOWN)		//any except DOWN
 				break;								//nothing to change
-			else if ((this->direction & UP) == 0) {		//DOWN and any except UP		
+			else if ((direction & UP) == 0) {		//DOWN and any except UP		
 				phase = ACCEL_BWD;						//rapidly slowing
 			}
 			break;
 		case ACCEL_BWD:
-			if ((this->direction & 15) == 0) 	//nothing is pressed
+			if ((direction & 15) == 0) 	//nothing is pressed
 				phase = DECEL_BWD;				//braking
-			else if (~this->direction & UP)			//any except UP
+			else if (~direction & UP)			//any except UP
 				break;								//nothing to change
-			else if ((this->direction & DOWN) == 0) 		//UP and any except DOWN		
+			else if ((direction & DOWN) == 0) 		//UP and any except DOWN		
 				phase = ACCEL_FWD;						//rapidly slowing
 			break;
 		case DECEL_FWD:
-			if (this->direction == 0)			//nothing is pressed
+			if (direction == 0)			//nothing is pressed
 				break;							//still braking
-			else if (~this->direction & DOWN)		//any except DOWN
+			else if (~direction & DOWN)		//any except DOWN
 				phase = ACCEL_FWD;					//start accelerating forward
-			else if ((this->direction & UP) == 0)		//DOWN and any except UP
+			else if ((direction & UP) == 0)		//DOWN and any except UP
 				phase = ACCEL_BWD;						//start accelerating
 			break;
 		case DECEL_BWD:
-			if (this->direction == 0)			//nothing is pressed
+			if (direction == 0)			//nothing is pressed
 				break;							//still braking
-			else if (~this->direction & UP)			//any except UP
+			else if (~direction & UP)			//any except UP
 				phase = ACCEL_BWD;					//start accelerating forward
-			else if ((this->direction & DOWN) == 0)		//UP and any except DOWN
+			else if ((direction & DOWN) == 0)		//UP and any except DOWN
 				phase = ACCEL_FWD;						//start accelerating
 			break;
 		default:
@@ -78,7 +63,15 @@ void BaseController::prepareMove (int direction) {
 	}
 }
 
-void BaseController::calculateMove () {
+void BaseController::calculateMove (AnimatedObject * animatedObject) {
+	MovingPhase phase = animatedObject->getPhase ();
+	float forSpeed = animatedObject->getForSpeed ();
+	float revSpeed = animatedObject->getRevSpeed ();
+	float maxFSpeed = animatedObject->getMaxFSpeed ();
+	float maxRSpeed = animatedObject->getMaxRSpeed ();
+	float rotation = animatedObject->getRotation ();
+	Vector2<float> displacement = animatedObject->getDisplacement ();
+
 	switch (phase) {		//calculate speed
 		case STOP:
 			break;
@@ -146,11 +139,19 @@ void BaseController::calculateMove () {
 	
 		//keep static frame
 	displacement *= deltaTime.asSeconds ();
+
+	animatedObject->setPhase (phase);
+	animatedObject->setForSpeed (forSpeed);
+	animatedObject->setRevSpeed (revSpeed);
+	animatedObject->setMaxFSpeed (maxFSpeed);
+	animatedObject->setMaxRSpeed (maxRSpeed);
+	animatedObject->setRotation (rotation);
+	animatedObject->setDisplacement (displacement);
 }
 
-void BaseController::calculateRotation (Vector2<float> destination) {
-	float deltaX = destination.x - position.x;
-	float deltaY = destination.y - position.y;
+void BaseController::calculateRotation (float & rotation, const Vector2<float> & rotationVector) {
+	float deltaX = rotationVector.x;
+	float deltaY = rotationVector.y;
 
 	//calc. vector rotation. 0 degrees == "up", clockwise.
 	if (deltaX > 0) {
@@ -191,52 +192,11 @@ void BaseController::calculateRotation (Vector2<float> destination) {
 	}
 }
 
-void BaseController::move () {
+void BaseController::move (const int direction, Vector2<float> & position, const Vector2<float> & displacement) {
 	position.x += displacement.x;
 	position.y += displacement.y;
 }
 
-void BaseController::setPosition (Vector2<float> position) {
-	this->position = position;
-}
-
-void BaseController::rotate (float angle) {
-	rotation += angle;
-}
-
-void BaseController::setRotation (float rotation) {
-	this->rotation = rotation;
-}
-
 void BaseController::setDeltaTime (Time deltaTime) {
 	this->deltaTime = deltaTime;
-}
-
-/***********  getters ***********/
-Vector2<float> BaseController::getPosition () {
-	return position;
-}
-
-Vector2<float> BaseController::getDisplacement () {
-	return displacement;
-}
-
-float BaseController::getRotation () {
-	return rotation;
-}
-
-float BaseController::getFSpeed () {
-	return forSpeed;
-}
-
-float BaseController::getRSpeed () {
-	return revSpeed;
-}
-
-int BaseController::getDirection () {
-	return direction;
-}
-
-int BaseController::getPhase () {
-	return phase;
 }

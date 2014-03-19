@@ -6,7 +6,10 @@ MouseInterface::MouseInterface () {
 MouseInterface::~MouseInterface () {
 }
 
-void MouseInterface::capturePosition (sf::RenderWindow & window, Player * player) {
-	sf::Vector2i position = sf::Mouse::getPosition (window);
-	player->playerController.setMousePosition (position);
+void MouseInterface::capturePosition (RenderWindow & window) {
+	mousePosition = Mouse::getPosition (window);
+}
+
+Vector2i MouseInterface::getPosition () {
+	return mousePosition;
 }

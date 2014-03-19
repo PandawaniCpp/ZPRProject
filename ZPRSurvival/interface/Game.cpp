@@ -5,7 +5,7 @@ Game::Game() {
 	gameWindow = new RenderWindow(VideoMode(1200, 700), "ZPR Survival");
 	keyboard = new KeyboardInterface();
 	mouse = new MouseInterface();
-	player = new Player();
+	playerController = new PlayerController();
 	state = INIT;
 	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
 
@@ -20,7 +20,7 @@ Game::Game() {
 
 Game::~Game() {
 	delete gameWindow;
-	delete player;
+	delete playerController;
 	delete keyboard;
 	delete mouse;
 	delete generator;
@@ -31,15 +31,15 @@ void Game::initialize() {
 	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the left-top corner
 	this->state = IN_MENU;
 
-	//IN_MENU
+		//IN_MENU
 	//empty (for now)
 
-	//PLAYING
+		//PLAYING
 	//#TEMP later these calls will be in other methods
 
-	player->setPlayer();	//prepares player for the game
-	//set player position to the center of the screen
-	player->playerController.setPlayerPosition(Vector2<int>(gameWindow->getSize().x / 2, gameWindow->getSize().y / 2));
+	playerController->setPlayer();	//prepares player for the game		#TODO maybe put this in constructor
+		//set player position to the center of the screen
+	playerController->getPlayer()->setPosition(Vector2<float>((float)gameWindow->getSize().x / 2, (float)gameWindow->getSize().y / 2));
 }
 
 void Game::run() {
@@ -69,19 +69,19 @@ void Game::terminate() {
 }
 
 void Game::processEvents() {
-	//handle mouse position and imput
-	mouse->capturePosition(*gameWindow, player);
+		//handle mouse position and imput
+	mouse->capturePosition(*gameWindow);
 
-	//handle keyboard input
+		//handle keyboard input
 	Event event;
 	int newState = -1;
 	while (gameWindow->pollEvent(event)) {
 		switch (event.type) {
 		case Event::KeyPressed:			//inputHandle() returns proper new state
-			newState = keyboard->inputHandle(event.key.code, true, state, player);
+			newState = keyboard->inputHandle(event.key.code, true, state, playerController);
 			break;
 		case Event::KeyReleased:
-			newState = keyboard->inputHandle(event.key.code, false, state, player);
+			newState = keyboard->inputHandle(event.key.code, false, state, playerController);
 			break;
 		case Event::Closed:
 			gameWindow->close();
@@ -104,21 +104,22 @@ void Game::processEvents() {
 }
 
 void Game::update(Time deltaTime) {
-	player->playerController.setDeltaTime(deltaTime);
-	player->update();
+	playerController->setDeltaTime(deltaTime);
+	playerController->update(mouse->getPosition());
 
 	//set the world displacement vector relatively to player
-	globalDisplacement = player->playerController.getDisplacement();
+	globalDisplacement = playerController->getPlayer()->getDisplacement();
 	generator->move(-globalDisplacement);
 	// ^ mind the sign!
 }
 
 void Game::render() {
 	gameWindow->clear();
+	playerController->render ();
 	this->draw();
 
 	//#TEMP test
-	stringstream ss;
+	/*stringstream ss;
 	ss << player->playerController.getFSpeed();
 	std::string result(ss.str());
 	Text text(result, font);
@@ -146,7 +147,7 @@ void Game::render() {
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 80);
-	gameWindow->draw(text);
+	gameWindow->draw(text);*/
 	//=================================
 
 	gameWindow->display();
@@ -155,6 +156,6 @@ void Game::render() {
 void Game::draw() {
 	//gameWindow->draw(mapSprite);
 	generator->draw(gameWindow);
-	gameWindow->draw(*player);
+	gameWindow->draw(*playerController->getPlayerView());
 }
 

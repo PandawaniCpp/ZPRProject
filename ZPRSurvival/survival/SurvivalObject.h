@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "../interface/EnumTypes.h"
 
 /*
 	SurvivalObject has won "The Most Important Class In The Game" award, in particular circles
@@ -8,10 +9,18 @@
 */
 
 using sf::Sprite;
+using sf::Vector2;
 
-class SurvivalObject : public Sprite {
-	public:
+class SurvivalObject {
+public:
 	SurvivalObject ();
 	virtual ~SurvivalObject ();
+		//getters
+	Vector2<float> getPosition ();
+		//setters
+	void setPosition (Vector2<float> position);
+
+private:
+	Vector2<float> position;		//object position
 };
 

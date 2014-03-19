@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "./../player/Player.h"
+#include "./../player/PlayerController.h"
 #include "./../MapGenerator.h"
-#include "./../misc/EnumTypes.h"
+#include "./../interface/EnumTypes.h"
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
 
@@ -33,14 +33,17 @@ private:
 private:
 	Time TIME_PER_FRAME;				//keep the frame duration fixed
 	RenderWindow * gameWindow;
+	PlayerController * playerController;
 	KeyboardInterface * keyboard;
 	MouseInterface * mouse;		 
+	/*Map * map;
+	Creatures * creatures;*/
 	
 	MapGenerator * generator;			//-> move to another class (which will be an object here) 
 	Sprite mapSprite; //temporary		
 	Texture mapTexture; //temporary		-> move somewhere else
-	Player * player;
-	gameState state;					//describe, in which state the game is in the moment
+	
+	GameState state;					//describe, in which state the game is in the moment
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
 										//every time the player wants to move.
 	Font font;

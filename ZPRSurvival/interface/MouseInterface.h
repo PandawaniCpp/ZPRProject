@@ -7,8 +7,10 @@ class MouseInterface :public Interface {
 public:
 	MouseInterface ();
 	virtual ~MouseInterface ();
-	void capturePosition (sf::RenderWindow & window, Player * player);
+	void capturePosition (RenderWindow & window);
+	Vector2i getPosition ();
 
 private:
+	Vector2i mousePosition;
 };
 

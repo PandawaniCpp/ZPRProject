@@ -1,5 +1,5 @@
 #pragma once
-#include "../AnimatedObject.h"
+#include "../animated/AnimatedObject.h"
 
 /*
 	Dangerous. Fast. Stealthy. Unpredictable. Uncontrollable. None of these words refers to

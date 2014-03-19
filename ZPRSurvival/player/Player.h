@@ -1,6 +1,5 @@
 #pragma once
-#include "../AnimatedObject.h"
-#include "../controller/PlayerController.h"
+#include "../animated/AnimatedObject.h"
 
 /*
 	The one and only Player class. When Player needs something, it is instantaneously done.
@@ -10,20 +9,16 @@
 	knows something about it. Worth a shot.
 */
 
-using sf::Texture;
-
 class Player : public AnimatedObject {
 public:
 	Player ();
 	virtual ~Player ();
-	void setPlayer (void);	//temporary method
-	void update ();
-	PlayerController playerController;
+		//getter
+	PlayerState getState ();
+		//setters
+	void setState (PlayerState playerState);
 
 private:
-	void setPlayerTexture ();
-
-private:
-	Texture texture;
+	PlayerState playerState = IDLE;
 };
 
