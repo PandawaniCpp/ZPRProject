@@ -5,9 +5,10 @@ using namespace sf;
 
 class MapTile :	public Drawable, public Transformable {
 public:
-	MapTile();
-	MapTile(int size, Texture tile);
+	MapTile(int size);
+	MapTile(Texture &tile);
 	~MapTile();
+	void setTexture(Texture &tile);
 	bool isInitilaized();
 	virtual void draw(RenderTarget& target, RenderStates states) const;
 private:

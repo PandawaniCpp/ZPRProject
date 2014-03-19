@@ -9,7 +9,7 @@ Game::Game() {
 	state = INIT;
 	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
 
-	generator = new MapGenerator(2048, 2048, 64);		//#TEMP
+	generator = new MapGenerator(10, 10, 100);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
@@ -154,7 +154,7 @@ void Game::render() {
 
 void Game::draw() {
 	//gameWindow->draw(mapSprite);
-	generator->draw(gameWindow, player->playerController.getPosition().x, player->playerController.getPosition().y);
+	generator->draw(gameWindow);
 	gameWindow->draw(*player);
 }
 

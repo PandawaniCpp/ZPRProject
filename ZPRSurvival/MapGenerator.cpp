@@ -1,16 +1,16 @@
 #include "MapGenerator.h"
 
+using namespace std;
 
 MapGenerator::MapGenerator(int w, int h, int s) {
 	scale = s;
 	height = h;
 	width = w;
 	PerlinNoise heightNoise(w, h, 300, 0.5, 7, true);
-	MidpointDisplacementNoise tempNoise(w, h, w / 2, true, true, true);
 	PerlinNoise rainNoise(w, h, 200, 0.5, 5, false);
-	position = Vector2f(-32 * 2048.0f, -32 * 2048.0f);
-	tempNoise.AddGradient();
-	this->Calculate(heightNoise.GetVector(), tempNoise.GetVector(), rainNoise.GetVector());
+	position = Vector2f(-w*scale / 2, -h*scale / 2);
+
+	this->Calculate(heightNoise.GetVector(), rainNoise.GetVector());
 
 	img[0].create(scale, scale, sf::Color(0, 18, 25));
 	img[1].create(scale, scale, sf::Color(200, 180, 120));
@@ -22,9 +22,10 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 	img[7].create(scale, scale, sf::Color(30, 30, 30));
 
 	for (int i = 0; i < 8; i++) {
-		tiles[i].create(scale, scale);
-		tiles[i].setRepeated(true);
-		tiles[i].loadFromImage(img[i]);
+		tiles[i] = new Texture();
+		tiles[i]->create(scale, scale);
+		//tiles[i].setRepeated(true);
+		tiles[i]->loadFromImage(img[i]);
 	}
 
 
@@ -33,21 +34,20 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 MapGenerator::~MapGenerator() {
 }
 
-void MapGenerator::Calculate(vector<vector<int>> heightMap, vector<vector<int>> tempMap, vector<vector<int>> rainMap) {
+void MapGenerator::Calculate(vector<vector<int>> const & heightMap, vector<vector<int>> const & rainMap) {
 	int iter = 4;
 	int w = width;
 	int h = height;
 
-	map.create(h, w, sf::Color::Black);
+	map.create(w, h, sf::Color::Black);
 
-	points.resize(h, vector<int>(w, 0));
-	maps.resize(h, vector<MapTile>(w, MapTile()));
+	points.resize(w, vector<int>(h, 0));
+	maps.resize(w, vector<MapTile>(h, MapTile(scale)));
 
 	for (int y = 0; y < w; y++) {//Loops to loop trough all the pixels
 		for (int x = 0; x < h; x++) {
 
 			int height = heightMap[x][y];
-			int temperature = tempMap[x][y];
 			int rain = rainMap[x][y];
 
 			if (height <= 75) {
@@ -89,7 +89,7 @@ void MapGenerator::Calculate(vector<vector<int>> heightMap, vector<vector<int>> 
 
 }
 
-void MapGenerator::move(Vector2f displacement) {
+void MapGenerator::move(Vector2f &displacement) {
 	position += Vector2<float>(displacement.x, displacement.y);
 }
 
@@ -97,39 +97,44 @@ Vector2f MapGenerator::getPosition() {
 	return position;
 }
 
-void MapGenerator::draw(sf::RenderWindow* target, int x, int y) {
+void MapGenerator::loadMap(MapTile & map, Texture & texture) {
+	map.setTexture(texture);
+}
 
-	//target->draw(MapTile(0,128));
+void MapGenerator::draw(sf::RenderWindow* target) {
+	int startX = - position.x / scale;
+	int startY = - position.y / scale;
+	int endX = 1 + 1200/scale - position.x / scale;
+	int endY = 1 + 700/scale - position.y / scale;
 
-	int start_x = -position.x / scale - 2;
-	int start_y = -position.y / scale - 2;
-
-	if (start_x < 0) {
-		start_x = 0;
-	}
-	else if (start_x + 15 >= width) {
-		start_x = width - 1;
-	}
-
-	if (start_y < 0) {
-		start_y = 0;
-	}
-	else if (start_y + 15 >= height) {
-		start_y = height - 1;
+	if (startX < 0) {
+		startX = 0;
 	}
 
-	for (int i = start_x; i < start_x + 24; i++) {
-		for (int j = start_y; j < start_y + 20; j++) {
-			if (maps[i][j].isInitilaized()) {
-				maps[i][j] = MapTile(scale, tiles[points[i][j]]);
+	if (startY < 0) {
+		startY = 0;
+	}
+	if (endX >= width) {
+		endX = width;
+	}
+	if (endY>= height) {
+		endY = height;
+	}
+	vector<thread> threads;
+	for (int i = startX; i < endX; i++) {
+		for (int j = startY; j < endY; j++) {
+
+			//if (maps[i][j].isInitilaized()) {
+			if (maps[i][j].isInitilaized() == true) {
+				maps[i][j].setTexture(*tiles[points[i][j]]);
 			}
+				//maps[i][j].setTexture(tiles[points[i][j]]);
+				//loadMap(maps[i][j], tiles[points[i][j]]);
+				//threads.push_back( thread(loadMap, maps[i][j], tiles[points[i][j]]));
+				//threads[(i - startX)*(endX - startX) + (j - startY)].join();
+			
 			maps[i][j].setPosition(i*scale + position.x, j*scale + position.y);
-			if (maps[i][j].getPosition().x >= -64 &&
-				maps[i][j].getPosition().y >= -64 &&
-				maps[i][j].getPosition().x <= 1200 &&
-				maps[i][j].getPosition().y <= 700) {
-				target->draw(maps[i][j]);
-			}
+			target->draw(maps[i][j]);
 		}
 	}
 }
