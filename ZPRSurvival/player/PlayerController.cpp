@@ -28,6 +28,7 @@ void PlayerController::render () {
 	playerView->setPosition (player->getPosition());
 }
 
+
 void PlayerController::preparePlayerMove (Keyboard::Key key, bool isPressed) {
 	MovingPhase phase = player->getPhase ();
 	int direction = player->getDirection ();

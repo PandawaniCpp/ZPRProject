@@ -1,15 +1,15 @@
 #pragma once
-#include "../controller/BaseController.h"
+#include "../animated/AnimatedObjectController.h"
 #include "Player.h"
 #include "PlayerView.h"
 
 /*
-	Humble Player's servant. Some say he relies on BaseController's actions, but it is not true.
+	Humble Player's servant. Some say he relies on AnimatedObjectController's actions, but it is not true.
 	He fully imitates them. But it would be rude not to mention his additional skills, such as
 	Keyboard and Mouse input processing, ... fair enough. But remember, don't play cat and mouse with him.
 */
 
-class PlayerController : public BaseController {
+class PlayerController: public AnimatedObjectController {
 public:
 	PlayerController ();
 	virtual ~PlayerController ();

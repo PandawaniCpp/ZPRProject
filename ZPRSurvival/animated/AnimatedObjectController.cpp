@@ -1,19 +1,19 @@
-#include "BaseController.h"
+#include "AnimatedObjectController.h"
 
 
-BaseController::BaseController () {
+AnimatedObjectController::AnimatedObjectController () {
 	deltaTime = Time::Zero;
 }
 
-/*BaseController::BaseController (BaseController & baseController) {
-	deltaTime = baseController.deltaTime;
+/*AnimatedObjectController::AnimatedObjectController (AnimatedObjectController & AnimatedObjectController) {
+	deltaTime = AnimatedObjectController.deltaTime;
 }*/
 
-BaseController::~BaseController () {
+AnimatedObjectController::~AnimatedObjectController () {
 }
 
 /************* object manipulators **************/
-void BaseController::prepareMove (int & direction, MovingPhase & phase) {
+void AnimatedObjectController::prepareMove (int & direction, MovingPhase & phase) {
 	switch (phase) {		//declare new movement phase
 		case STOP:
 			if (direction != 0) {		//want to move
@@ -63,7 +63,7 @@ void BaseController::prepareMove (int & direction, MovingPhase & phase) {
 	}
 }
 
-void BaseController::calculateMove (AnimatedObject * animatedObject) {
+void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 	MovingPhase phase = animatedObject->getPhase ();
 	float forSpeed = animatedObject->getForSpeed ();
 	float revSpeed = animatedObject->getRevSpeed ();
@@ -149,7 +149,7 @@ void BaseController::calculateMove (AnimatedObject * animatedObject) {
 	animatedObject->setDisplacement (displacement);
 }
 
-void BaseController::calculateRotation (float & rotation, const Vector2<float> & rotationVector) {
+void AnimatedObjectController::calculateRotation (float & rotation, const Vector2<float> & rotationVector) {
 	float deltaX = rotationVector.x;
 	float deltaY = rotationVector.y;
 
@@ -192,11 +192,11 @@ void BaseController::calculateRotation (float & rotation, const Vector2<float> &
 	}
 }
 
-void BaseController::move (const int direction, Vector2<float> & position, const Vector2<float> & displacement) {
+void AnimatedObjectController::move (const int direction, Vector2<float> & position, const Vector2<float> & displacement) {
 	position.x += displacement.x;
 	position.y += displacement.y;
 }
 
-void BaseController::setDeltaTime (Time deltaTime) {
+void AnimatedObjectController::setDeltaTime (Time deltaTime) {
 	this->deltaTime = deltaTime;
 }

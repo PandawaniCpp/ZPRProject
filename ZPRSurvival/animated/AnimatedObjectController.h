@@ -20,11 +20,11 @@ using sf::Vector2i;
 using sf::Keyboard;
 using sf::RenderWindow;
 
-class BaseController {
+class AnimatedObjectController {
 public:
-	BaseController ();
-	//BaseController (BaseController & baseController);	//copy constructor
-	virtual ~BaseController ();
+	AnimatedObjectController();
+	//AnimatedObjectController (AnimatedObjectController & AnimatedObjectController);	//copy constructor
+	virtual ~AnimatedObjectController();
 		//object manipulators
 	void prepareMove (int & direction, MovingPhase & phase);
 	void calculateMove (AnimatedObject * animatedObject);
