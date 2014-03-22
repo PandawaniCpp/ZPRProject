@@ -1,8 +1,8 @@
 #include "PlayerView.h"
 
 PlayerView::PlayerView () {
-	texture.loadFromFile ("resources/player.png");
-	setTexture (texture);
+	textureHolder.load (Textures::P_BASE, "resources/player/player_base.png");
+	setTexture (textureHolder.get (Textures::P_BASE));
 }
 
 PlayerView::~PlayerView () {

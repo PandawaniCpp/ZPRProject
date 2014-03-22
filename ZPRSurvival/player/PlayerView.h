@@ -1,5 +1,6 @@
 #pragma once
 #include "../animated/AnimatedObjectView.h"
+#include "../interface/TextureHolder.h"
 
 class PlayerView : public AnimatedObjectView {
 public:
@@ -7,6 +8,6 @@ public:
 	virtual ~PlayerView ();
 
 private:
-	
+	TextureHolder textureHolder;
 };
 
