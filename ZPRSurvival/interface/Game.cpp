@@ -15,7 +15,7 @@ Game::Game() {
 	//mapSprite.setPosition (-1024+600, -1024+350);			
 	//generator->GetMap().saveToFile("Map.png");
 
-	font.loadFromFile("misc/segoeuil.ttf");
+	font.loadFromFile("resources/segoeuil.ttf");
 }
 
 Game::~Game() {
@@ -119,8 +119,8 @@ void Game::render() {
 	this->draw();
 
 	//#TEMP test
-	/*stringstream ss;
-	ss << player->playerController.getFSpeed();
+	stringstream ss;
+	ss << playerController->getPlayer()->getDisplacement().x;
 	std::string result(ss.str());
 	Text text(result, font);
 	text.setCharacterSize(30);
@@ -129,7 +129,7 @@ void Game::render() {
 	gameWindow->draw(text);
 
 	ss.str("");
-	ss << player->playerController.getRSpeed();
+	ss << playerController->getPlayer ()->getDisplacement().y;
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 30);
@@ -147,7 +147,7 @@ void Game::render() {
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 80);
-	gameWindow->draw(text);*/
+	gameWindow->draw(text);
 	//=================================
 
 	gameWindow->display();

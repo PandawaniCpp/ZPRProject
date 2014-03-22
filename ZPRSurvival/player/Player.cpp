@@ -1,12 +1,17 @@
 #include "Player.h"
 
 Player::Player (){
-	forSpeed = 0;		// #TODO set via setters
-	revSpeed = 0;
-	maxFSpeed = 200;
-	maxRSpeed = 250;
+	displacement.x = 0;
+	displacement.y = 0;
 	size.x = 50;
-	size.y = 50; 
+	size.y = 50;
+	maxFSpeed = 400;
+	maxRSpeed = 250;
+	forSpeed = 0;		
+	revSpeed = 0;
+	rotation = 0;
+	direction = 0;
+	phase = STOP;
 }
 
 Player::~Player () {
