@@ -8,3 +8,9 @@ namespace Textures {
 		//M_xxx - map elements textures
 	};
 }
+
+namespace Fonts {
+	enum ID {
+		F_MENU = 1
+	};
+}
