@@ -1,6 +1,7 @@
 #pragma once
 #include "../animated/AnimatedObjectView.h"
-#include "../interface/TextureHolder.h"
+#include "../interface/ResourceHolder.h"
+#include "../interface/ResourcesID.h"
 
 class PlayerView : public AnimatedObjectView {
 public:
@@ -8,6 +9,6 @@ public:
 	virtual ~PlayerView ();
 
 private:
-	TextureHolder textureHolder;
+	ResourceHolder<Texture, Textures::ID> textureHolder;
 };
 
