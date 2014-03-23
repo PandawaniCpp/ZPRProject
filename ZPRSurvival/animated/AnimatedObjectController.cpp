@@ -37,8 +37,15 @@ void AnimatedObjectController::prepareMove (int & direction, MovingPhase & phase
 		case ACCEL_BWD:
 			if ((direction & 15) == 0) 	//nothing is pressed
 				phase = DECEL_BWD;				//braking
-			else if (~direction & UP)			//any except UP
-				break;								//nothing to change
+			else if (~direction & UP) {			//any except UP
+				if ((direction - LEFT == 0) || (direction - RIGHT == 0)) {	//LEFT and/or RIGHT
+					if (direction - LEFT - RIGHT == 0)						//LEFT and RIGHT
+						phase = DECEL_BWD;									//slowing
+					else							//LEFT or RIGHT		
+						phase = ACCEL_FWD;			//speed up a bit
+				}	
+				break;		//else #DONOTHING
+			}
 			else if ((direction & DOWN) == 0) 		//UP and any except DOWN		
 				phase = ACCEL_FWD;						//rapidly slowing
 			break;
@@ -65,6 +72,7 @@ void AnimatedObjectController::prepareMove (int & direction, MovingPhase & phase
 
 void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 	MovingPhase phase = animatedObject->getPhase ();
+	int direction = animatedObject->getDirection ();
 	float forSpeed = animatedObject->getForSpeed ();
 	float revSpeed = animatedObject->getRevSpeed ();
 	float maxFSpeed = animatedObject->getMaxFSpeed ();
@@ -125,12 +133,42 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 		
 		//calculate displacement vector
 	if (forSpeed) {
-		displacement.x = forSpeed * (float)sin (rotation * PI / 180);
-		displacement.y = -forSpeed * (float)cos (rotation * PI / 180);
+		if (direction - UP == 0) {		//going only UP
+			displacement.x = forSpeed * (float)sin (rotation * PI / 180);
+			displacement.y = -forSpeed * (float)cos (rotation * PI / 180);
+		}
+		else {
+			if (direction - LEFT - UP == 0) {		//going UP and LEFT
+				displacement.x = forSpeed * (float)sin ((rotation - 45) * PI / 180);	//minus 45 degrees (moving diagonally)
+				displacement.y = -forSpeed * (float)cos ((rotation - 45) * PI / 180);
+			}
+			else if (direction - RIGHT - UP == 0) {		//and so on...
+				displacement.x = forSpeed * (float)sin ((rotation + 45) * PI / 180);
+				displacement.y = -forSpeed * (float)cos ((rotation + 45) * PI / 180);
+			}
+			else if (direction - LEFT == 0) {
+				displacement.x = forSpeed * (float)sin ((rotation - 90) * PI / 180);
+				displacement.y = -forSpeed * (float)cos ((rotation - 90) * PI / 180);
+			}
+			else if (direction - RIGHT == 0) {
+				displacement.x = forSpeed * (float)sin ((rotation + 90) * PI / 180);
+				displacement.y = -forSpeed * (float)cos ((rotation + 90) * PI / 180);
+			}
+		}
 	}
 	else if (revSpeed) {		// !!! changed sign !!!
-		displacement.x = -revSpeed * (float)sin (rotation * PI / 180);
-		displacement.y = revSpeed * (float)cos (rotation * PI / 180);
+		if (direction - DOWN == 0) {					//going DOWN
+			displacement.x = -revSpeed * (float)sin (rotation * PI / 180);
+			displacement.y = revSpeed * (float)cos (rotation * PI / 180);
+		}
+		else if (direction - DOWN - LEFT == 0) {
+			displacement.x = -revSpeed * (float)sin ((rotation + 45) * PI / 180);	//reverse rotation change
+			displacement.y = revSpeed * (float)cos ((rotation + 45) * PI / 180);	//moving LEFT but +45 degrees
+		}
+		else if (direction - DOWN - RIGHT == 0) {
+			displacement.x = -revSpeed * (float)sin ((rotation - 45) * PI / 180);	//same here
+			displacement.y = revSpeed * (float)cos ((rotation - 45) * PI / 180);
+		}
 	}
 	else {
 		displacement.x = 0;
