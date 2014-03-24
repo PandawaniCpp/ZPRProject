@@ -9,13 +9,13 @@ Game::Game() {
 	state = INIT;
 	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
 
-	generator = new MapGenerator(10, 10, 100);		//#TEMP
+	generator = new MapGenerator(1000, 1000, 50);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
 	//generator->GetMap().saveToFile("Map.png");
 
-	font.loadFromFile("misc/segoeuil.ttf");
+	font.loadFromFile("resources/segoeuil.ttf");
 }
 
 Game::~Game() {
@@ -119,15 +119,15 @@ void Game::render() {
 	this->draw();
 
 	//#TEMP test
-	/*stringstream ss;
-	ss << player->playerController.getFSpeed();
+	stringstream ss;
+	ss << playerController->getPlayer()->getForSpeed();
 	std::string result(ss.str());
 	Text text(result, font);
 	text.setCharacterSize(30);
 	text.setColor(Color::White);
 	text.setPosition(10, 5);
 	gameWindow->draw(text);
-
+	/*
 	ss.str("");
 	ss << player->playerController.getRSpeed();
 	result = ss.str();

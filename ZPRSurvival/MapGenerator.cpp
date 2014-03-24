@@ -10,6 +10,8 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 	PerlinNoise rainNoise(w, h, 200, 0.5, 5, false);
 	position = Vector2f(-w*scale / 2, -h*scale / 2);
 
+	currentTile = lastTile = Vector2i(w / 2, h / 2);
+
 	this->Calculate(heightNoise.GetVector(), rainNoise.GetVector());
 
 	img[0].create(scale, scale, sf::Color(0, 18, 25));
@@ -32,6 +34,7 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 }
 
 MapGenerator::~MapGenerator() {
+
 }
 
 void MapGenerator::Calculate(vector<vector<int>> const & heightMap, vector<vector<int>> const & rainMap) {
@@ -42,7 +45,7 @@ void MapGenerator::Calculate(vector<vector<int>> const & heightMap, vector<vecto
 	map.create(w, h, sf::Color::Black);
 
 	points.resize(w, vector<int>(h, 0));
-	maps.resize(w, vector<MapTile>(h, MapTile(scale)));
+	maps.resize(w, vector<Sprite *>(h, NULL));
 
 	for (int y = 0; y < w; y++) {//Loops to loop trough all the pixels
 		for (int x = 0; x < h; x++) {
@@ -97,15 +100,53 @@ Vector2f MapGenerator::getPosition() {
 	return position;
 }
 
-void MapGenerator::loadMap(MapTile & map, Texture & texture) {
-	map.setTexture(texture);
+void MapGenerator::loadMap(int startX, int  startY, int  endX, int endY) {
+	int startXX = startX;
+	int startYY = startY;
+	int endXX = endX;
+	int endYY = endY;
+
+	if (startX > 0) {
+		--startXX;
+	}
+
+	if (endX < width - 1) {
+		++endXX;
+	}
+
+	if (startY > 0) {
+		--startYY;
+	}
+
+	if (endY > 0) {
+		++endYY;
+	}
+
+	for (int i = startXX; i < endXX; i++) {
+		for (int j = startYY; j < endYY; j++) {
+			if (maps[i][j]) {
+				delete maps[i][j];
+				maps[i][j] = NULL;
+			}
+			if (i < startX || j < startY || i > endX || j > endY) {
+
+			}
+			else {
+
+				if (!(maps[i][j])) {
+					maps[i][j] = new Sprite();
+					maps[i][j]->setTexture(*tiles[points[i][j]]);
+				}
+			}
+		}
+	}
 }
 
 void MapGenerator::draw(sf::RenderWindow* target) {
-	int startX = - position.x / scale;
-	int startY = - position.y / scale;
-	int endX = 1 + 1200/scale - position.x / scale;
-	int endY = 1 + 700/scale - position.y / scale;
+	int startX = -position.x / scale;
+	int startY = -position.y / scale;
+	int endX = 1 + 1200 / scale - position.x / scale;
+	int endY = 1 + 700 / scale - position.y / scale;
 
 	if (startX < 0) {
 		startX = 0;
@@ -117,24 +158,36 @@ void MapGenerator::draw(sf::RenderWindow* target) {
 	if (endX >= width) {
 		endX = width;
 	}
-	if (endY>= height) {
+	if (endY >= height) {
 		endY = height;
 	}
+
+	currentTile = Vector2i(-position.x / scale + 600 / scale, -position.y / scale + 350 / scale);
+
+	if (currentTile != lastTile) {
+		currentTile = lastTile;
+		loadMap(startX, startY, endX, endY);
+	}
+
+
+
 	vector<thread> threads;
 	for (int i = startX; i < endX; i++) {
 		for (int j = startY; j < endY; j++) {
 
 			//if (maps[i][j].isInitilaized()) {
-			if (maps[i][j].isInitilaized() == true) {
-				maps[i][j].setTexture(*tiles[points[i][j]]);
+			//	if (maps[i][j].getTexture()  == NULL) {
+			//maps[i][j].setTexture(*tiles[points[i][j]]);
+			//}
+			//maps[i][j].setTexture(tiles[points[i][j]]);
+			//loadMap(maps[i][j], tiles[points[i][j]]);
+			//threads.push_back( thread(loadMap, maps[i][j], tiles[points[i][j]]));
+			//threads[(i - startX)*(endX - startX) + (j - startY)].join();
+			//if (maps[i][j].getTexture() != new Texture()) {
+			if (maps[i][j]) {
+				maps[i][j]->setPosition(i*scale + position.x, j*scale + position.y);
+				target->draw(*maps[i][j]);
 			}
-				//maps[i][j].setTexture(tiles[points[i][j]]);
-				//loadMap(maps[i][j], tiles[points[i][j]]);
-				//threads.push_back( thread(loadMap, maps[i][j], tiles[points[i][j]]));
-				//threads[(i - startX)*(endX - startX) + (j - startY)].join();
-			
-			maps[i][j].setPosition(i*scale + position.x, j*scale + position.y);
-			target->draw(maps[i][j]);
 		}
 	}
 }

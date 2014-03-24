@@ -18,12 +18,13 @@ public:
 	Vector2f getPosition();
 	void draw(sf::RenderWindow * target);
 	void move(Vector2f & displacement);
-	static void loadMap(MapTile & map, Texture & texture);
+	void loadMap(int startX, int startY, int endX, int endY);
 private:
 	//thread loader;
 	Vector2<float> position;
+	Vector2i currentTile, lastTile;
 	vector<vector<int> > points;
-	vector<vector<MapTile> > maps;
+	vector<vector< Sprite *> > maps;
 	Image map;
 	Texture * tiles[8];
 	Image img[8];

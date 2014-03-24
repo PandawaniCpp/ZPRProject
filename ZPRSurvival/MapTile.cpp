@@ -6,9 +6,9 @@ MapTile::MapTile(int size) {
 	vertices.setPrimitiveType(Quads);
 	vertices.resize(4);
 	vertices[0].position = sf::Vector2f(0, 0);
-	vertices[1].position = sf::Vector2f(100, 0);
-	vertices[2].position = sf::Vector2f(100, 100);
-	vertices[3].position = sf::Vector2f(0, 100);
+	vertices[1].position = sf::Vector2f(size, 0);
+	vertices[2].position = sf::Vector2f(size, size);
+	vertices[3].position = sf::Vector2f(0, size);
 }
 
 MapTile::MapTile(Texture &tile) {
