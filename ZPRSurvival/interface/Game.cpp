@@ -9,7 +9,7 @@ Game::Game() {
 	state = Game::State::INIT;
 	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
 
-	generator = new MapGenerator(10, 10, 100);		//#TEMP
+	generator = new MapGenerator(1000, 1000, 10);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
