@@ -11,38 +11,30 @@
 
 class AnimatedObject : public SurvivalObject {
 public:
+	static enum Direction {
+		UP = 1, RIGHT = 2, DOWN = 4, LEFT = 8
+	};
+
 	AnimatedObject ();
 	virtual ~AnimatedObject ();
 		//getters
 	Vector2<float> getDisplacement ();
 	Vector2<float> getSize ();
-	float getMaxFSpeed ();
-	float getMaxRSpeed ();
-	float getForSpeed ();
-	float getRevSpeed ();
+	float getSpeed ();
 	float getRotation ();
 	int getDirection ();
-	MovingPhase getPhase ();
 		//setters
 	void setDisplacement (Vector2<float> displacement);
 	void setSize (Vector2<float> size);
-	void setMaxFSpeed (float maxFSpeed);
-	void setMaxRSpeed (float maxRSpeed);
-	void setForSpeed (float forSpeed);
-	void setRevSpeed (float revSpeed);
+	void setSpeed (float revSpeed);
 	void setRotation (float rotation);
 	void setDirection (int direction);
-	void setPhase (MovingPhase phase);
 
 protected:
 	Vector2<float> displacement;	//position change
 	Vector2<float> size;
-	float maxFSpeed;				//forward and reverse speed maxes...
-	float maxRSpeed;
-	float forSpeed;					//...and current values
-	float revSpeed;
+	float speed;
 	float rotation;				    //0 degree == north
-	int direction;					//combination of UP, DOWN, LEFT and RIGHT enum flags
-	MovingPhase phase;				//ac- or decelerating and which way headed
+	int direction;					//combination of AnimatedState::UP, AnimatedState::DOWN, AnimatedState::LEFT and AnimatedState::RIGHT enum flags
 };
 

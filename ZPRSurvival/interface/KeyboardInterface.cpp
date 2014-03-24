@@ -1,4 +1,5 @@
 #include "KeyboardInterface.h"
+#include "Game.h"
 
 KeyboardInterface::KeyboardInterface () {
 }
@@ -7,17 +8,17 @@ KeyboardInterface::~KeyboardInterface () {
 }
 
 int KeyboardInterface::inputHandle (Keyboard::Key key, bool isPressed, int state, PlayerController * playerController) {
-	if (key == Keyboard::Escape)		//exit the game
-		return EXIT;						//#TEMP
+	if (key == Keyboard::Escape)		//GameState::State::EXIT the game
+		return Game::State::EXIT;						//#TEMP
 
 	switch (state) {						//controls the game state
-		case IN_MENU: 
+		case Game::State::IN_MENU:
 			if (key == Keyboard::Return)		//#TEMP
-				return PLAYING;						//pseudo-start of the game
+				return Game::State::PLAYING;						//pseudo-start of the game
 			break;
-		case PLAYING: {						//all events in the actual game
+		case Game::State::PLAYING: {						//all events in the actual game
 			playerController->preparePlayerMove (key, isPressed);
-			return PLAYING;
+			return Game::State::PLAYING;
 		}
 		default: 
 			return -1;

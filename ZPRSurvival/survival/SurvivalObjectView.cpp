@@ -6,6 +6,6 @@ SurvivalObjectView::SurvivalObjectView () {
 SurvivalObjectView::~SurvivalObjectView () {
 }
 
-void SurvivalObjectView::setTextureID (int textureID) {
+void SurvivalObjectView::setTextureByID (int textureID) {
 
 }

@@ -2,7 +2,6 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "../interface/EnumTypes.h"
 #include "../animated/AnimatedObject.h"
 #include <sstream>
 #define PI 3.14159265		//converting degrees <-> radians
@@ -23,10 +22,8 @@ using sf::RenderWindow;
 class AnimatedObjectController {
 public:
 	AnimatedObjectController();
-	//AnimatedObjectController (AnimatedObjectController & AnimatedObjectController);	//copy constructor
 	virtual ~AnimatedObjectController();
 		//object manipulators
-	void prepareMove (int & direction, MovingPhase & phase);
 	void calculateMove (AnimatedObject * animatedObject);
 	void calculateRotation (float & rotation, const Vector2<float> & rotationVector);
 	void move (const int direction, Vector2<float> & position, const Vector2<float> & displacement);											//changes position of the object relatively

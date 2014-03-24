@@ -6,10 +6,10 @@ Game::Game() {
 	keyboard = new KeyboardInterface();
 	mouse = new MouseInterface();
 	playerController = new PlayerController();
-	state = INIT;
+	state = Game::State::INIT;
 	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
 
-	generator = new MapGenerator(1000, 1000, 50);		//#TEMP
+	generator = new MapGenerator(10, 10, 100);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
@@ -27,14 +27,14 @@ Game::~Game() {
 }
 
 void Game::initialize() {
-	//INIT
-	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the left-top corner
-	this->state = IN_MENU;
+	//GameState::State::INIT
+	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the AnimatedState::LEFT-top corner
+	this->state = Game::State::IN_MENU;
 
-		//IN_MENU
+		//GameState::State::IN_MENU
 	//empty (for now)
 
-		//PLAYING
+		//GameState::State::PLAYING
 	//#TEMP later these calls will be in other methods
 
 	playerController->setPlayer();	//prepares player for the game		#TODO maybe put this in constructor
@@ -45,17 +45,17 @@ void Game::initialize() {
 void Game::run() {
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
-	timeSinceLastUpdate += clock.restart();
+	timeSinceLastUpdate += clock.restart ();
 
 	while (gameWindow->isOpen()) {
 		processEvents();
-		timeSinceLastUpdate += clock.restart();			//this whole idea is to prevent...
+		timeSinceLastUpdate += clock.restart ();			//this whole idea is to prevent...
 
 		while (timeSinceLastUpdate > TIME_PER_FRAME) {
 			timeSinceLastUpdate -= TIME_PER_FRAME;
 			processEvents();
 
-			if (state == EXIT)
+			if (state == Game::State::EXIT)
 				gameWindow->close();
 
 			update(TIME_PER_FRAME);						//...game from occasional lags
@@ -92,20 +92,20 @@ void Game::processEvents() {
 	}
 
 	switch (newState) {
-	case UNKNOWN: state = UNKNOWN; break;
-	case INIT: state = INIT; break;
-	case IN_MENU: state = IN_MENU; break;
-	case PLAYING: state = PLAYING; break;
-	case PAUSE: state = PAUSE; break;
-	case EXIT: state = EXIT; break;
-	default:
-		break;
+		case Game::State::UNKNOWN: state = Game::State::UNKNOWN; break;
+		case Game::State::INIT: state = Game::State::INIT; break;
+		case Game::State::IN_MENU: state = Game::State::IN_MENU; break;
+		case Game::State::PLAYING: state = Game::State::PLAYING; break;
+		case Game::State::PAUSE: state = Game::State::PAUSE; break;
+		case Game::State::EXIT: state = Game::State::EXIT; break;
+		default:
+			break;
 	}
 }
 
 void Game::update(Time deltaTime) {
 	playerController->setDeltaTime(deltaTime);
-	playerController->update(mouse->getPosition());
+	playerController->update (mouse->getPosition ());
 
 	//set the world displacement vector relatively to player
 	globalDisplacement = playerController->getPlayer()->getDisplacement();
@@ -120,16 +120,16 @@ void Game::render() {
 
 	//#TEMP test
 	stringstream ss;
-	ss << playerController->getPlayer()->getForSpeed();
+	ss << playerController->getPlayer()->getDisplacement().x;
 	std::string result(ss.str());
 	Text text(result, font);
 	text.setCharacterSize(30);
 	text.setColor(Color::White);
 	text.setPosition(10, 5);
 	gameWindow->draw(text);
-	/*
+
 	ss.str("");
-	ss << player->playerController.getRSpeed();
+	ss << playerController->getPlayer ()->getDisplacement().y;
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 30);
@@ -147,7 +147,7 @@ void Game::render() {
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 80);
-	gameWindow->draw(text);*/
+	gameWindow->draw(text);
 	//=================================
 
 	gameWindow->display();

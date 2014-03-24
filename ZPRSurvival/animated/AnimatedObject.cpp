@@ -15,20 +15,8 @@ Vector2<float> AnimatedObject::getSize () {
 	return size;
 }
 
-float AnimatedObject::getMaxFSpeed () {
-	return maxFSpeed;
-}
-
-float AnimatedObject::getMaxRSpeed () {
-	return maxRSpeed;
-}
-
-float AnimatedObject::getForSpeed () {
-	return forSpeed;
-}
-
-float AnimatedObject::getRevSpeed () {
-	return revSpeed;
+float AnimatedObject::getSpeed () {
+	return speed;
 }
 
 float AnimatedObject::getRotation () {
@@ -37,10 +25,6 @@ float AnimatedObject::getRotation () {
 
 int AnimatedObject::getDirection () {
 	return direction;
-}
-
-MovingPhase AnimatedObject::getPhase () {
-	return phase;
 }
 
 //setters
@@ -52,20 +36,8 @@ void AnimatedObject::setSize (Vector2<float> size) {
 	this->size = size;
 }
 
-void AnimatedObject::setMaxFSpeed (float maxFSpeed) {
-	this->size = size;
-}
-
-void AnimatedObject::setMaxRSpeed (float maxRSpeed) {
-	this->maxRSpeed = maxRSpeed;
-}
-
-void AnimatedObject::setForSpeed (float forSpeed) {
-	this->forSpeed = forSpeed;
-}
-
-void AnimatedObject::setRevSpeed (float revSpeed) {
-	this->revSpeed = revSpeed;
+void AnimatedObject::setSpeed (float revSpeed) {
+	this->speed = revSpeed;
 }
 
 void AnimatedObject::setRotation (float rotation) {
@@ -75,8 +47,3 @@ void AnimatedObject::setRotation (float rotation) {
 void AnimatedObject::setDirection (int direction) {
 	this->direction = direction;
 }
-
-void AnimatedObject::setPhase (MovingPhase phase) {
-	this->phase = phase;
-}
-

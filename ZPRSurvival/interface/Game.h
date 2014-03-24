@@ -3,18 +3,21 @@
 #include <SFML/Window.hpp>
 #include "./../player/PlayerController.h"
 #include "./../MapGenerator.h"
-#include "./../interface/EnumTypes.h"
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
 
 /*
 	Main game class. Responsible for rendering graphics, events handling,
 	creating essential game objects, mouse and keyboard controls and 
-	initializing as well as finalizing the game itself.
+	GameState::State::INITializing as well as finalizing the game itself.
 */
 
 class Game {
 public:
+	static enum State {
+		UNKNOWN = 0, INIT, IN_MENU, PLAYING, PAUSE, EXIT
+	};
+
 	Game ();
 	virtual ~Game ();
 	void initialize ();
@@ -43,7 +46,7 @@ private:
 	Sprite mapSprite; //temporary		
 	Texture mapTexture; //temporary		-> move somewhere else
 	
-	GameState state;					//describe, in which state the game is in the moment
+	Game::State state;					//describe, in which state the game is in the moment
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
 										//every time the player wants to move.
 	Font font;

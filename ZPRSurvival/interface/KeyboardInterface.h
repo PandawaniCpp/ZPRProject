@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Interface.h"
-#include "../interface/EnumTypes.h"
 #include "../player/PlayerController.h"
 
 using sf::Keyboard;

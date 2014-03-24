@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../interface/EnumTypes.h"
 
 /*
 	SurvivalObject has won "The Most Important Class In The Game" award, in particular circles
