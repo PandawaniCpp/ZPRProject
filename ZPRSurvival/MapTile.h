@@ -9,7 +9,7 @@ public:
 	MapTile(Texture &tile);
 	~MapTile();
 	void setTexture(Texture &tile);
-	bool isInitilaized();
+	bool isInitialized();
 	virtual void draw(RenderTarget& target, RenderStates states) const;
 private:
 	bool initialized;

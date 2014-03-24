@@ -11,14 +11,18 @@
 
 class Player : public AnimatedObject {
 public:
+	static enum State {
+		IDLE = 0, MOVING, USING_ITEM, CRAFTING,
+	};
+
 	Player ();
 	virtual ~Player ();
 		//getter
-	PlayerState getState ();
+	Player::State getState ();
 		//setters
-	void setState (PlayerState playerState);
+	void setState (Player::State state);
 
 private:
-	PlayerState playerState = IDLE;
+	Player::State state = Player::IDLE;
 };
 

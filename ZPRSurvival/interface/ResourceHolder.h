@@ -34,7 +34,7 @@ template <typename Resource, typename Identifier>
 ResourceHolder<Resource, Identifier>::~ResourceHolder () {
 }
 
-/*
+/**
 	Load new texture from file and store the pointer to it in resourceMap.
 
 	Resource - sf::Texture, sf::Font...
@@ -55,7 +55,7 @@ void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::strin
 	assert (inserted.second);
 }
 
-/*
+/**
 	Special overload for sf::Shader
 
 	secondParam - specifies the shader (fragment or vertex)
@@ -71,7 +71,7 @@ void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::strin
 	assert (inserted.second);
 }
 
-/*
+/**
 	Returns the resource by given id (ex. Textures::P_BASE)
 
 	id - specified resource id (listed in ResourceID.h
@@ -83,7 +83,7 @@ const Resource & ResourceHolder<Resource, Identifier>::get (Identifier id) const
 	return *found->second;
 }
 
-/*
+/**
 	Calls the non-const method
 */
 template <typename Resource, typename Identifier>

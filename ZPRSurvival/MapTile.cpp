@@ -35,6 +35,6 @@ void MapTile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(vertices, states);
 }
 
-bool MapTile::isInitilaized() {
+bool MapTile::isInitialized () {
 	return initialized;
 }

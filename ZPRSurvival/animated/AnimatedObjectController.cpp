@@ -5,169 +5,54 @@ AnimatedObjectController::AnimatedObjectController () {
 	deltaTime = Time::Zero;
 }
 
-/*AnimatedObjectController::AnimatedObjectController (AnimatedObjectController & AnimatedObjectController) {
-	deltaTime = AnimatedObjectController.deltaTime;
-}*/
-
 AnimatedObjectController::~AnimatedObjectController () {
 }
 
 /************* object manipulators **************/
-void AnimatedObjectController::prepareMove (int & direction, MovingPhase & phase) {
-	switch (phase) {		//declare new movement phase
-		case STOP:
-			if (direction != 0) {		//want to move
-				if (~direction & DOWN) {
-					phase = ACCEL_FWD;		//move forward and/or left/right
-				}
-				else if ((direction & UP) == 0) {
-					phase = ACCEL_BWD;		//move backward
-				}
-			}
-			break;
-		case ACCEL_FWD:
-			if ((direction & 15) == 0)	//nothing is pressed
-				phase = DECEL_FWD;				//braking
-			else if (~direction & DOWN)		//any except DOWN
-				break;								//nothing to change
-			else if ((direction & UP) == 0) {		//DOWN and any except UP		
-				phase = ACCEL_BWD;						//rapidly slowing
-			}
-			break;
-		case ACCEL_BWD:
-			if ((direction & 15) == 0) 	//nothing is pressed
-				phase = DECEL_BWD;				//braking
-			else if (~direction & UP) {			//any except UP
-				if ((direction - LEFT == 0) || (direction - RIGHT == 0)) {	//LEFT and/or RIGHT
-					if (direction - LEFT - RIGHT == 0)						//LEFT and RIGHT
-						phase = DECEL_BWD;									//slowing
-					else							//LEFT or RIGHT		
-						phase = ACCEL_FWD;			//speed up a bit
-				}	
-				break;		//else #DONOTHING
-			}
-			else if ((direction & DOWN) == 0) 		//UP and any except DOWN		
-				phase = ACCEL_FWD;						//rapidly slowing
-			break;
-		case DECEL_FWD:
-			if (direction == 0)			//nothing is pressed
-				break;							//still braking
-			else if (~direction & DOWN)		//any except DOWN
-				phase = ACCEL_FWD;					//start accelerating forward
-			else if ((direction & UP) == 0)		//DOWN and any except UP
-				phase = ACCEL_BWD;						//start accelerating
-			break;
-		case DECEL_BWD:
-			if (direction == 0)			//nothing is pressed
-				break;							//still braking
-			else if (~direction & UP)			//any except UP
-				phase = ACCEL_BWD;					//start accelerating forward
-			else if ((direction & DOWN) == 0)		//UP and any except DOWN
-				phase = ACCEL_FWD;						//start accelerating
-			break;
-		default:
-			break;
-	}
-}
-
 void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
-	MovingPhase phase = animatedObject->getPhase ();
 	int direction = animatedObject->getDirection ();
-	float forSpeed = animatedObject->getForSpeed ();
-	float revSpeed = animatedObject->getRevSpeed ();
-	float maxFSpeed = animatedObject->getMaxFSpeed ();
-	float maxRSpeed = animatedObject->getMaxRSpeed ();
+	float speed = animatedObject->getSpeed ();
 	float rotation = animatedObject->getRotation ();
 	Vector2<float> displacement = animatedObject->getDisplacement ();
 
-	switch (phase) {		//calculate speed
-		case STOP:
-			break;
-		case ACCEL_FWD:
-			if (forSpeed >= maxFSpeed)			//keep running
-				forSpeed = maxFSpeed;
-			else if (revSpeed > 0) {
-				revSpeed /= 5;		//rapidly lowering reverse speed
-				if (revSpeed < 1)
-					revSpeed = 0;
-			}
-			else if (forSpeed >= 0) {
-				forSpeed += 50; //accelerating forward
-				if (forSpeed > maxFSpeed)
-					forSpeed = maxFSpeed;
-			}
-			break;
-		case ACCEL_BWD:
-			if (revSpeed >= maxRSpeed)
-				revSpeed = maxRSpeed;
-			else if (forSpeed > 0) {
-				forSpeed /= 5;
-				if (forSpeed < 1)
-					forSpeed = 0;
-			}
-			else if (revSpeed >= 0) {
-				revSpeed += 35;
-				if (revSpeed > maxRSpeed)
-					revSpeed = maxRSpeed;
-			}
-			break;
-		case DECEL_FWD:
-			if (forSpeed < 1) {
-				forSpeed = 0;
-				phase = STOP;
-			}
-			else if (forSpeed >= 1)
-				forSpeed /= 1.5;
-			break;
-		case DECEL_BWD:
-			if (revSpeed < 1) {
-				revSpeed = 0;
-				phase = STOP;
-			}
-			else if (revSpeed >= 1)
-				revSpeed /= 1.5;
-			break;
-		default:
-			break;
-	}
+		// #TODO
+	//implement terrain speed modifiers
 		
 		//calculate displacement vector
-	if (forSpeed) {
-		if (direction - UP == 0) {		//going only UP
-			displacement.x = forSpeed * (float)sin (rotation * PI / 180);
-			displacement.y = -forSpeed * (float)cos (rotation * PI / 180);
+	if (direction) {
+		if ((direction - AnimatedObject::UP == 0) || (~direction - AnimatedObject::DOWN == 0)) {	
+			displacement.x = speed * (float)sin (rotation * PI / 180);				//going UP
+			displacement.y = -speed * (float)cos (rotation * PI / 180);				//also when UP and LEFT and RIGHT keys are pressed
 		}
 		else {
-			if (direction - LEFT - UP == 0) {		//going UP and LEFT
-				displacement.x = forSpeed * (float)sin ((rotation - 45) * PI / 180);	//minus 45 degrees (moving diagonally)
-				displacement.y = -forSpeed * (float)cos ((rotation - 45) * PI / 180);
+			if (direction - AnimatedObject::LEFT - AnimatedObject::UP == 0) {		//going UP and LEFT
+				displacement.x = speed * (float)sin ((rotation - 45) * PI / 180);	//minus 45 degrees (PlayerState::State::MOVING diagonally)
+				displacement.y = -speed * (float)cos ((rotation - 45) * PI / 180);
 			}
-			else if (direction - RIGHT - UP == 0) {		//and so on...
-				displacement.x = forSpeed * (float)sin ((rotation + 45) * PI / 180);
-				displacement.y = -forSpeed * (float)cos ((rotation + 45) * PI / 180);
+			else if (direction - AnimatedObject::RIGHT - AnimatedObject::UP == 0) {		//and so on...
+				displacement.x = speed * (float)sin ((rotation + 45) * PI / 180);
+				displacement.y = -speed * (float)cos ((rotation + 45) * PI / 180);
 			}
-			else if (direction - LEFT == 0) {
-				displacement.x = forSpeed * (float)sin ((rotation - 90) * PI / 180);
-				displacement.y = -forSpeed * (float)cos ((rotation - 90) * PI / 180);
+			else if ((direction - AnimatedObject::LEFT == 0) || (~direction - AnimatedObject::RIGHT == 0)) {
+				displacement.x = speed * (float)sin ((rotation - 90) * PI / 180);
+				displacement.y = -speed * (float)cos ((rotation - 90) * PI / 180);
 			}
-			else if (direction - RIGHT == 0) {
-				displacement.x = forSpeed * (float)sin ((rotation + 90) * PI / 180);
-				displacement.y = -forSpeed * (float)cos ((rotation + 90) * PI / 180);
+			else if ((direction - AnimatedObject::RIGHT == 0) || (~direction - AnimatedObject::LEFT == 0)) {
+				displacement.x = speed * (float)sin ((rotation + 90) * PI / 180);
+				displacement.y = -speed * (float)cos ((rotation + 90) * PI / 180);
 			}
-		}
-	}
-	else if (revSpeed) {		// !!! changed sign !!!
-		if (direction - DOWN == 0) {					//going DOWN
-			displacement.x = -revSpeed * (float)sin (rotation * PI / 180);
-			displacement.y = revSpeed * (float)cos (rotation * PI / 180);
-		}
-		else if (direction - DOWN - LEFT == 0) {
-			displacement.x = -revSpeed * (float)sin ((rotation + 45) * PI / 180);	//reverse rotation change
-			displacement.y = revSpeed * (float)cos ((rotation + 45) * PI / 180);	//moving LEFT but +45 degrees
-		}
-		else if (direction - DOWN - RIGHT == 0) {
-			displacement.x = -revSpeed * (float)sin ((rotation - 45) * PI / 180);	//same here
-			displacement.y = revSpeed * (float)cos ((rotation - 45) * PI / 180);
+			else if ((direction - AnimatedObject::DOWN == 0) || (~direction - AnimatedObject::UP == 0)) {						//going down
+				displacement.x = -speed * (float)sin (rotation * PI / 180);
+				displacement.y = speed * (float)cos (rotation * PI / 180);
+			}
+			else if (direction - AnimatedObject::DOWN - AnimatedObject::LEFT == 0) {
+				displacement.x = -speed * (float)sin ((rotation + 45) * PI / 180);	//reverse rotation change
+				displacement.y = speed * (float)cos ((rotation + 45) * PI / 180);
+			}
+			else if (direction - AnimatedObject::DOWN - AnimatedObject::RIGHT == 0) {
+				displacement.x = -speed * (float)sin ((rotation - 45) * PI / 180);	//same here
+				displacement.y = speed * (float)cos ((rotation - 45) * PI / 180);
+			}
 		}
 	}
 	else {
@@ -178,11 +63,7 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 		//keep static frame
 	displacement *= deltaTime.asSeconds ();
 
-	animatedObject->setPhase (phase);
-	animatedObject->setForSpeed (forSpeed);
-	animatedObject->setRevSpeed (revSpeed);
-	animatedObject->setMaxFSpeed (maxFSpeed);
-	animatedObject->setMaxRSpeed (maxRSpeed);
+	animatedObject->setSpeed (speed);
 	animatedObject->setRotation (rotation);
 	animatedObject->setDisplacement (displacement);
 }
@@ -191,7 +72,7 @@ void AnimatedObjectController::calculateRotation (float & rotation, const Vector
 	float deltaX = rotationVector.x;
 	float deltaY = rotationVector.y;
 
-	//calc. vector rotation. 0 degrees == "up", clockwise.
+	//calc. vector rotation. 0 degrees == "AnimatedState::UP", clockwise.
 	if (deltaX > 0) {
 		if (deltaY < 0) {					//(0; 90) degrees
 			rotation = (float)(atan (deltaX / -deltaY) * 180 / PI);
@@ -215,17 +96,17 @@ void AnimatedObjectController::calculateRotation (float & rotation, const Vector
 
 	if (deltaX == 0) {			//check if 'zeros'
 		if (deltaY <= 0)
-			rotation = 0;		//UP, 0 deg.
+			rotation = 0;		//AnimatedState::UP, 0 deg.
 		else
-			rotation = 180;		//DOWN, 180 deg.
+			rotation = 180;		//AnimatedState::DOWN, 180 deg.
 		return;
 	}
 
 	if (deltaY == 0) {			//check if 'zeros'
 		if (deltaX < 0)
-			rotation = 270;		//LEFT, 270 deg.
+			rotation = 270;		//AnimatedState::LEFT, 270 deg.
 		else
-			rotation = 90;		//RIGHT, 90 deg.
+			rotation = 90;		//AnimatedState::RIGHT, 90 deg.
 		return;
 	}
 }

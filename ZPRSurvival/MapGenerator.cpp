@@ -124,8 +124,8 @@ void MapGenerator::draw(sf::RenderWindow* target) {
 	for (int i = startX; i < endX; i++) {
 		for (int j = startY; j < endY; j++) {
 
-			//if (maps[i][j].isInitilaized()) {
-			if (maps[i][j].isInitilaized() == true) {
+			//if (maps[i][j].isGameState::State::INITilaized()) {
+			if (maps[i][j].isInitialized() == true) {
 				maps[i][j].setTexture(*tiles[points[i][j]]);
 			}
 				//maps[i][j].setTexture(tiles[points[i][j]]);

@@ -9,16 +9,16 @@ PlayerController::~PlayerController () {
 }
 
 void PlayerController::update (Vector2i mousePosition) {
-	//insert texture update
+		//insert texture update
 
-		//rotation update
+		//rotation AnimatedState::UPdate
 	calculatePlayerRotation (mousePosition);
 
-		//displacement update
-	if ((player->getForSpeed () != 0) && (player->getRevSpeed () != 0) || (player->getPhase () != STOP))
+		//displacement AnimatedState::UPdate
+	if ((player->getSpeed() != 0) || (player->getDirection() != 0))
 		calculatePlayerMove ();
 
-		//position update
+		//position AnimatedState::UPdate
 	Vector2<float> position = player->getPosition ();
 	playerView->setPosition (position.x, position.y);
 }
@@ -30,27 +30,25 @@ void PlayerController::render () {
 
 
 void PlayerController::preparePlayerMove (Keyboard::Key key, bool isPressed) {
-	MovingPhase phase = player->getPhase ();
 	int direction = player->getDirection ();
 	int directionChange = 0;					
 	
 	if (key == sf::Keyboard::W)						//how the player move...
-		directionChange = directionChange | UP;
+		directionChange = directionChange | AnimatedObject::UP;
 	else if (key == sf::Keyboard::S)
-		directionChange = directionChange | DOWN;
+		directionChange = directionChange | AnimatedObject::DOWN;
 	else if (key == sf::Keyboard::A)
-		directionChange = directionChange | LEFT;
+		directionChange = directionChange | AnimatedObject::LEFT;
 	else if (key == sf::Keyboard::D)
-		directionChange = directionChange | RIGHT;	//...
+		directionChange = directionChange | AnimatedObject::RIGHT;	//...
 
 	if (isPressed)		//add or remove new directions
 		direction = direction | directionChange;
 	else
 		direction = direction ^ directionChange;
 
-	prepareMove (direction, phase);		//call the right prepareMove function
+	//prepareMove (direction);		//call the AnimatedObjectController::prepareMove function
 
-	player->setPhase (phase);
 	player->setDirection (direction);
 }
 
