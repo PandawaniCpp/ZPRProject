@@ -21,14 +21,15 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 	displacement.x = 0;
 	displacement.y = 0;
 
-		//calculate displacement vector
+		//calculate displacement vector		
+		// #TODO optimization!
 	if (direction) {
 		if (direction == AnimatedObject::UP) {	
 			displacement.x = speed * (float)sin (rotation * PI / 180);				//going UP
 			displacement.y = -speed * (float)cos (rotation * PI / 180);				
 		}
 		else {
-			if (direction == (AnimatedObject::LEFT + AnimatedObject::UP)) {		//going UP and LEFT
+			if (direction == (AnimatedObject::LEFT + AnimatedObject::UP)) {			//going UP and LEFT
 				displacement.x = speed * (float)sin ((rotation - 45) * PI / 180);	//minus 45 degrees moving diagonally)
 				displacement.y = -speed * (float)cos ((rotation - 45) * PI / 180);
 			}
