@@ -164,6 +164,6 @@ void Game::render() {
 void Game::draw() {
 	//gameWindow->draw(mapSprite);
 	generator->draw(gameWindow);
-	gameWindow->draw(*playerController->getPlayerView());
+	playerController->getPlayerView()->draw(*gameWindow);
 }
 
