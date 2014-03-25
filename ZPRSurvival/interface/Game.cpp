@@ -15,6 +15,10 @@ Game::Game() {
 	//mapSprite.setPosition (-1024+600, -1024+350);			
 	//generator->GetMap().saveToFile("Map.png");
 
+	worldBounds.top = worldBounds.left = 0.f;	//top left corner (0, 0)
+	worldBounds.height = 0;			//world size
+	worldBounds.width = 0;			// #TODO put proper numbers
+	worldView = gameWindow->getDefaultView ();
 	font.loadFromFile("resources/segoeuil.ttf");
 }
 

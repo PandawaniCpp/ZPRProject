@@ -9,7 +9,7 @@
 /*
 	Main game class. Responsible for rendering graphics, events handling,
 	creating essential game objects, mouse and keyboard controls and 
-	GameState::State::INITializing as well as finalizing the game itself.
+	initializing as well as finalizing the game itself.
 */
 
 class Game {
@@ -49,6 +49,9 @@ private:
 	Game::State state;					//describe, in which state the game is in the moment
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
 										//every time the player wants to move.
+	FloatRect worldBounds;
+	View worldView;
+							
 	Font font;
 };
 
