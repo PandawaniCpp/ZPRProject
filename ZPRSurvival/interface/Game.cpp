@@ -7,7 +7,7 @@ Game::Game() {
 	mouse = new MouseInterface();
 	playerController = new PlayerController();
 	state = Game::State::INIT;
-	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
+	TIME_PER_FRAME = seconds(1.f / 100.f);		//static frame (60 fps)
 
 	generator = new MapGenerator(1000, 1000, 10);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
@@ -28,6 +28,7 @@ Game::~Game() {
 
 void Game::initialize() {
 	//GameState::State::INIT
+	gameWindow->setKeyRepeatEnabled (false);
 	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the AnimatedState::LEFT-top corner
 	this->state = Game::State::IN_MENU;
 
@@ -148,6 +149,13 @@ void Game::render() {
 	text.setString(result);
 	text.setPosition(10, 80);
 	gameWindow->draw(text);
+
+	ss.str ("");
+	ss << playerController->getPlayer()->getDirection ();
+	result = ss.str ();
+	text.setString (result);
+	text.setPosition (10, 105);
+	gameWindow->draw (text);
 	//=================================
 
 	gameWindow->display();
