@@ -106,9 +106,32 @@ double PerlinNoise::Noise(double x, double y) {
 }
 
 sf::Image PerlinNoise::GetImage() {
-	for (int y = 0; y < noise.getSize().y; y++) {//Loops to loop trough all the pixels
-		for (int x = 0; x < noise.getSize().x; x++) {
-			noise.setPixel(x, y, sf::Color(mapVec[x][y], mapVec[x][y], mapVec[x][y]));
+	int w = noise.getSize().x;
+	int h = noise.getSize().y;
+
+	for (int x = 0; x < w; x++) {
+		for (int y = 0; y < h; y++) {//Loops to loop trough all the pixels
+			
+			/*float distanceFromCenter = 1.0f;
+
+			if (x > 0.6f*w) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((x - w*0.6f), 2) / pow(w, 2);
+			}
+			if (y > 0.6f*h) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((y - h*0.6f), 2) / pow(h, 2);
+			}
+			if (x < 0.4f*w) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((w*0.4f - x), 2) / pow(w, 2);
+			}
+			if (y < 0.4f*h) {
+				distanceFromCenter -= (25.0f / 4.0f) * pow((h*0.4f - y), 2) / pow(h, 2);
+			}
+
+			if (distanceFromCenter < 0.0f) {
+				distanceFromCenter = 0.0f;
+			}
+			*/
+			noise.setPixel(x, y, sf::Color(mapVec[x][y], mapVec[x][y], mapVec[x][y], mapVec[x][y]));
 		}
 	}
 

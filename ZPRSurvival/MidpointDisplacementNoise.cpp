@@ -39,7 +39,7 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 			pointsTab_[i][j] = CalculateNoise(i, j);
 			
 			if (i == width / 2 && j == height / 2 && island) {
-				pointsTab_[i][j] = 128;
+				pointsTab_[i][j] = 255;
 			}
 
 			if (invert) {

@@ -1,20 +1,16 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "PerlinNoise.h"
 
 using namespace sf;
 
-class MapTile :	public Drawable, public Transformable {
+class MapTile : public Sprite {
 public:
-	MapTile(int size);
-	MapTile(Texture &tile);
+	//MapTile();
+	MapTile();
 	~MapTile();
-	void setTexture(Texture &tile);
-	bool isInitialized();
-	virtual void draw(RenderTarget& target, RenderStates states) const;
+	//virtual void draw(RenderTarget& target) const;
 private:
 	bool initialized;
-	Image img;
-	VertexArray vertices;
-	Texture texture;
 };
 

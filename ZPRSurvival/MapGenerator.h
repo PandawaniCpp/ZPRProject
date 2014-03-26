@@ -19,15 +19,18 @@ public:
 	void draw(sf::RenderWindow * target);
 	void move(Vector2f & displacement);
 	void loadMap(int startX, int startY, int endX, int endY);
+	sf::Image randomNoise(int width, int height);
 private:
 	//thread loader;
 	Vector2<float> position;
 	Vector2i currentTile, lastTile;
 	vector<vector<int> > points;
-	vector<vector< Sprite *> > maps;
+	vector<vector< MapTile *> > maps;
 	Image map;
-	Texture * tiles[8];
-	Image img[8];
+	Texture * tiles[16];
+	PerlinNoise * perlin[16];
+	Image img[16];
+	Color col[8];
 	int height, width, scale;
 };
 
