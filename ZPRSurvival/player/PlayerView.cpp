@@ -7,3 +7,7 @@ PlayerView::PlayerView () {
 
 PlayerView::~PlayerView () {
 }
+
+void PlayerView::draw (sf::RenderWindow& window){
+	drawCurrent (window);
+}

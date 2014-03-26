@@ -17,7 +17,7 @@ int KeyboardInterface::inputHandle (Keyboard::Key key, bool isPressed, int state
 				return Game::State::PLAYING;						//pseudo-start of the game
 			break;
 		case Game::State::PLAYING: {						//all events in the actual game
-			playerController->preparePlayerMove (key, isPressed);
+			playerController->preparePlayerMove (key, Keyboard::isKeyPressed (key));
 			return Game::State::PLAYING;
 		}
 		default: 

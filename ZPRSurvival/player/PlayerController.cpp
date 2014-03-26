@@ -34,13 +34,13 @@ void PlayerController::preparePlayerMove (Keyboard::Key key, bool isPressed) {
 	int directionChange = 0;					
 	
 	if (key == sf::Keyboard::W)						//how the player move...
-		directionChange = directionChange | AnimatedObject::UP;
+		directionChange = AnimatedObject::UP;
 	else if (key == sf::Keyboard::S)
-		directionChange = directionChange | AnimatedObject::DOWN;
+		directionChange = AnimatedObject::DOWN;
 	else if (key == sf::Keyboard::A)
-		directionChange = directionChange | AnimatedObject::LEFT;
+		directionChange = AnimatedObject::LEFT;
 	else if (key == sf::Keyboard::D)
-		directionChange = directionChange | AnimatedObject::RIGHT;	//...
+		directionChange = AnimatedObject::RIGHT;	//...
 
 	if (isPressed)		//add or remove new directions
 		direction = direction | directionChange;

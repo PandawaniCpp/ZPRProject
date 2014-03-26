@@ -7,7 +7,7 @@ Game::Game() {
 	mouse = new MouseInterface();
 	playerController = new PlayerController();
 	state = Game::State::INIT;
-	TIME_PER_FRAME = seconds(1.f / 60.f);		//static frame (60 fps)
+	TIME_PER_FRAME = seconds(1.f / 100.f);		//static frame (60 fps)
 
 	generator = new MapGenerator(100, 100, 100);		//#TEMP
 	//mapTexture.loadFromImage(generator->GetMap());  
@@ -15,6 +15,10 @@ Game::Game() {
 	//mapSprite.setPosition (-1024+600, -1024+350);			
 	generator->GetMap().saveToFile("Map.png");
 
+	worldBounds.top = worldBounds.left = 0.f;	//top left corner (0, 0)
+	worldBounds.height = 0;			//world size
+	worldBounds.width = 0;			// #TODO put proper numbers
+	worldView = gameWindow->getDefaultView ();
 	font.loadFromFile("resources/segoeuil.ttf");
 }
 
@@ -28,6 +32,7 @@ Game::~Game() {
 
 void Game::initialize() {
 	//GameState::State::INIT
+	gameWindow->setKeyRepeatEnabled (false);
 	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the AnimatedState::LEFT-top corner
 	this->state = Game::State::IN_MENU;
 
@@ -148,6 +153,13 @@ void Game::render() {
 	text.setString(result);
 	text.setPosition(10, 80);
 	gameWindow->draw(text);
+
+	ss.str ("");
+	ss << playerController->getPlayer()->getDirection ();
+	result = ss.str ();
+	text.setString (result);
+	text.setPosition (10, 105);
+	gameWindow->draw (text);
 	//=================================
 
 	gameWindow->display();
@@ -156,6 +168,6 @@ void Game::render() {
 void Game::draw() {
 	//gameWindow->draw(mapSprite);
 	generator->draw(gameWindow);
-	gameWindow->draw(*playerController->getPlayerView());
+	playerController->getPlayerView()->draw(*gameWindow);
 }
 

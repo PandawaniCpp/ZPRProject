@@ -21,67 +21,68 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) {
 	displacement.x = 0;
 	displacement.y = 0;
 
-		//calculate displacement vector
+		//calculate displacement vector		
+		// #TODO optimization!
 	if (direction) {
-		if (direction - AnimatedObject::UP == 0) {	
+		if (direction == AnimatedObject::UP) {	
 			displacement.x = speed * (float)sin (rotation * PI / 180);				//going UP
 			displacement.y = -speed * (float)cos (rotation * PI / 180);				
 		}
 		else {
-			if (direction - AnimatedObject::LEFT - AnimatedObject::UP == 0) {		//going UP and LEFT
+			if (direction == (AnimatedObject::LEFT + AnimatedObject::UP)) {			//going UP and LEFT
 				displacement.x = speed * (float)sin ((rotation - 45) * PI / 180);	//minus 45 degrees moving diagonally)
 				displacement.y = -speed * (float)cos ((rotation - 45) * PI / 180);
 			}
-			else if (direction - AnimatedObject::RIGHT - AnimatedObject::UP == 0) {		//and so on...
+			else if (direction == (AnimatedObject::RIGHT + AnimatedObject::UP)) {		//and so on...
 				displacement.x = speed * (float)sin ((rotation + 45) * PI / 180);
 				displacement.y = -speed * (float)cos ((rotation + 45) * PI / 180);
 			}
-			else if (direction - AnimatedObject::LEFT == 0) {
+			else if (direction == AnimatedObject::LEFT) {
 				displacement.x = speed * (float)sin ((rotation - 90) * PI / 180);
 				displacement.y = -speed * (float)cos ((rotation - 90) * PI / 180);
 			}
-			else if (direction - AnimatedObject::RIGHT == 0) {
+			else if (direction == AnimatedObject::RIGHT) {
 				displacement.x = speed * (float)sin ((rotation + 90) * PI / 180);
 				displacement.y = -speed * (float)cos ((rotation + 90) * PI / 180);
 			}
-			else if (direction - AnimatedObject::DOWN == 0) {						
+			else if (direction == AnimatedObject::DOWN) {						
 				displacement.x = -speed * (float)sin (rotation * PI / 180);
 				displacement.y = speed * (float)cos (rotation * PI / 180);
 			}
-			else if (direction - AnimatedObject::DOWN - AnimatedObject::LEFT == 0) {
+			else if (direction == (AnimatedObject::DOWN + AnimatedObject::LEFT)) {
 				displacement.x = -speed * (float)sin ((rotation + 45) * PI / 180);		//reverse rotation change
 				displacement.y = speed * (float)cos ((rotation + 45) * PI / 180);
 			}
-			else if (direction - AnimatedObject::DOWN - AnimatedObject::RIGHT == 0) {
+			else if (direction == (AnimatedObject::DOWN + AnimatedObject::RIGHT)) {
 				displacement.x = -speed * (float)sin ((rotation - 45) * PI / 180);		//same here
 				displacement.y = speed * (float)cos ((rotation - 45) * PI / 180);
 			}
-			else if ((direction & AnimatedObject::UP) &&		//when all keys are pressed, do nothing
-					 (direction & AnimatedObject::DOWN) &&		//empty if-instruction
-					 (direction & AnimatedObject::LEFT) &&
-					 (direction & AnimatedObject::DOWN));		// <- semicolon
-
-			else if ((direction & AnimatedObject::UP) &&		//when UP and LEFT and RIGHT keys are pressed
-					 (direction & AnimatedObject::LEFT) &&		//then go UP
-					 (direction & AnimatedObject::RIGHT)) {
+			else if (direction == (AnimatedObject::UP +			//when all keys are pressed, do nothing
+								AnimatedObject::DOWN +			//empty if-instruction
+								AnimatedObject::LEFT +
+								AnimatedObject::RIGHT)) {		
+			}
+			else if (direction == (AnimatedObject::UP +			//when UP and LEFT and RIGHT keys are pressed
+								AnimatedObject::LEFT +				//then go UP
+								AnimatedObject::RIGHT)) {
 				displacement.x = speed * (float)sin (rotation * PI / 180);		
 				displacement.y = -speed * (float)cos (rotation * PI / 180);
 			}
-			else if ((direction & AnimatedObject::DOWN) &&		//when DOWN and LEFT and RIGHT keys are pressed
-					 (direction & AnimatedObject::LEFT) &&		//then go DOWN
-					 (direction & AnimatedObject::RIGHT)) {
+			else if (direction == (AnimatedObject::DOWN +		//when DOWN and LEFT and RIGHT keys are pressed
+								AnimatedObject::LEFT +		//then go DOWN
+								AnimatedObject::RIGHT)) {
 				displacement.x = -speed * (float)sin (rotation * PI / 180);
 				displacement.y = speed * (float)cos (rotation * PI / 180);
 			}
-			else if ((direction & AnimatedObject::UP) &&		//when UP and DOWN and RIGHT keys are pressed
-					 (direction & AnimatedObject::DOWN) &&		//then go RIGHT
-					 (direction & AnimatedObject::RIGHT)) {
+			else if (direction == (AnimatedObject::UP +		//when UP and DOWN and RIGHT keys are pressed
+								AnimatedObject::DOWN +		//then go RIGHT
+								AnimatedObject::RIGHT)) {
 				displacement.x = speed * (float)sin ((rotation + 90) * PI / 180);
 				displacement.y = -speed * (float)cos ((rotation + 90) * PI / 180);
 			}
-			else if ((direction & AnimatedObject::UP) &&		//when UP and DOWN and LEFT keys are pressed
-					 (direction & AnimatedObject::DOWN) &&		//then go LEFT
-					 (direction & AnimatedObject::LEFT)) {
+			else if (direction == (AnimatedObject::UP +  		//when UP and DOWN and LEFT keys are pressed
+								AnimatedObject::DOWN +		//then go LEFT
+								AnimatedObject::LEFT)) {
 				displacement.x = speed * (float)sin ((rotation - 90) * PI / 180);
 				displacement.y = -speed * (float)cos ((rotation - 90) * PI / 180);
 			}
