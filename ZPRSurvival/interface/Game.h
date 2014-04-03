@@ -11,8 +11,6 @@
 #include <SFML/Window.hpp>
 #include "./../player/PlayerController.h"
 #include "./../MapGenerator.h"
-#include "KeyboardInterface.h"
-#include "MouseInterface.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -49,9 +47,17 @@ public:
 	// Objects deallocation, saving data etc.
 	void terminate ();
 
+	PlayerController * getPlayerController ();
+
 private:
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
+
+	// Interprets keys actions depending on state.
+	void keyboardInput (sf::Keyboard::Key key);
+
+	// Check mouse position nad clicks.
+	void mouseInput ();
 
 	// Updates frame duration, add responses to player and creatures based on events.
 	// Moves the gameView
@@ -68,8 +74,6 @@ private:
 	// Main game objects
 	RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController * playerController;	// MVC's controller of the player.
-	KeyboardInterface * keyboard;		// Captures and interprets pressed keys.
-	MouseInterface * mouse;			// Captures mouse movement and clicks.
 	View worldView;				// Represents part of the world shown to the player.
 
 	// Game parameters
@@ -79,6 +83,7 @@ private:
 	float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
+	Vector2<int> mousePosition;			// Mouse position
 	Font font;			// Main game font
 
 	// #TEMP

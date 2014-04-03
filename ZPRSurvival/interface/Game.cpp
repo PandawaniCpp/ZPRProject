@@ -10,8 +10,6 @@
 Game::Game () {
 	// All we need to play.
 	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
-	keyboard = new KeyboardInterface ();
-	mouse = new MouseInterface ();
 	playerController = new PlayerController ();
 	generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
@@ -22,8 +20,6 @@ Game::Game () {
 Game::~Game () {
 	delete gameWindow;
 	delete playerController;
-	delete keyboard;
-	delete mouse;
 	delete generator;
 	// #TODO Delete the rest of the objects
 }
@@ -92,20 +88,24 @@ void Game::terminate () {
 
 }
 
+PlayerController * Game::getPlayerController () {
+	return playerController;
+}
+
 void Game::processEvents () {
-	// Handle mouse position and input.
-	mouse->capturePosition (*gameWindow);
+	// Handle mouse position and clicks.
+	mouseInput ();
 
 	// Handle keyboard input.
 	Event event;
 	int newState = -1;
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-			case Event::KeyPressed:			// inputHandle() returns proper new state.
-				newState = keyboard->inputHandle (event.key.code, true, state, playerController);
+			case Event::KeyPressed:			// Pass it forward to keyboardInput().
+				keyboardInput (event.key.code);
 				break;
 			case Event::KeyReleased:
-				newState = keyboard->inputHandle (event.key.code, false, state, playerController);
+				keyboardInput (event.key.code);
 				break;
 			case Event::Closed:
 				gameWindow->close ();
@@ -115,7 +115,7 @@ void Game::processEvents () {
 		}
 	}
 
-	switch (newState) {
+	/*switch (state) {
 		case Game::State::UNKNOWN: state = Game::State::UNKNOWN; break;
 		case Game::State::INIT: state = Game::State::INIT; break;
 		case Game::State::IN_MENU: state = Game::State::IN_MENU; break;
@@ -124,12 +124,33 @@ void Game::processEvents () {
 		case Game::State::EXIT: state = Game::State::EXIT; break;
 		default:
 			break;
+	}*/
+}
+
+void Game::keyboardInput (sf::Keyboard::Key key) {
+	if (key == Keyboard::Escape)		//exit the game
+		state = Game::EXIT;					//#TEMP
+
+	switch (state) {							//controls the game state
+		case Game::State::IN_MENU:
+			if (key == Keyboard::Return)		//#TEMP
+				state = Game::PLAYING;				//pseudo-start of the game
+			break;
+		case Game::State::PLAYING: 						//all events in the actual game
+			playerController->preparePlayerMove (key, Keyboard::isKeyPressed (key));
+			state = Game::PLAYING;
+		default:
+			break;
 	}
+}
+
+void Game::mouseInput () {
+	mousePosition = Mouse::getPosition (*gameWindow);
 }
 
 void Game::update (Time deltaTime) {
 	playerController->setDeltaTime (deltaTime);		// Update time difference between frames.
-	playerController->update (mouse->getPosition ());	//update player according to mouse position change.
+	playerController->update (mousePosition);	//update player according to mouse position change.
 
 	// Set the world displacement vector relatively to player.
 	//	#TODO Change the world movement using sf::View
