@@ -11,19 +11,19 @@ PlayerController::~PlayerController () {
 void PlayerController::update (Vector2i mousePosition) {
 		//insert texture update
 
-		//rotation AnimatedState::UPdate
+		//rotation update
 	calculatePlayerRotation (mousePosition);
 
 		//displacement AnimatedState::UPdate
 	if ((player->getSpeed() != 0) || (player->getDirection() != 0))
 		calculatePlayerMove ();
 
-		//position AnimatedState::UPdate
+		//position update
 	Vector2<float> position = player->getPosition ();
 	playerView->setPosition (position.x, position.y);
 }
 
-void PlayerController::render () {
+void PlayerController::prepareView () {
 	playerView->setRotation (player->getRotation());
 	playerView->setPosition (player->getPosition());
 }
@@ -46,8 +46,6 @@ void PlayerController::preparePlayerMove (Keyboard::Key key, bool isPressed) {
 		direction = direction | directionChange;
 	else
 		direction = direction ^ directionChange;
-
-	//prepareMove (direction);		//call the AnimatedObjectController::prepareMove function
 
 	player->setDirection (direction);
 }

@@ -15,7 +15,7 @@ public:
 	virtual ~PlayerController ();
 	void setPlayer ();
 	void update (Vector2i mousePosition);
-	void render ();
+	void prepareView ();
 	//void draw (RenderWindow * gameWindow);
 		//data manipulators
 	void preparePlayerMove (const Keyboard::Key key, const bool isPressed); 	//keep track of current move phase

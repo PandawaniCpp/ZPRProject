@@ -1,3 +1,10 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+*/
+
 #pragma once
 #include <array>
 #include <SFML/Graphics.hpp>
@@ -43,37 +50,43 @@ public:
 	void terminate ();
 
 private:
-	// Called in run (). Catch all user generated events and pass them fwd.
+	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
 
-	//
+	// Updates frame duration, add responses to player and creatures based on events.
+	// Moves the gameView
 	void update (Time deltaTime);
+
+	// Draw the whole gameScene on the screen.
 	void render ();
-	//other methods
+
+	// #TEMP
 	void draw ();
 
 
 private:
-	Time TIME_PER_FRAME;				//keep the frame duration fixed
-	Game::State state;					//describe, in which state the game is in the moment
-	RenderWindow * gameWindow;
-	PlayerController * playerController;
-	KeyboardInterface * keyboard;
-	MouseInterface * mouse;
-	/*Map * map;
-	Creatures * creatures;*/
+	// Main game objects
+	RenderWindow * gameWindow;			// Main window for displaying the game.
+	PlayerController * playerController;	// MVC's controller of the player.
+	KeyboardInterface * keyboard;		// Captures and interprets pressed keys.
+	MouseInterface * mouse;			// Captures mouse movement and clicks.
+	View worldView;				// Represents part of the world shown to the player.
 
+	// Game parameters
+	Time timePerFrame;			// Keep the frame duration fixed.
+	Game::State state;				// Describe, in which state the game is in the moment.
+	FloatRect worldBounds;				// World size (in px).
+	float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
+	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
+	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
+	Font font;			// Main game font
+
+	// #TEMP
 	MapGenerator * generator;			//-> move to another class (which will be an object here) 
 	Sprite mapSprite; //temporary		
 	Texture mapTexture; //temporary		-> move somewhere else
 
+	// #TEMP
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
-	FloatRect worldBounds;
-	View worldView;
-	float scrollSpeed;
-	SurvivalObjectView sceneGraph;
-	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;
-
-	Font font;
 };
 

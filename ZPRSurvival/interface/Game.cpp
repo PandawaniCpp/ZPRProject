@@ -1,7 +1,14 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+*/
+
 #include "Game.h"
 
 Game::Game () {
-	//all we need to play
+	// All we need to play.
 	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
 	keyboard = new KeyboardInterface ();
 	mouse = new MouseInterface ();
@@ -9,7 +16,7 @@ Game::Game () {
 	generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
 	
-	state = Game::State::INIT;		//proper first state
+	state = Game::State::INIT;		// Proper first state
 }
 
 Game::~Game () {
@@ -22,61 +29,60 @@ Game::~Game () {
 }
 
 void Game::initialize () {
-	TIME_PER_FRAME = seconds (1.f / 100.f);		//static frame (100 fps)
+	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
+	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
+	gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
+	font.loadFromFile ("resources/segoeuil.ttf");		// #TODO use different font
 
-	//mapTexture.loadFromImage(generator->GetMap());  
+	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
 	generator->GetMap ().saveToFile ("Map.png");		//....
 
-	//world information
-	worldBounds.top = worldBounds.left = 0.f;	//top left corner (0, 0)
-	worldBounds.height = 5000;			//world size
-	worldBounds.width = 5000;			// #TODO put proper numbers
+	// World information 
+	// #TODO put in different function
+	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
+	worldBounds.height = 5000;					// World size
+	worldBounds.width = 5000;					// #TODO put proper numbers
 	worldView.setCenter (worldView.getSize ().x / 2.f, worldView.getSize ().y / 2.f);
-	scrollSpeed = playerController->getPlayer ()->getSpeed ();
-	font.loadFromFile ("resources/segoeuil.ttf");
+	scrollSpeed = playerController->getPlayer ()->getSpeed ();	// Scrolling speed is the player's moving speed.
 
-	//initialize game scene graph
-
+	// Initialize game scene graph
 	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
 		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
 		sceneLayers[i] = layer.get ();
 		sceneGraph.attachChild (std::move (layer));
 	}
 	
-	gameWindow->setKeyRepeatEnabled (false);
-	gameWindow->setPosition (Vector2<int> (0, 0));		//push the gameWindow to the AnimatedState::LEFT-top corner
+	// #TODO put this in other function (this is just initialization)
+	playerController->setPlayer ();	// Prepares player for the game.
+	// Set player position to the center of the screen.
+	playerController->getPlayer()->setPosition (Vector2<float> ((float)gameWindow->getSize ().x / 2, (float)gameWindow->getSize ().y / 2));
+	//.................................
+
+	// If everything's fine, move on to the next state.
 	this->state = Game::State::IN_MENU;
-
-	//GameState::State::IN_MENU
-	//empty (for now)
-
-	//GameState::State::PLAYING
-	//#TEMP later these calls will be in other methods
-
-	playerController->setPlayer ();	//prepares player for the game		#TODO maybe put this in constructor
-	//set player position to the center of the screen
-	playerController->getPlayer ()->setPosition (Vector2<float> ((float)gameWindow->getSize ().x / 2, (float)gameWindow->getSize ().y / 2));
 }
 
 void Game::run () {
+	// Calculates time difference between frames and corrects occasional lags (if occured).
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
 
+	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
 		processEvents ();
-		timeSinceLastUpdate += clock.restart ();			//this whole idea is to prevent...
+		timeSinceLastUpdate += clock.restart ();			// This whole idea is to protect...
 
-		while (timeSinceLastUpdate > TIME_PER_FRAME) {
-			timeSinceLastUpdate -= TIME_PER_FRAME;
+		while (timeSinceLastUpdate > timePerFrame) {
+			timeSinceLastUpdate -= timePerFrame;
 			processEvents ();
 
 			if (state == Game::State::EXIT)
 				gameWindow->close ();
 
-			update (TIME_PER_FRAME);						//...game from occasional lags
+			update (timePerFrame);							//...game from lags' consequences. 
 		}
 		render ();
 	}
@@ -87,15 +93,15 @@ void Game::terminate () {
 }
 
 void Game::processEvents () {
-	//handle mouse position and imput
+	// Handle mouse position and input.
 	mouse->capturePosition (*gameWindow);
 
-	//handle keyboard input
+	// Handle keyboard input.
 	Event event;
 	int newState = -1;
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-			case Event::KeyPressed:			//inputHandle() returns proper new state
+			case Event::KeyPressed:			// inputHandle() returns proper new state.
 				newState = keyboard->inputHandle (event.key.code, true, state, playerController);
 				break;
 			case Event::KeyReleased:
@@ -122,18 +128,17 @@ void Game::processEvents () {
 }
 
 void Game::update (Time deltaTime) {
-	playerController->setDeltaTime (deltaTime);
-	playerController->update (mouse->getPosition ());
+	playerController->setDeltaTime (deltaTime);		// Update time difference between frames.
+	playerController->update (mouse->getPosition ());	//update player according to mouse position change.
 
-	//set the world displacement vector relatively to player
+	// Set the world displacement vector relatively to player.
+	//	#TODO Change the world movement using sf::View
 	globalDisplacement = playerController->getPlayer ()->getDisplacement ();
 	generator->move (-globalDisplacement);
-	// ^ mind the sign!
 }
 
 void Game::render () {
-	gameWindow->clear ();
-	playerController->render ();
+	gameWindow->clear ();		// Clear eveything.
 	this->draw ();
 
 	//#TEMP test
@@ -180,6 +185,7 @@ void Game::render () {
 
 void Game::draw () {
 	//gameWindow->draw(mapSprite);
+	playerController->prepareView ();
 	generator->draw (gameWindow);
 	playerController->getPlayerView ()->draw (*gameWindow);
 }
