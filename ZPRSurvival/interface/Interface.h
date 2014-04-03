@@ -14,6 +14,7 @@ using sf::Vector2i;
 
 /**
 	Interface must be in every game, especially in This Game. Yeah, that covers it.
+	#TODO This class will probably be deleted (not used at all)
 */
 class Interface {
 public:

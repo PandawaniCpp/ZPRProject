@@ -1,3 +1,13 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
+*/
+
 #pragma once
 #include <map>
 #include <memory>
@@ -5,26 +15,42 @@
 #include <SFML/Graphics.hpp>
 
 template <typename Resource, typename Identifier>
+/**
+	Template class for holding different resources.
+	\ Resource - sf::Texture, sf::Font...
+	\ Identifier - one of ResourceID.h enums (ex. Textures::ID, Fonts::ID...).
+*/
 class ResourceHolder {
 public:
+	// Default constructor.
 	ResourceHolder ();
+
+	// Default destructor.
 	virtual ~ResourceHolder ();
 
-		//for general purposes
+	// Loading method for general purposes. Load new texture from file and store the pointer to it in resourceMap.
+	// \param id - specified resource id (listed in ResourceID.h
+	// \param filename - file to load
 	void load (Identifier id, const std::string& filename);	
-		//special overload for sf::Shaders
+
 	template <typename Parameter>
+	// Special load() overload for sf::Shaders.
+	// \param secondParam - specifies the shader (fragment or vertex)
 	void load (Identifier id, const std::string& filename, const Parameter& secondParam);
-		//getters
-	Resource& get (Identifier id);
+
+	// Returns the resource by given id (ex.Textures::P_BASE).
+	// \param id - specified resource id (listed in ResourceID.h
 	const Resource& get (Identifier id) const;
 
+	// Calls the non-const method.
+	Resource& get (Identifier id);
+
 private:
-		//resource container - type and pointer
+	// Resource container - type and pointer.
 	std::map<Identifier, std::unique_ptr<Resource >> resourceMap;
 };
 
-/** IMPLEMENTATION **/
+//------------------------------------------------------------------------------------------------------------------
 
 template <typename Resource, typename Identifier>
 ResourceHolder<Resource, Identifier>::ResourceHolder () {
@@ -34,14 +60,6 @@ template <typename Resource, typename Identifier>
 ResourceHolder<Resource, Identifier>::~ResourceHolder () {
 }
 
-/**
-	Load new texture from file and store the pointer to it in resourceMap.
-
-	Resource - sf::Texture, sf::Font...
-	Identifier - one of ResourceID.h enums (ex. Textures::ID, Fonts::ID...)
-	id - specified resource id (listed in ResourceID.h
-	filename - file to load
-*/
 template <typename Resource, typename Identifier>
 void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::string& filename)
 {
@@ -55,11 +73,6 @@ void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::strin
 	assert (inserted.second);
 }
 
-/**
-	Special overload for sf::Shader
-
-	secondParam - specifies the shader (fragment or vertex)
-*/
 template <typename Resource, typename Identifier>
 template <typename Parameter>
 void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::string& filename, const Parameter& secondParam)
@@ -71,11 +84,6 @@ void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::strin
 	assert (inserted.second);
 }
 
-/**
-	Returns the resource by given id (ex. Textures::P_BASE)
-
-	id - specified resource id (listed in ResourceID.h
-*/
 template <typename Resource, typename Identifier>
 const Resource & ResourceHolder<Resource, Identifier>::get (Identifier id) const {
 	auto found = resourceMap.find (id);		//find resource by id
@@ -83,9 +91,6 @@ const Resource & ResourceHolder<Resource, Identifier>::get (Identifier id) const
 	return *found->second;
 }
 
-/**
-	Calls the non-const method
-*/
 template <typename Resource, typename Identifier>
 Resource & ResourceHolder<Resource, Identifier>::get (Identifier id) {
 	return const_cast<Resource&> (static_cast<const ResourceHolder*>(this)->get (id));

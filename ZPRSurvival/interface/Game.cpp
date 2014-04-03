@@ -3,6 +3,9 @@
 	@date	03.04.2014
 
 	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
 #include "Game.h"
@@ -148,8 +151,8 @@ void Game::mouseInput () {
 	mousePosition = Mouse::getPosition (*gameWindow);
 }
 
-void Game::update (Time deltaTime) {
-	playerController->setDeltaTime (deltaTime);		// Update time difference between frames.
+void Game::update (Time timePerFrame) {
+	playerController->setDeltaTime (timePerFrame);		// Update time difference between frames.
 	playerController->update (mousePosition);	//update player according to mouse position change.
 
 	// Set the world displacement vector relatively to player.

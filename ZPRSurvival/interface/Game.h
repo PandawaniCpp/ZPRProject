@@ -3,6 +3,9 @@
 	@date	03.04.2014
 
 	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
 #pragma once
@@ -54,6 +57,7 @@ private:
 	void processEvents ();
 
 	// Interprets keys actions depending on state.
+	// \param  key - key pressed/released
 	void keyboardInput (sf::Keyboard::Key key);
 
 	// Check mouse position nad clicks.
@@ -61,7 +65,8 @@ private:
 
 	// Updates frame duration, add responses to player and creatures based on events.
 	// Moves the gameView
-	void update (Time deltaTime);
+	// \param  timePerFrame - see Game::timePerFrame
+	void update (Time timePerFrame);
 
 	// Draw the whole gameScene on the screen.
 	void render ();
