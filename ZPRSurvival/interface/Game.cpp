@@ -14,7 +14,7 @@ Game::Game () {
 	// All we need to play.
 	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
 	playerController = new PlayerController ();
-	generator = new MapGenerator (100, 100, 100);		//#TEMP
+	//generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
 	
 	state = Game::State::INIT;		// Proper first state
@@ -36,7 +36,7 @@ void Game::initialize () {
 	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
 	//mapSprite.setTexture(mapTexture);
 	//mapSprite.setPosition (-1024+600, -1024+350);			
-	generator->GetMap ().saveToFile ("Map.png");		//....
+	//generator->GetMap ().saveToFile ("Map.png");		//....
 
 	// World information 
 	// #TODO put in different function
@@ -52,6 +52,9 @@ void Game::initialize () {
 		sceneLayers[i] = layer.get ();
 		sceneGraph.attachChild (std::move (layer));
 	}
+
+	// Initialize main layers.
+	layersInit ();
 	
 	// #TODO put this in other function (this is just initialization)
 	playerController->setPlayer ();	// Prepares player for the game.
@@ -95,6 +98,25 @@ PlayerController * Game::getPlayerController () {
 	return playerController;
 }
 
+void Game::layersInit () {
+	// Attach console object to console layer
+	console = new Console ();
+	SurvivalObjectView::Ptr consoleLayer (console);
+	sceneLayers[Game::CONSOLE]->attachChild (std::move (consoleLayer));
+
+	// Set default parameters
+	console->insert ("x: ", 0);
+	console->insert ("y: ", 0);
+	console->insert ("dx: ", 0);
+	console->insert ("dy: ", 0);
+	console->insert ("direction: ", 0);
+	console->insert ("rotation: ", 0);
+
+	// Attach player view to player layer
+	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
+	sceneLayers[Game::PLAYER]->attachChild (std::move (playerLayer));
+}
+
 void Game::processEvents () {
 	// Handle mouse position and clicks.
 	mouseInput ();
@@ -117,17 +139,6 @@ void Game::processEvents () {
 				break;
 		}
 	}
-
-	/*switch (state) {
-		case Game::State::UNKNOWN: state = Game::State::UNKNOWN; break;
-		case Game::State::INIT: state = Game::State::INIT; break;
-		case Game::State::IN_MENU: state = Game::State::IN_MENU; break;
-		case Game::State::PLAYING: state = Game::State::PLAYING; break;
-		case Game::State::PAUSE: state = Game::State::PAUSE; break;
-		case Game::State::EXIT: state = Game::State::EXIT; break;
-		default:
-			break;
-	}*/
 }
 
 void Game::keyboardInput (sf::Keyboard::Key key) {
@@ -155,62 +166,33 @@ void Game::update (Time timePerFrame) {
 	playerController->setDeltaTime (timePerFrame);		// Update time difference between frames.
 	playerController->update (mousePosition);	//update player according to mouse position change.
 
+	// Update console ouput.
+	console->update ("x: ", playerController->getPlayer ()->getPosition ().x);
+	console->update ("y: ", playerController->getPlayer ()->getPosition ().y);
+	console->update ("dx: ", playerController->getPlayer ()->getDisplacement ().x);
+	console->update ("dy: ", playerController->getPlayer ()->getDisplacement ().y);
+	console->update ("direction: ", playerController->getPlayer ()->getDirection ());
+	console->update ("rotation: ", playerController->getPlayer ()->getRotation ());
+
 	// Set the world displacement vector relatively to player.
 	//	#TODO Change the world movement using sf::View
 	globalDisplacement = playerController->getPlayer ()->getDisplacement ();
-	generator->move (-globalDisplacement);
+	//generator->move (-globalDisplacement);
 }
 
 void Game::render () {
 	gameWindow->clear ();		// Clear eveything.
-	this->draw ();
-
-	//#TEMP test
-	stringstream ss;
-	ss << playerController->getPlayer ()->getDisplacement ().x;
-	std::string result (ss.str ());
-	Text text (result, font);
-	text.setCharacterSize (30);
-	text.setColor (Color::White);
-	text.setPosition (10, 5);
-	gameWindow->draw (text);
-
-	ss.str ("");
-	ss << playerController->getPlayer ()->getDisplacement ().y;
-	result = ss.str ();
-	text.setString (result);
-	text.setPosition (10, 30);
-	gameWindow->draw (text);
-
-	ss.str ("");
-	ss << generator->getPosition ().x;
-	result = ss.str ();
-	text.setString (result);
-	text.setPosition (10, 55);
-	gameWindow->draw (text);
-
-	ss.str ("");
-	ss << generator->getPosition ().y;
-	result = ss.str ();
-	text.setString (result);
-	text.setPosition (10, 80);
-	gameWindow->draw (text);
-
-	ss.str ("");
-	ss << playerController->getPlayer ()->getDirection ();
-	result = ss.str ();
-	text.setString (result);
-	text.setPosition (10, 105);
-	gameWindow->draw (text);
-	//=================================
-
+	draw ();
 	gameWindow->display ();
 }
 
 void Game::draw () {
 	//gameWindow->draw(mapSprite);
 	playerController->prepareView ();
-	generator->draw (gameWindow);
-	playerController->getPlayerView ()->draw (*gameWindow);
+	//generator->draw (gameWindow);
+
+	// Draw all layers in order.
+	sceneGraph.drawAll (*gameWindow);
+	
 }
 

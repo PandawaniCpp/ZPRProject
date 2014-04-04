@@ -8,6 +8,6 @@ PlayerView::PlayerView () {
 PlayerView::~PlayerView () {
 }
 
-void PlayerView::draw (sf::RenderWindow& window){
-	drawCurrent (window);
+void PlayerView::draw (sf::RenderWindow& window) const {
+	window.draw(*this);
 }

@@ -30,7 +30,7 @@ public:
 
 	// Game layers defining drawing order.
 	static enum Layer {
-		BACKGROUND, GROUND, CONSOLE, LAYER_COUNT
+		BACKGROUND, GROUND, PLAYER, CONSOLE, LAYER_COUNT
 	};
 
 	// Default constructor.
@@ -54,6 +54,9 @@ public:
 	PlayerController * getPlayerController ();
 
 private:
+	// Initialize layers with default values.
+	void layersInit ();
+
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
 
@@ -81,7 +84,7 @@ private:
 	RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController * playerController;	// MVC's controller of the player.
 	View worldView;				// Represents part of the world shown to the player.
-	Console console;		// Displays info about player position, object count, memory etc.
+	Console * console;		// Displays info about player position, object count, memory etc.
 
 	// Game parameters
 	Time timePerFrame;			// Keep the frame duration fixed.

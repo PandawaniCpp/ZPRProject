@@ -19,19 +19,29 @@
 class Console : public SurvivalObjectView {
 public:
 	// Holds all parameters to draw: name - value.
-	static std::map<std::string, float> params;
+	std::map<std::string, float> params;
 
-	// Default constructor
+	// Default constructor.
 	Console ();
 	
-	// Default destructor
+	// Default destructor.
 	virtual ~Console ();
 
-	// Inserts new pair 'name-value' into Console::params
+	// Inserts new pair 'name-value' into Console::params.
 	void insert (const std::string & name, const float & value);
 
-	// Draw console on the screen with given params
+	// Updates existing parameters instead of inserting new ones.
+	void update (const std::string & name, const float & value);
+
+	// Draw console on the screen with given params.
 	// \see Console::params
-	void draw ();
+	virtual void draw (sf::RenderWindow& window) const ;
+
+private:
+	sf::Font font;		// Default font to draw with.
+	sf::Text text;		// Holds string to show on the screen.
+	sf::Color color;	// Font color.
+	int fontSize;		// Default font size.
+	int dy;				// Difference between entries (in pixels)
 };
 

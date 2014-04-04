@@ -15,16 +15,18 @@ public:
 	SurvivalObjectView ();
 	virtual ~SurvivalObjectView ();
 
-	void SurvivalObjectView::attachChild (Ptr child);	//add child to vector 'children'
+	virtual void draw (sf::RenderWindow& window) const;
+	void SurvivalObjectView::attachChild (Ptr & child);	//add child to vector 'children'
 	SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectView& node);	//remove child from vector
 
 		//setters
 	void setTextureByID (int textureID);
 
-protected:
-	virtual void drawCurrent (sf::RenderWindow& window) const;
 	virtual void drawAll (sf::RenderWindow& window) const;
 
+protected:
+	//virtual void draw (sf::RenderWindow& window) const;
+	
 	std::vector<Ptr> children;
 	SurvivalObjectView* parent;
 

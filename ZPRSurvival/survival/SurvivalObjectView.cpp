@@ -6,7 +6,12 @@ SurvivalObjectView::SurvivalObjectView () {
 SurvivalObjectView::~SurvivalObjectView () {
 }
 
-void SurvivalObjectView::attachChild (Ptr child)
+/*void SurvivalObjectView::draw (sf::RenderWindow& window) const {
+	drawAll (window);
+}*/
+
+
+void SurvivalObjectView::attachChild (Ptr & child)
 {
 	child->parent = this;		//caller is parent for attached child
 	children.push_back (std::move (child));		//insert new child
@@ -23,12 +28,12 @@ SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectVie
 	return result;
 }
 
-void SurvivalObjectView::drawCurrent (sf::RenderWindow& window) const {
+void SurvivalObjectView::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 }
 
 void SurvivalObjectView::drawAll (sf::RenderWindow& window) const {
-	drawCurrent (window);
+	this->draw (window);
 	for (const Ptr& child : children) {
 		child->drawAll (window);
 	}

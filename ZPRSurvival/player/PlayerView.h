@@ -8,7 +8,7 @@ public:
 	PlayerView ();
 	virtual ~PlayerView ();
 
-	virtual void draw (sf::RenderWindow& window);
+	virtual void draw (sf::RenderWindow& window) const;
 
 private:
 	ResourceHolder<Texture, Textures::ID> textureHolder;
