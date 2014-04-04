@@ -14,6 +14,7 @@
 #include <SFML/Window.hpp>
 #include "./../player/PlayerController.h"
 #include "./../MapGenerator.h"
+#include "Console.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -29,7 +30,7 @@ public:
 
 	// Game layers defining drawing order.
 	static enum Layer {
-		BACKGROUND, GROUND, LAYER_COUNT
+		BACKGROUND, GROUND, CONSOLE, LAYER_COUNT
 	};
 
 	// Default constructor.
@@ -80,6 +81,7 @@ private:
 	RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController * playerController;	// MVC's controller of the player.
 	View worldView;				// Represents part of the world shown to the player.
+	Console console;		// Displays info about player position, object count, memory etc.
 
 	// Game parameters
 	Time timePerFrame;			// Keep the frame duration fixed.
