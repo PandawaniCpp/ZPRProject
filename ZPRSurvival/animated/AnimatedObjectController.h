@@ -1,38 +1,54 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
+*/
+
 #pragma once
 #include <cmath>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 #include "../animated/AnimatedObject.h"
+#include "../survival/SurvivalObjectController.h"
 #include <sstream>
-#define PI 3.14159265		//converting degrees <-> radians
 
-/*
+using sf::Vector2;
+using sf::Vector2i;
+using sf::Keyboard;
+using sf::RenderWindow;
+
+/**
+	MVC's Controller for AnimatedObject class. Provides functionality and mediate between
+	model and view. Do all the general calculations such as moving, rotating etc.
+*/
+class AnimatedObjectController : public SurvivalObjectController {
+public:
+	// Default constructor.
+	AnimatedObjectController();
+
+	// Default destructor.
+	virtual ~AnimatedObjectController();
+
+	// Set the displacement vector of an object (see: AnimatedObject::displacement) based on 
+	// rotation, direction and speed.
+	void calculateMove (AnimatedObject * animatedObject) const;
+
+	// Calculates new rotation based on vector.
+	// \param rotation - current rotation value
+	// \param rotationVector - which way heading
+	void calculateRotation (float & rotation, const Vector2<float> & rotationVector) const;
+
+	// Updates position by displacement vector. Relatively to current position.
+	// \params position/displacement - current position/displacement from Model.
+	void move (Vector2<float> & position, const Vector2<float> & displacement) const;		
+};
+
+/**
 	Practically the (demi)god of all living beings. It's endless posibilities include fames
 	such as: FLAWLESS positioning, EPIC rotation, EXTRAORDINARY object acceleation, PIXEL
 	PER PIXEL collisions, FAIRLY GOOD two dimensional texture animation and MUCH MORE....
 	HOLY MISSISIPI!!!
 */
-
-using sf::Vector2;
-using sf::Time;
-using sf::Vector2i;
-using sf::Keyboard;
-using sf::RenderWindow;
-
-class AnimatedObjectController {
-public:
-	AnimatedObjectController();
-	virtual ~AnimatedObjectController();
-		//object manipulators
-	void calculateMove (AnimatedObject * animatedObject);
-	void calculateRotation (float & rotation, const Vector2<float> & rotationVector);
-	void move (const int direction, Vector2<float> & position, const Vector2<float> & displacement);											//changes position of the object relatively
-	/*void rotate (float angle);								//rotate relatively*/
-	void setDeltaTime (Time deltaTime);
-
-protected:
-	Time deltaTime;					//time for one tick
-
-private:
-};
 

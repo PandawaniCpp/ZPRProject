@@ -12,14 +12,14 @@
 
 Console::Console () {
 	// Set default param to game title and version.
-	params.insert (std::make_pair ("#TITLE", 0.245));
+	params.insert (std::make_pair ("#TITLE v. ", 0.245));
 
 	// Set font specification.
-	font.loadFromFile ("resources/segoeuil.ttf");
+	font.loadFromFile ("resources/cour.ttf");
 	color.r = 200;
 	color.g = 200;
 	color.b = 200;
-	fontSize = 20;
+	fontSize = 14;
 	text.setFont (font);
 	text.setCharacterSize (fontSize);			// #TODO make private variables for color, font and size
 	text.setColor (color);
@@ -44,12 +44,20 @@ void Console::update (const std::string & name, const float & value) {
 
 void Console::draw (sf::RenderWindow& window) const {
 	sf::Text tempText = text;
+	std::stringstream ss;
 	int pos = 5;
 
 	for (auto x : params) {				// Iterate through map and draw everything.
 		tempText.setString (x.first);
 		tempText.setPosition (5, pos);
-		pos += dy;
 		window.draw (tempText);
+
+		ss << x.second;
+		tempText.setString (ss.str ());
+		tempText.setPosition (100, pos);
+		ss.str ("");
+		window.draw (tempText);
+
+		pos += dy;
 	}
 }

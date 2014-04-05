@@ -8,10 +8,14 @@
 	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
-#include "AnimatedObjectView.h"
+#include "SurvivalObjectController.h"
 
-AnimatedObjectView::AnimatedObjectView ( ){
+SurvivalObjectController::SurvivalObjectController () {
 }
 
-AnimatedObjectView::~AnimatedObjectView () {
+SurvivalObjectController::~SurvivalObjectController () {
+}
+
+void SurvivalObjectController::setDeltaTime (sf::Time deltaTime) {
+	this->deltaTime = deltaTime;
 }

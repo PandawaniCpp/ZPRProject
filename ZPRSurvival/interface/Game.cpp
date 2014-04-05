@@ -171,7 +171,7 @@ void Game::update (Time timePerFrame) {
 	console->update ("y: ", playerController->getPlayer ()->getPosition ().y);
 	console->update ("dx: ", playerController->getPlayer ()->getDisplacement ().x);
 	console->update ("dy: ", playerController->getPlayer ()->getDisplacement ().y);
-	console->update ("direction: ", playerController->getPlayer ()->getDirection ());
+	console->update ("direction: ", (float)playerController->getPlayer ()->getDirection ());
 	console->update ("rotation: ", playerController->getPlayer ()->getRotation ());
 
 	// Set the world displacement vector relatively to player.
