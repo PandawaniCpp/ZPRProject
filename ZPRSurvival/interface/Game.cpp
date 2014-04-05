@@ -14,6 +14,7 @@ Game::Game () {
 	// All we need to play.
 	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
 	playerController = new PlayerController ();
+	console = new Console ();
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
 	
@@ -31,7 +32,10 @@ void Game::initialize () {
 	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
 	gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
-	font.loadFromFile ("resources/segoeuil.ttf");		// #TODO use different font
+	
+	// Set fonts
+	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
+	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
 
 	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
 	//mapSprite.setTexture(mapTexture);
@@ -55,6 +59,9 @@ void Game::initialize () {
 
 	// Initialize main layers.
 	layersInit ();
+
+	// Set default parameters of objects owned.
+	objectsInit ();
 	
 	// #TODO put this in other function (this is just initialization)
 	playerController->setPlayer ();	// Prepares player for the game.
@@ -71,6 +78,7 @@ void Game::run () {
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
+	SurvivalObjectController::deltaTime = timePerFrame;
 
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
@@ -84,7 +92,7 @@ void Game::run () {
 			if (state == Game::State::EXIT)
 				gameWindow->close ();
 
-			update (timePerFrame);							//...game from lags' consequences. 
+			update ();										//...game from lags' consequences. 
 		}
 		render ();
 	}
@@ -100,21 +108,23 @@ PlayerController * Game::getPlayerController () {
 
 void Game::layersInit () {
 	// Attach console object to console layer
-	console = new Console ();
 	SurvivalObjectView::Ptr consoleLayer (console);
 	sceneLayers[Game::CONSOLE]->attachChild (std::move (consoleLayer));
 
-	// Set default parameters
+	// Attach player view to player layer
+	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
+	sceneLayers[Game::PLAYER]->attachChild (std::move (playerLayer));
+}
+
+void Game::objectsInit () {
+	// Set default console's parameters
 	console->insert ("x: ", 0);
 	console->insert ("y: ", 0);
 	console->insert ("dx: ", 0);
 	console->insert ("dy: ", 0);
 	console->insert ("direction: ", 0);
 	console->insert ("rotation: ", 0);
-
-	// Attach player view to player layer
-	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
-	sceneLayers[Game::PLAYER]->attachChild (std::move (playerLayer));
+	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
 
 void Game::processEvents () {
@@ -145,6 +155,9 @@ void Game::keyboardInput (sf::Keyboard::Key key) {
 	if (key == Keyboard::Escape)		//exit the game
 		state = Game::EXIT;					//#TEMP
 
+	if (key == Keyboard::Tilde && Keyboard::isKeyPressed (key))
+		Console::visible = !Console::visible;
+
 	switch (state) {							//controls the game state
 		case Game::State::IN_MENU:
 			if (key == Keyboard::Return)		//#TEMP
@@ -162,8 +175,7 @@ void Game::mouseInput () {
 	mousePosition = Mouse::getPosition (*gameWindow);
 }
 
-void Game::update (Time timePerFrame) {
-	playerController->setDeltaTime (timePerFrame);		// Update time difference between frames.
+void Game::update () {
 	playerController->update (mousePosition);	//update player according to mouse position change.
 
 	// Update console ouput.

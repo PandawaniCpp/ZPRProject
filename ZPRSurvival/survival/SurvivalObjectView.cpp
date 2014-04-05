@@ -16,25 +16,20 @@ SurvivalObjectView::SurvivalObjectView () {
 SurvivalObjectView::~SurvivalObjectView () {
 }
 
-/*void SurvivalObjectView::draw (sf::RenderWindow& window) const {
-	drawAll (window);
-}*/
-
-
 void SurvivalObjectView::attachChild (Ptr & child)
 {
-	child->parent = this;		//caller is parent for attached child
-	children.push_back (std::move (child));		//insert new child
+	child->parent = this;		// Caller is parent for attached child.
+	children.push_back (std::move (child));		// Insert new child.
 }
 
 SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectView& node)
 {
-	//lambda-expression search for child; return true if found
+	// Lambda-expression search for child; return true if found.
 	auto found = std::find_if (children.begin (), children.end (), [&] (Ptr& p) -> bool { return p.get () == &node; });
 	assert (found != children.end ());
-	Ptr result = std::move (*found);		//assign child pointer to 'result'
-	result->parent = nullptr;				//erase parent
-	children.erase (found);					//erase child
+	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
+	result->parent = nullptr;				// Erase parent.
+	children.erase (found);					// Erase child.
 	return result;
 }
 
@@ -43,13 +38,11 @@ void SurvivalObjectView::draw (sf::RenderWindow& window) const {
 }
 
 void SurvivalObjectView::drawAll (sf::RenderWindow& window) const {
+	// Draw myself.
 	this->draw (window);
+
+	// Draw all children.
 	for (const Ptr& child : children) {
 		child->drawAll (window);
 	}
-}
-
-
-void SurvivalObjectView::setTextureByID (int textureID) {
-
 }

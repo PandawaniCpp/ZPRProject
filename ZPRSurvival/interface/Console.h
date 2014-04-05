@@ -17,6 +17,9 @@
 */
 class Console : public SurvivalObjectView {
 public:
+	// If visible.
+	static bool visible;
+
 	// Holds all parameters to draw: name - value.
 	std::map<std::string, float> params;
 
@@ -32,6 +35,9 @@ public:
 	// Updates existing parameters instead of inserting new ones.
 	void update (const std::string & name, const float & value);
 
+	// Set console's default font from Game::fonts
+	void setFont (const sf::Font & font);
+
 	// Draw console on the screen with given params.
 	// \see Console::params
 	virtual void draw (sf::RenderWindow& window) const ;
@@ -40,6 +46,7 @@ private:
 	sf::Font font;		// Default font to draw with.
 	sf::Text text;		// Holds string to show on the screen.
 	sf::Color color;	// Font color.
+	sf::Texture texture;
 	int fontSize;		// Default font size.
 	int dy;				// Difference between entries (in pixels)
 };

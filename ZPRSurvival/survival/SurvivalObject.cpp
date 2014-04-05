@@ -16,12 +16,14 @@ SurvivalObject::SurvivalObject () {
 SurvivalObject::~SurvivalObject (){
 }
 
-//getters
+// Getters
+
 Vector2<float> SurvivalObject::getPosition () {
 	return position;
 }
 
-//setters
+// Setters
+
 void SurvivalObject::setPosition (Vector2<float> position) {
 	this->position = position;
 }

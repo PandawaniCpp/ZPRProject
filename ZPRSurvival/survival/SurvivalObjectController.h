@@ -13,15 +13,18 @@
 #include <SFML/Window.hpp>
 #define PI 3.14159265		//converting degrees <-> radians
 
+/** 
+	MVC's Controller for SurvivalObject class. 
+*/
 class SurvivalObjectController {
 public:
+	// Time for one tick. Initialized in Game::run()
+	static sf::Time deltaTime;
+
+	// Default constructor.
 	SurvivalObjectController ();
+
+	// Default destructor.
 	virtual ~SurvivalObjectController ();
-
-	// Updates deltaTime by given parameter.
-	void setDeltaTime (sf::Time deltaTime);
-
-protected:
-	sf::Time deltaTime;					//time for one tick
 };
 

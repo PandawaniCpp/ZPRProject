@@ -9,17 +9,22 @@
 */
 
 #include "Console.h"
+bool Console::visible = false;
 
 Console::Console () {
 	// Set default param to game title and version.
-	params.insert (std::make_pair ("#TITLE v. ", 0.245));
+	params.insert (std::make_pair ("#TITLE v. ", 0.345));
 
-	// Set font specification.
-	font.loadFromFile ("resources/cour.ttf");
-	color.r = 200;
-	color.g = 200;
-	color.b = 200;
-	fontSize = 14;
+	// Set background texture.
+	assert (texture.loadFromFile ("resources/console_back.png"));
+	texture.setRepeated (true);
+	this->setPosition (0, 0);
+	this->setScale (sf::Vector2f (20, 20));		// #TODO Set scaling accordingly to window size.
+	this->setTexture (texture);
+
+	// Set font specifications.
+	color = sf::Color::White;
+	fontSize = 12;
 	text.setFont (font);
 	text.setCharacterSize (fontSize);			// #TODO make private variables for color, font and size
 	text.setColor (color);
@@ -42,10 +47,20 @@ void Console::update (const std::string & name, const float & value) {
 	found->second = value;
 }
 
+void Console::setFont (const sf::Font & font) {
+	this->font = font;
+}
+
 void Console::draw (sf::RenderWindow& window) const {
+	if (!visible)
+		return;
+	
+	// Draw background.
+	window.draw (*this);
+	
 	sf::Text tempText = text;
 	std::stringstream ss;
-	int pos = 5;
+	float pos = 5;
 
 	for (auto x : params) {				// Iterate through map and draw everything.
 		tempText.setString (x.first);

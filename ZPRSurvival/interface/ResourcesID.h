@@ -13,7 +13,7 @@ using sf::Texture;
 // List of all textures in the game.
 namespace Textures {
 	enum ID {
-		P_BASE = 1,		//P_xxx - player textures
+		P_BASE,		//P_xxx - player textures
 		I_STONE = 100	//I_xxx - item textures
 		//C_xxx - creature textures
 		//M_xxx - map elements textures
@@ -23,6 +23,7 @@ namespace Textures {
 // List of all differen font used in the game.
 namespace Fonts {
 	enum ID {
-		F_MENU = 1
+		F_MENU,
+		F_CONSOLE
 	};
 }

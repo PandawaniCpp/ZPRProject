@@ -9,13 +9,10 @@
 */
 
 #include "SurvivalObjectController.h"
+sf::Time SurvivalObjectController::deltaTime = sf::Time::Zero;
 
 SurvivalObjectController::SurvivalObjectController () {
 }
 
 SurvivalObjectController::~SurvivalObjectController () {
-}
-
-void SurvivalObjectController::setDeltaTime (sf::Time deltaTime) {
-	this->deltaTime = deltaTime;
 }

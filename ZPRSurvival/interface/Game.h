@@ -54,8 +54,11 @@ public:
 	PlayerController * getPlayerController ();
 
 private:
-	// Initialize layers with default values.
+	// Initialize layers with default objects.
 	void layersInit ();
+
+	// Initialize objects with default values.
+	void objectsInit ();
 
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
@@ -69,8 +72,7 @@ private:
 
 	// Updates frame duration, add responses to player and creatures based on events.
 	// Moves the gameView
-	// \param  timePerFrame - see Game::timePerFrame
-	void update (Time timePerFrame);
+	void update ();
 
 	// Draw the whole gameScene on the screen.
 	void render ();
@@ -94,7 +96,7 @@ private:
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
 	Vector2<int> mousePosition;			// Mouse position
-	Font font;			// Main game font
+	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 
 	// #TEMP
 	MapGenerator * generator;			//-> move to another class (which will be an object here) 
