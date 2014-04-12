@@ -155,7 +155,7 @@ void Game::keyboardInput (sf::Keyboard::Key key) {
 	if (key == Keyboard::Escape)		//exit the game
 		state = Game::EXIT;					//#TEMP
 
-	if (key == Keyboard::Tilde && Keyboard::isKeyPressed (key))
+	if (key == Keyboard::F1 && Keyboard::isKeyPressed (key))
 		Console::visible = !Console::visible;
 
 	switch (state) {							//controls the game state
