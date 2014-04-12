@@ -54,7 +54,7 @@ void Game::initialize () {
 	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
 		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
 		sceneLayers[i] = layer.get ();
-		sceneGraph.attachChild (std::move (layer));
+		sceneGraph.attachChild (layer);
 	}
 
 	// Initialize main layers.
@@ -109,11 +109,11 @@ PlayerController * Game::getPlayerController () {
 void Game::layersInit () {
 	// Attach console object to console layer
 	SurvivalObjectView::Ptr consoleLayer (console);
-	sceneLayers[Game::CONSOLE]->attachChild (std::move (consoleLayer));
+	sceneLayers[Game::CONSOLE]->attachChild (consoleLayer);
 
 	// Attach player view to player layer
 	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
-	sceneLayers[Game::PLAYER]->attachChild (std::move (playerLayer));
+	sceneLayers[Game::PLAYER]->attachChild (playerLayer);
 }
 
 void Game::objectsInit () {
@@ -133,7 +133,7 @@ void Game::processEvents () {
 
 	// Handle keyboard input.
 	Event event;
-	int newState = -1;
+	
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
 			case Event::KeyPressed:			// Pass it forward to keyboardInput().

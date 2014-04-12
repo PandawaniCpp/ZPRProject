@@ -20,7 +20,7 @@
 class Player : public AnimatedObject {
 public:
 	// Current player's state options.
-	static enum State {
+	enum State {
 		IDLE = 0, MOVING, USING_ITEM, CRAFTING,
 	};
 

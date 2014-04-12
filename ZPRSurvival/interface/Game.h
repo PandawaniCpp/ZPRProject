@@ -24,12 +24,12 @@
 class Game {
 public:
 	// Represents phase of the game.
-	static enum State {
+	enum State {
 		UNKNOWN = 0, INIT, IN_MENU, PLAYING, PAUSE, EXIT, STATE_COUNT
 	};
 
 	// Game layers defining drawing order.
-	static enum Layer {
+	enum Layer {
 		BACKGROUND, GROUND, PLAYER, CONSOLE, LAYER_COUNT
 	};
 

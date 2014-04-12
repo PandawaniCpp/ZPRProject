@@ -43,10 +43,10 @@ public:
 
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.
-	void SurvivalObjectView::attachChild (Ptr & child);
+	void attachChild (Ptr & child);
 
 	// Removes node from vector.
-	SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectView& node);	//remove child from vector
+	SurvivalObjectView::Ptr detachChild (const SurvivalObjectView& node);	//remove child from vector
 
 	// Draw this object and all children.
 	virtual void drawAll (sf::RenderWindow& window) const;

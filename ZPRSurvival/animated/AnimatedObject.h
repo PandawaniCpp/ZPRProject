@@ -21,7 +21,7 @@
 class AnimatedObject : public SurvivalObject {
 public:
 	// Represents in which way the object is moving relatively to viewing angle.
-	static enum Direction {
+	enum Direction {
 		UP = 1, RIGHT = 2, DOWN = 4, LEFT = 8
 	};
 
