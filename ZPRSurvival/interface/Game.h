@@ -15,6 +15,8 @@
 #include "./../player/PlayerController.h"
 #include "./../MapGenerator.h"
 #include "Console.h"
+#include "KeyboardInterface.h"
+#include "../options/GraphicsOptions.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -60,12 +62,15 @@ private:
 	// Initialize objects with default values.
 	void objectsInit ();
 
+	// Initialize options with default values.
+	void optionsInit ();
+
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
 
 	// Interprets keys actions depending on state.
 	// \param  key - key pressed/released
-	void keyboardInput (sf::Keyboard::Key key);
+	void keyboardInput (const Event event);
 
 	// Check mouse position nad clicks.
 	void mouseInput ();
@@ -80,6 +85,8 @@ private:
 	// #TEMP
 	void draw ();
 
+	// Graphics options triggers.
+	void setFullscreenEnabled (bool enabled);		// Fullscreen on/off
 
 private:
 	// Main game objects
@@ -91,7 +98,7 @@ private:
 	// Game parameters
 	Time timePerFrame;			// Keep the frame duration fixed.
 	Game::State state;				// Describe, in which state the game is in the moment.
-	FloatRect worldBounds;				// World size (in px).
+	FloatRect worldBounds;			// World size (in px).
 	float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).

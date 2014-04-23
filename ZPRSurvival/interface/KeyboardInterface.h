@@ -18,6 +18,13 @@ using sf::Keyboard;
 */
 class KeyboardInterface : public Interface {
 public:
+	// Special keys flags.
+	enum SpecialKeys {
+		CONTROL = 1,
+		SHIFT = 2,
+		ALT = 4,
+		SYSTEM = 8
+	};
 	// Default constructor
 	KeyboardInterface ();
 

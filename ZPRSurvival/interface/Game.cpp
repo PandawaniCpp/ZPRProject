@@ -12,7 +12,7 @@
 
 Game::Game () {
 	// All we need to play.
-	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
+	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
@@ -29,7 +29,6 @@ Game::~Game () {
 }
 
 void Game::initialize () {
-	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
 	gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
 	
@@ -62,6 +61,9 @@ void Game::initialize () {
 
 	// Set default parameters of objects owned.
 	objectsInit ();
+
+	// Set default game options.
+	optionsInit ();
 	
 	// #TODO put this in other function (this is just initialization)
 	playerController->setPlayer ();	// Prepares player for the game.
@@ -127,6 +129,14 @@ void Game::objectsInit () {
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
 
+void Game::optionsInit () {
+	// #TEMP
+	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
+
+	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
+	//GraphicsOptions::
+}
+
 void Game::processEvents () {
 	// Handle mouse position and clicks.
 	mouseInput ();
@@ -137,10 +147,10 @@ void Game::processEvents () {
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
 			case Event::KeyPressed:			// Pass it forward to keyboardInput().
-				keyboardInput (event.key.code);
+				keyboardInput (event);
 				break;
 			case Event::KeyReleased:
-				keyboardInput (event.key.code);
+				keyboardInput (event);
 				break;
 			case Event::Closed:
 				gameWindow->close ();
@@ -151,20 +161,32 @@ void Game::processEvents () {
 	}
 }
 
-void Game::keyboardInput (sf::Keyboard::Key key) {
-	if (key == Keyboard::Escape)		//exit the game
+void Game::keyboardInput (const Event event) {
+	// Special keys prepared for later interpretation.
+	unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
+
+	// #TODO Check if these conditions can be written with 'else-if'
+	if (event.key.code == Keyboard::Escape)		//exit the game
 		state = Game::EXIT;					//#TEMP
 
-	if (key == Keyboard::F1 && Keyboard::isKeyPressed (key))
+	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code))
 		Console::visible = !Console::visible;
+
+	// Toggles fullscreen on/off
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL &&  event.key.code == Keyboard::F && Keyboard::isKeyPressed (event.key.code)) {
+		if (GraphicsOptions::fullscreenModeOn)
+			setFullscreenEnabled (false);
+		else
+			setFullscreenEnabled (true);
+	}
 
 	switch (state) {							//controls the game state
 		case Game::State::IN_MENU:
-			if (key == Keyboard::Return)		//#TEMP
+			if (event.key.code == Keyboard::Return)		//#TEMP
 				state = Game::PLAYING;				//pseudo-start of the game
 			break;
 		case Game::State::PLAYING: 						//all events in the actual game
-			playerController->preparePlayerMove (key, Keyboard::isKeyPressed (key));
+			playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
 			state = Game::PLAYING;
 		default:
 			break;
@@ -208,3 +230,12 @@ void Game::draw () {
 	
 }
 
+void Game::setFullscreenEnabled (bool enable) {
+	delete gameWindow;
+	if (enable)
+		gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival", sf::Style::Fullscreen);
+	else
+		gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
+
+	GraphicsOptions::fullscreenModeOn = !GraphicsOptions::fullscreenModeOn;
+}
