@@ -12,7 +12,7 @@
 
 Game::Game () {
 	// All we need to play.
-	gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");	// Create new Window
+	gameWindow = new RenderWindow (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
@@ -25,12 +25,13 @@ Game::~Game () {
 	delete gameWindow;
 	delete playerController;
 	delete generator;
+	//delete console;		#TODO ERROR! CHECK THIS
 	// #TODO Delete the rest of the objects
 }
 
 void Game::initialize () {
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
-	gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
+	//gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
@@ -63,7 +64,7 @@ void Game::initialize () {
 	objectsInit ();
 
 	// Set default game options.
-	optionsInit ();
+	applyOptions ();
 	
 	// #TODO put this in other function (this is just initialization)
 	playerController->setPlayer ();	// Prepares player for the game.
@@ -120,20 +121,23 @@ void Game::layersInit () {
 
 void Game::objectsInit () {
 	// Set default console's parameters
-	console->insert ("x: ", 0);
-	console->insert ("y: ", 0);
-	console->insert ("dx: ", 0);
-	console->insert ("dy: ", 0);
-	console->insert ("direction: ", 0);
-	console->insert ("rotation: ", 0);
+	console->insert ("x", 0);
+	console->insert ("y", 0);
+	console->insert ("dx", 0);
+	console->insert ("dy", 0);
+	console->insert ("direction", 0);
+	console->insert ("rotation", 0);
+	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
+	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
 
-void Game::optionsInit () {
+void Game::applyOptions () {
 	// #TEMP
 	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
 
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
+	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 	//GraphicsOptions::
 }
 
@@ -162,12 +166,16 @@ void Game::processEvents () {
 }
 
 void Game::keyboardInput (const Event event) {
+	// #TODO
+	//		PASS SPECIFIC KEY FUNCTIONALITY TO KEYBOARD INTERFACE
+	// #TODO
+
 	// Special keys prepared for later interpretation.
 	unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
 
 	// #TODO Check if these conditions can be written with 'else-if'
 	if (event.key.code == Keyboard::Escape)		//exit the game
-		state = Game::EXIT;					//#TEMP
+		state = Game::EXIT;						//#TEMP
 
 	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code))
 		Console::visible = !Console::visible;
@@ -201,12 +209,12 @@ void Game::update () {
 	playerController->update (mousePosition);	//update player according to mouse position change.
 
 	// Update console ouput.
-	console->update ("x: ", playerController->getPlayer ()->getPosition ().x);
-	console->update ("y: ", playerController->getPlayer ()->getPosition ().y);
-	console->update ("dx: ", playerController->getPlayer ()->getDisplacement ().x);
-	console->update ("dy: ", playerController->getPlayer ()->getDisplacement ().y);
-	console->update ("direction: ", (float)playerController->getPlayer ()->getDirection ());
-	console->update ("rotation: ", playerController->getPlayer ()->getRotation ());
+	console->update ("x", playerController->getPlayer ()->getPosition ().x);
+	console->update ("y", playerController->getPlayer ()->getPosition ().y);
+	console->update ("dx", playerController->getPlayer ()->getDisplacement ().x);
+	console->update ("dy", playerController->getPlayer ()->getDisplacement ().y);
+	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
+	console->update ("rotation", playerController->getPlayer ()->getRotation ());
 
 	// Set the world displacement vector relatively to player.
 	//	#TODO Change the world movement using sf::View
@@ -231,11 +239,10 @@ void Game::draw () {
 }
 
 void Game::setFullscreenEnabled (bool enable) {
-	delete gameWindow;
 	if (enable)
-		gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival", sf::Style::Fullscreen);
+		gameWindow->create(VideoMode (1200, 700), "ZPR Survival", sf::Style::Fullscreen);
 	else
-		gameWindow = new RenderWindow (VideoMode (1200, 700), "ZPR Survival");
+		gameWindow->create (VideoMode (1200, 700), "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);
 
 	GraphicsOptions::fullscreenModeOn = !GraphicsOptions::fullscreenModeOn;
 }

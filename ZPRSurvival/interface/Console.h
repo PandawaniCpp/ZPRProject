@@ -9,7 +9,8 @@
 */
 
 #pragma once
-#include <map>
+#include <unordered_map>
+#include <sstream>
 #include "../survival/SurvivalObjectView.h"
 
 /** 
@@ -21,7 +22,10 @@ public:
 	static bool visible;
 
 	// Holds all parameters to draw: name - value.
-	std::map<std::string, float> params;
+	std::unordered_map<std::string, std::string> params;
+
+	// All available keys. Represent drawing order.
+	std::vector<std::string> keys;
 
 	// Default constructor.
 	Console ();
@@ -30,10 +34,12 @@ public:
 	virtual ~Console ();
 
 	// Inserts new pair 'name-value' into Console::params.
-	void insert (const std::string & name, const float & value);
+	void insert (const std::string & name, const float & value);		// + conversion float->string
+	void insert (const std::string & name, const std::string & value);
 
 	// Updates existing parameters instead of inserting new ones.
-	void update (const std::string & name, const float & value);
+	void update (const std::string & name, const float & value);		// + conversion float->string
+	void update (const std::string & name, const std::string & value);
 
 	// Set console's default font from Game::fonts
 	void setFont (const sf::Font & font);

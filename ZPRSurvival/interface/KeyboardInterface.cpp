@@ -1,8 +1,8 @@
 /**
-@author	Pawel Kaczynski
-@date	03.04.2014
+	@author	Pawel Kaczynski
+	@date	03.04.2014
 
-Part of the #TITLE survival game.
+	Part of the #TITLE survival game.
 */
 
 #include "KeyboardInterface.h"

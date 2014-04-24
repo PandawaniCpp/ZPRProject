@@ -12,9 +12,6 @@
 bool Console::visible = false;
 
 Console::Console () {
-	// Set default param to game title and version.
-	params.insert (std::make_pair ("#TITLE v. ", 0.345));
-
 	// Set background texture.
 	assert (texture.loadFromFile ("resources/console_back.png"));
 	texture.setRepeated (true);
@@ -26,22 +23,61 @@ Console::Console () {
 	color = sf::Color::White;
 	fontSize = 12;
 	text.setFont (font);
-	text.setCharacterSize (fontSize);			// #TODO make private variables for color, font and size
+	text.setCharacterSize (fontSize);			
 	text.setColor (color);
-	text.setString (params.begin()->first);
 	text.setPosition (5, 5);
 	dy = fontSize + 5;
+
+	// Set available keys.
+	keys.push_back ("#TITLE v.");
+	keys.push_back ("x");
+	keys.push_back ("y");
+	keys.push_back ("dx");
+	keys.push_back ("dy");
+	keys.push_back ("direction");
+	keys.push_back ("rotation");
+	keys.push_back ("current resolution");
+	keys.push_back ("avail. resolutions");		// <- Should be the last one
+
+	// Set default param to game title and version.
+	this->insert ("#TITLE v.", "0.5.1");
 }
 
 Console::~Console () {
+
 }
 
 void Console::insert (const std::string & name, const float & value) {
-	auto inserted = params.insert (std::make_pair (name, value));
-	assert (inserted.second);
+	for (auto & x : keys) {
+		if (name == x) {
+			std::stringstream ss;
+			ss << value;
+			auto inserted = params.insert (std::make_pair (name, ss.str ()));
+			assert (inserted.second);
+			break;
+		}
+	}
+}
+
+void Console::insert (const std::string & name, const std::string & value) {
+	for (auto & x : keys) {
+		if (name == x) {
+			auto inserted = params.insert (std::make_pair (name, value));
+			assert (inserted.second);
+			break;
+		}
+	}
 }
 
 void Console::update (const std::string & name, const float & value) {
+	auto found = params.find (name);		//find resource by id
+	assert (found != params.end ());		//break if given resource doesn't exist
+	std::stringstream ss;
+	ss << value;
+	found->second = ss.str();
+}
+
+void Console::update (const std::string & name, const std::string & value) {
 	auto found = params.find (name);		//find resource by id
 	assert (found != params.end ());		//break if given resource doesn't exist
 	found->second = value;
@@ -62,14 +98,19 @@ void Console::draw (sf::RenderWindow& window) const {
 	std::stringstream ss;
 	float pos = 5;
 
-	for (auto x : params) {				// Iterate through map and draw everything.
-		tempText.setString (x.first);
+	for (auto & x : keys) {				// Iterate through set of available keys.
+		std::unordered_map<std::string, std::string>::const_iterator it;
+		it = params.find (x);
+		if (it == params.end ())
+			continue;
+
+		tempText.setString (it->first);
 		tempText.setPosition (5, pos);
 		window.draw (tempText);
 
-		ss << x.second;
+		ss << it->second;
 		tempText.setString (ss.str ());
-		tempText.setPosition (100, pos);
+		tempText.setPosition (150, pos);	// #TODO Set scaling to window accordingly
 		ss.str ("");
 		window.draw (tempText);
 

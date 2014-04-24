@@ -62,8 +62,8 @@ private:
 	// Initialize objects with default values.
 	void objectsInit ();
 
-	// Initialize options with default values.
-	void optionsInit ();
+	// Apply options with default values (first call) or when options state changes.
+	void applyOptions ();
 
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();

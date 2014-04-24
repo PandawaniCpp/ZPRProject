@@ -9,6 +9,10 @@
 */
 
 #pragma once
+#include <SFML/Window/VideoMode.hpp>
+#include <sstream>
+
+using sf::VideoMode;
 
 /**
 	Non-instantiable class for specifying graphics options such as fullscreen mode, resolution,
@@ -16,10 +20,21 @@
 */
 class GraphicsOptions {
 public:
+	// OS's available video modes
+	static std::vector<VideoMode> videoModesAvailable;
+
 	// Customizable parameters.
-	static bool fullscreenModeOn;	// Toggles fullscreen on/off.
-	static bool vSyncOn;			// Vertical synch. on/off.
-	static bool resizeableWindow;	// Player 
-	static int fps;					// Frames per second rate.
+	static bool fullscreenModeOn;		// Toggles fullscreen on/off.
+	static bool vSyncOn;				// Vertical synch. on/off.
+	static int fps;						// Frames per second rate.
+	static VideoMode videoMode;			// Current active Video Mode.
+
+	// Returns all available resolutions as string. 
+	// Each row represents "width x height (depth)"
+	static std::string getResolutionsAvailable ();
+
+	// Returns current resolution taken from videoMode.
+	// format: width x height (depth)
+	static std::string getCurrentResolution ();
 };
 

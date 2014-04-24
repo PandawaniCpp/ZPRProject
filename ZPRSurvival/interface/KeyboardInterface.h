@@ -14,7 +14,7 @@ using sf::Keyboard;
 
 /**
 	Interprets particular keys and their combinations. 
-	#TODO This class will probably be deleted (not used at all)
+	#TODO This class will probably be deleted (not used at all)..... OR MAYBE NOT
 */
 class KeyboardInterface : public Interface {
 public:
