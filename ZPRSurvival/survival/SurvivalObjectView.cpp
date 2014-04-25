@@ -14,6 +14,7 @@ SurvivalObjectView::SurvivalObjectView () {
 }
 
 SurvivalObjectView::~SurvivalObjectView () {
+	detachAllChilds ();
 }
 
 void SurvivalObjectView::attachChild (Ptr & child)
@@ -22,15 +23,23 @@ void SurvivalObjectView::attachChild (Ptr & child)
 	children.push_back (std::move (child));		// Insert new child.
 }
 
-SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectView& node)
+void SurvivalObjectView::detachChild (const SurvivalObjectView& node)
 {
 	// Lambda-expression search for child; return true if found.
 	auto found = std::find_if (children.begin (), children.end (), [&] (Ptr& p) -> bool { return p.get () == &node; });
 	assert (found != children.end ());
 	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
 	result->parent = nullptr;				// Erase parent.
+	result.reset();
 	children.erase (found);					// Erase child.
-	return result;
+}
+
+void SurvivalObjectView::detachAllChilds () {
+	for (unsigned i = 0; i < children.size (); ++i) {
+		if (children[i]->hasChilds ())
+			children[i]->detachAllChilds ();
+		detachChild (*children[i]);
+	}
 }
 
 void SurvivalObjectView::draw (sf::RenderWindow& window) const {
@@ -46,3 +55,11 @@ void SurvivalObjectView::drawAll (sf::RenderWindow& window) const {
 		child->drawAll (window);
 	}
 }
+
+bool SurvivalObjectView::hasChilds () {
+	if (children.size () == 0)
+		return false;
+	else
+		return true;
+}
+
