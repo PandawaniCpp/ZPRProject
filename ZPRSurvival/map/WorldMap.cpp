@@ -31,6 +31,13 @@ void WorldMap::initialize() {
 	perlinTexture->loadFromImage(perlinNoise->getPermutationImage());
 	perlinNoise->getPermutationImage().saveToFile("./perlin.png");
 	perlinShader->setParameter("permutationVector", *perlinTexture);
+
+	perlinShader->setParameter("offsetX", 0.0f);
+	perlinShader->setParameter("offsetY", 0.0f);
+	perlinShader->setParameter("zoom", zoom);
+	perlinShader->setParameter("persistence", persistence);
+	perlinShader->setParameter("octaves", octaves);
+
 }
 
 WorldMap::~WorldMap() {

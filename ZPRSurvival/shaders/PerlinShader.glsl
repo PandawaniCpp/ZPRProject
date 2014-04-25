@@ -1,5 +1,10 @@
 uniform sampler2D permutationVector;
 uniform float time;
+uniform float offsetX;
+uniform float offsetY;
+uniform float zoom;
+uniform float persistence;
+uniform float octaves;
 
 float fade(float t){
 	return t * t * t * (t * (t * 6 - 15) + 10);
@@ -67,10 +72,6 @@ float sum1(float x, float y, float z){
 	float amplitude = 1.0;
 	float frequency = 1;
 	
-	int octaves = 12;
-	float persistence = 0.75;
-	float zoom = 1000.0;
-	
 	for (int i = 0; i < octaves; i++) {
 		t += noise( ((x*frequency) / zoom), ((y*frequency) / zoom), 0)*amplitude;
 		amplitude *= persistence;
@@ -91,10 +92,6 @@ float sum2(float x, float y, float z){
 	float amplitude = 1.0;
 	float frequency = 1;
 
-	int octaves = 3;
-	float persistence = 0.4;
-	float zoom = 50.0;
-
 	for (int i = 0; i < octaves; i++) {
 		t += abs(noise( ((x*frequency) / zoom), ((y*frequency) / zoom), z)*amplitude);
 		amplitude *= persistence;
@@ -109,10 +106,6 @@ float sum3(float x, float y, float z){
 	float t = 1.0;
 	float amplitude = 1.0;
 	float frequency = 1;
-
-	int octaves = 8;
-	float persistence = 0.5;
-	float zoom = 100.0;
 
 	for (int i = 0; i < 3; i++) {
 		t *= noise((x*frequency) / 100.0, (y*frequency) / 100.0, z);
@@ -129,7 +122,7 @@ float invert(float t){
 }
 
 void main() {
-	float k = sum11(sum1(gl_FragCoord.x, gl_FragCoord.y, time/20.0));
+	float k = sum11(sum2(gl_FragCoord.x + offsetX , gl_FragCoord.y + offsetY, 0));
 	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
     gl_FragColor = vec4(1.0, 1.0, 1.0, k);
 }

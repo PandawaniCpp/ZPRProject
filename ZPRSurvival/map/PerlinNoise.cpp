@@ -98,8 +98,8 @@ sf::Image PerlinNoise::getPermutationImage() {
 	sf::Image img;
 	img.create(16, 16, sf::Color::Black);
 
-	for (int x = 0; x < 16; x++) {
-		for (int y = 0; y < 16; y++) {
+	for (int x = 0; x < img.getSize().x; x++) {
+		for (int y = 0; y < img.getSize().y; y++) {
 			img.setPixel(x, y, sf::Color(p[x + y * 16], p[x + y * 16], p[x + y * 16]));
 		}
 	}

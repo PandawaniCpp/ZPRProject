@@ -18,6 +18,7 @@ Game::Game () {
 	playerController = new PlayerController ();
 	console = new Console ();
 	worldMap = new WorldMapView();
+	worldMap->getMapImage().saveToFile("./perlinMap.png");
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
 	
@@ -232,10 +233,11 @@ void Game::update () {
 	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
 	console->update ("rotation", playerController->getPlayer ()->getRotation ());
 
+	worldMap->t += 10.0;
+
 	// Set the world displacement vector relatively to player.
 	//	#TODO Change the world movement using sf::View
 	globalDisplacement = playerController->getPlayer ()->getDisplacement ();
-	//generator->move (-globalDisplacement);
 }
 
 void Game::render () {

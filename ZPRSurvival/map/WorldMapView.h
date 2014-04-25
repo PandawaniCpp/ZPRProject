@@ -11,6 +11,7 @@ public:
 	~WorldMapView();
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	float t;
+	sf::Image getMapImage();
 private:
 	sf::Image* image;
 	sf::Texture* texture;
