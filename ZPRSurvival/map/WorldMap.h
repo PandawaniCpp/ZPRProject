@@ -1,14 +1,16 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include "./../survival/SurvivalObject.h"
 #include "PerlinNoise.h"
+#include "./../options/GraphicsOptions.h"
 
 //default width, height, persistance, zoom and number of octaves
-#define WIDTH 150
-#define HEIGHT 150
+#define WIDTH 1000
+#define HEIGHT 1000
 #define PERSISTENCE 0.5
-#define ZOOM 500
-#define OCTAVES 3
+#define ZOOM 1000
+#define OCTAVES 8
 
 class WorldMap : public SurvivalObject {
 public:
@@ -25,7 +27,7 @@ public:
 	sf::Shader & getShader();
 	//setter
 private:
-	void WorldMap::initialize();
+	void initialize();
 
 	PerlinNoise * perlinNoise;
 	sf::Shader * perlinShader;
