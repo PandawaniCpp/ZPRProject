@@ -10,6 +10,7 @@
 
 #pragma once
 #include <SFML/Window/VideoMode.hpp>
+#include <SFML/Window/WindowStyle.hpp>
 #include <sstream>
 
 using sf::VideoMode;
@@ -28,13 +29,18 @@ public:
 	static bool vSyncOn;				// Vertical synch. on/off.
 	static int fps;						// Frames per second rate.
 	static VideoMode videoMode;			// Current active Video Mode.
+	static VideoMode testVideoMode;		// For testing.
+	static int videoStyle;
 
 	// Returns all available resolutions as string. 
 	// Each row represents "width x height (depth)"
 	static std::string getResolutionsAvailable ();
 
 	// Returns current resolution taken from videoMode.
-	// format: width x height (depth)
+	// format: "width x height (depth)"
 	static std::string getCurrentResolution ();
+
+	// Switch between resolutions.
+	static void switchResolution (bool higher);
 };
 

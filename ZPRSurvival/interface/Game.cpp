@@ -10,9 +10,11 @@
 
 #include "Game.h"
 
+std::string Game::TITLE = "#TITLE";
+
 Game::Game () {
 	// All we need to play.
-	gameWindow = new RenderWindow (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);	// Create new Window
+	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
@@ -137,8 +139,9 @@ void Game::applyOptions () {
 	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
 
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
+	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
-	//GraphicsOptions::
+	sf::Style::Fullscreen;
 }
 
 void Game::processEvents () {
@@ -186,6 +189,16 @@ void Game::keyboardInput (const Event event) {
 			setFullscreenEnabled (false);
 		else
 			setFullscreenEnabled (true);
+	}
+
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Add && Keyboard::isKeyPressed (event.key.code)) {
+		GraphicsOptions::switchResolution (true);
+		applyOptions ();
+	}
+
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Subtract && Keyboard::isKeyPressed (event.key.code)) {
+		GraphicsOptions::switchResolution (false);
+		applyOptions ();
 	}
 
 	switch (state) {							//controls the game state
@@ -239,10 +252,14 @@ void Game::draw () {
 }
 
 void Game::setFullscreenEnabled (bool enable) {
-	if (enable)
-		gameWindow->create(VideoMode (1200, 700), "ZPR Survival", sf::Style::Fullscreen);
-	else
-		gameWindow->create (VideoMode (1200, 700), "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);
+	if (enable) {
+		gameWindow->create (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Fullscreen);
+		GraphicsOptions::videoStyle = sf::Style::Fullscreen;
+	}
+	else {
+		gameWindow->create (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);
+		GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
+	}
 
 	GraphicsOptions::fullscreenModeOn = !GraphicsOptions::fullscreenModeOn;
 }

@@ -25,6 +25,9 @@
 */
 class Game {
 public:
+	// Game title.
+	static std::string TITLE;
+
 	// Represents phase of the game.
 	enum State {
 		UNKNOWN = 0, INIT, IN_MENU, PLAYING, PAUSE, EXIT, STATE_COUNT

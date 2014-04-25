@@ -95,7 +95,6 @@ void Console::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 	
 	sf::Text tempText = text;
-	std::stringstream ss;
 	float pos = 5;
 
 	for (auto & x : keys) {				// Iterate through set of available keys.
@@ -108,11 +107,13 @@ void Console::draw (sf::RenderWindow& window) const {
 		tempText.setPosition (5, pos);
 		window.draw (tempText);
 
-		ss << it->second;
-		tempText.setString (ss.str ());
+		if (it->first == "current resolution")
+			tempText.setColor (sf::Color::Yellow);
+		tempText.setString (it->second);
 		tempText.setPosition (150, pos);	// #TODO Set scaling to window accordingly
-		ss.str ("");
 		window.draw (tempText);
+		if (it->first == "current resolution")
+			tempText.setColor (sf::Color::White);
 
 		pos += dy;
 	}
