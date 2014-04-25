@@ -17,6 +17,7 @@ Game::Game () {
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
+	worldMap = new WorldMapView();
 	//generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
 	
@@ -26,7 +27,7 @@ Game::Game () {
 Game::~Game () {
 	delete gameWindow;
 	delete playerController;
-	delete generator;
+	delete worldMap;
 	//delete console;		#TODO ERROR! CHECK THIS
 	// #TODO Delete the rest of the objects
 }
@@ -114,7 +115,9 @@ PlayerController * Game::getPlayerController () {
 void Game::layersInit () {
 	// Attach console object to console layer
 	SurvivalObjectView::Ptr consoleLayer (console);
-	sceneLayers[Game::CONSOLE]->attachChild (consoleLayer);
+	SurvivalObjectView::Ptr mapLayer(worldMap);
+	sceneLayers[Game::MAP]->attachChild(mapLayer);
+	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
 
 	// Attach player view to player layer
 	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
