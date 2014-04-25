@@ -42,7 +42,7 @@ public:
 	virtual void draw (sf::RenderWindow& window) const;
 
 	// Draw this object and all children.
-	virtual void drawAll (sf::RenderWindow& window) const;
+	virtual void drawAll (sf::RenderWindow* window) const;
 
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.

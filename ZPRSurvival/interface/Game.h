@@ -107,14 +107,10 @@ private:
 	Time timePerFrame;			// Keep the frame duration fixed.
 	Game::State state;				// Describe, in which state the game is in the moment.
 	FloatRect worldBounds;			// World size (in px).
-	float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
+	//float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
 	Vector2<int> mousePosition;			// Mouse position
 	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
-
-
-	// #TEMP
-	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
 };
 

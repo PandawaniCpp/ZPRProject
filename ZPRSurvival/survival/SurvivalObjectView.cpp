@@ -46,9 +46,9 @@ void SurvivalObjectView::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 }
 
-void SurvivalObjectView::drawAll (sf::RenderWindow& window) const {
+void SurvivalObjectView::drawAll (sf::RenderWindow* window) const {
 	// Draw myself.
-	this->draw (window);
+	this->draw (*window);
 
 	// Draw all children.
 	for (const Ptr& child : children) {
