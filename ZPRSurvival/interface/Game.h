@@ -2,15 +2,20 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "./../player/PlayerController.h"
-#include "./../MapGenerator.h"
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
+#include "./../map/WorldMapView.h"
+#include "./../Logger.h"
+#include <sstream>
 
 /*
 	Main game class. Responsible for rendering graphics, events handling,
 	creating essential game objects, mouse and keyboard controls and 
 	initializing as well as finalizing the game itself.
 */
+
+using namespace sf;
+using namespace std;
 
 class Game {
 public:
@@ -39,12 +44,9 @@ private:
 	PlayerController * playerController;
 	KeyboardInterface * keyboard;
 	MouseInterface * mouse;		 
-	/*Map * map;
-	Creatures * creatures;*/
+
 	
-	MapGenerator * generator;			//-> move to another class (which will be an object here) 
-	Sprite mapSprite; //temporary		
-	Texture mapTexture; //temporary		-> move somewhere else
+	WorldMapView * worldMap;			//-> move to another class (which will be an object here) 
 	
 	Game::State state;					//describe, in which state the game is in the moment
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
@@ -53,5 +55,6 @@ private:
 	View worldView;
 							
 	Font font;
+
 };
 

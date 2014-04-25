@@ -7,13 +7,9 @@ Game::Game() {
 	mouse = new MouseInterface();
 	playerController = new PlayerController();
 	state = Game::State::INIT;
-	TIME_PER_FRAME = seconds(1.f / 100.f);		//static frame (60 fps)
-
-	generator = new MapGenerator(100, 100, 100);		//#TEMP
-	//mapTexture.loadFromImage(generator->GetMap());  
-	//mapSprite.setTexture(mapTexture);
-	//mapSprite.setPosition (-1024+600, -1024+350);			
-	generator->GetMap().saveToFile("Map.png");
+	TIME_PER_FRAME = seconds(1.f / 60.0f);		//static frame (60 fps)
+							 
+	worldMap = new WorldMapView();
 
 	worldBounds.top = worldBounds.left = 0.f;	//top left corner (0, 0)
 	worldBounds.height = 0;			//world size
@@ -27,7 +23,7 @@ Game::~Game() {
 	delete playerController;
 	delete keyboard;
 	delete mouse;
-	delete generator;
+	//delete generator;
 }
 
 void Game::initialize() {
@@ -111,10 +107,9 @@ void Game::processEvents() {
 void Game::update(Time deltaTime) {
 	playerController->setDeltaTime(deltaTime);
 	playerController->update (mouse->getPosition ());
-
 	//set the world displacement vector relatively to player
 	globalDisplacement = playerController->getPlayer()->getDisplacement();
-	generator->move(-globalDisplacement);
+	//generator->move(-globalDisplacement);
 	// ^ mind the sign!
 }
 
@@ -141,14 +136,14 @@ void Game::render() {
 	gameWindow->draw(text);
 
 	ss.str("");
-	ss << generator->getPosition().x;
+//	ss << generator->getPosition().x;
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 55);
 	gameWindow->draw(text);
 
 	ss.str("");
-	ss << generator->getPosition().y;
+//	ss << generator->getPosition().y;
 	result = ss.str();
 	text.setString(result);
 	text.setPosition(10, 80);
@@ -167,7 +162,9 @@ void Game::render() {
 
 void Game::draw() {
 	//gameWindow->draw(mapSprite);
-	generator->draw(gameWindow);
+	//generator->draw(gameWindow);
+	gameWindow->draw(*worldMap);
+	worldMap->t += 0.01f;
 	playerController->getPlayerView()->draw(*gameWindow);
 }
 

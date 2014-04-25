@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "PerlinNoise.h"
+#include "./map/PerlinNoise.h"
 #include "player/Player.h"
 #include "interface/Game.h"
 #include "MidpointDisplacementNoise.h"

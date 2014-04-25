@@ -8,10 +8,18 @@ int MidpointDisplacementNoise::CalculateNoise(int x, int y) {
 	return ((double)nn / 1073741824.0)*127.5;
 }
 
-MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int step, bool randomize, bool island, bool invert) {
+MidpointDisplacementNoise::MidpointDisplacementNoise() {
+}
+
+MidpointDisplacementNoise::MidpointDisplacementNoise(int _offset) {
+	offset = _offset;
+}
+
+void MidpointDisplacementNoise::calculateNoiseIsland(int width, int height, int step, bool randomize, bool island, bool invert) {
+
 	int r;
 	int iter = 6;
-	offset = rand() % 1000;
+
 	if (invert) {
 		pointsTab_.resize(width, vector<int>(height, 255));
 	}
@@ -27,7 +35,7 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 	else {
 		i = 0;
 	}
-	for ( ; i < width; i += step) {
+	for (; i < width; i += step) {
 		int j;
 		if (island) {
 			j = step;
@@ -35,9 +43,9 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 		else {
 			j = 0;
 		}
-		for ( ; j < width; j += step) {
+		for (; j < width; j += step) {
 			pointsTab_[i][j] = CalculateNoise(i, j);
-			
+
 			if (i == width / 2 && j == height / 2 && island) {
 				pointsTab_[i][j] = 255;
 			}
@@ -54,7 +62,7 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 	else {
 		r = 0;
 	}
-	
+
 	while (step > 1) {
 		int x1, x2, y1, y2;
 		r /= 2;
@@ -89,7 +97,7 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 									pointsTab_[x2][y1] +
 									pointsTab_[x1][y2] +
 									pointsTab_[x2][y2]) / 4.0 + CalculateNoise(i, j) % (r + 1) - r / 2;
-	
+
 				if (pointsTab_[i][j] > 255.0) {
 					pointsTab_[i][j] = 255.0;
 				}
@@ -156,6 +164,105 @@ MidpointDisplacementNoise::MidpointDisplacementNoise(int width, int height, int 
 	}
 }
 
+sf::Image MidpointDisplacementNoise::calculateNoiseTile(int width, int height, int randStep,
+														sf::Color & col11, sf::Color & col21,
+														sf::Color & col22, sf::Color & col12){
+
+	int iter = 6;
+
+	Image img;
+
+	img.create(width, height, sf::Color::Black);
+
+	img.setPixel(0, 0, col11);
+	img.setPixel(0, width - 1, col12);
+	img.setPixel(height - 1, width - 1, col22);
+	img.setPixel(height - 1, 0, col21);
+	int step = width-1;
+	while (step > 1) {
+		int x1, x2, y1, y2;
+
+		//Square step
+		for (int i = step / 2; i < width; i += step) {
+			for (int j = step / 2; j < height; j += step) {
+
+				x1 = i - step / 2;
+				x2 = i + step / 2;
+				y1 = j - step / 2;
+				y2 = j + step / 2;
+
+				if (i - step / 2 < 0) {
+					x1 += step;
+				}
+				if (i + step / 2 >= width) {
+					x2 -= step;
+				}
+
+				if (j - step / 2 < 0) {
+					y1 += step;
+
+				}
+				if (j + step / 2 >= height) {
+					y2 -= step;
+				}
+
+				img.setPixel(i, j, mediumColor(img.getPixel(x1, y1),
+					img.getPixel(x2, y1),
+					img.getPixel(x1, y2),
+					img.getPixel(x2, y2))); // +CalculateNoise(i, j) % (r + 1) - r / 2;
+
+			}
+		}
+
+		//Diamond step
+		for (int i = 0; i < width; i += step / 2) {
+			for (int j = (step / 2)*((1 + (i / (step / 2))) % 2); j < height; j += step) {
+
+				x1 = i - step / 2;
+				x2 = i + step / 2;
+				y1 = j - step / 2;
+				y2 = j + step / 2;
+
+				if (i - step / 2 < 0) {
+					x1 += step;
+				}
+				if (i + step / 2 >= width) {
+					x2 -= step;
+				}
+
+				if (j - step / 2 < 0) {
+					y1 += step;
+
+				}
+				if (j + step / 2 >= height) {
+					y2 -= step;
+				}
+
+				img.setPixel(i, j, mediumColor(img.getPixel(i, y1), img.getPixel(i, y2), img.getPixel(x1, j), img.getPixel(x2, j)));
+
+			}
+		}
+		step /= 2;
+		
+	}
+	/*for (int k = 0; k < iter; k++) {
+		vector< vector<int>> pointsTab2_(pointsTab_);
+		for (int i = 1; i < width - 1; i++) {
+		for (int j = 1; j < width - 1; j++) {
+		pointsTab2_[i][j] = (pointsTab_[i - 1][j - 1] +
+		pointsTab_[i - 1][j] +
+		pointsTab_[i - 1][j + 1] +
+		pointsTab_[i][j - 1] +
+		pointsTab_[i][j + 1] +
+		pointsTab_[i + 1][j - 1] +
+		pointsTab_[i - 1][j] +
+		pointsTab_[i + 1][j + 1]) / 8.0;
+		}
+		}
+		pointsTab_ = pointsTab2_;
+		}*/
+	return img;
+}
 
 MidpointDisplacementNoise::~MidpointDisplacementNoise() {
 }
@@ -217,4 +324,11 @@ Image MidpointDisplacementNoise::GetImage() {
 		}
 	}
 	return img;
+}
+
+sf::Color MidpointDisplacementNoise::mediumColor(sf::Color & col1, sf::Color & col2, sf::Color & col3, sf::Color & col4) {
+	int r = (col1.r + col2.r + col3.r + col4.r) / 4;
+	int g = (col1.g + col2.g + col3.g + col4.g) / 4;
+	int b = (col1.b + col2.b + col3.b + col4.b) / 4;
+	return Color(r, g, b);
 }

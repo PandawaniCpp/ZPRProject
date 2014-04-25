@@ -6,16 +6,22 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 	scale = s;
 	height = h;
 	width = w;
-	PerlinNoise heightNoise(w, h, 300, 0.5, 7, true);
-	PerlinNoise rainNoise(w, h, 400, 0.6, 4, false);
-	position = Vector2f(-w*scale / 2, -h*scale / 2);
+	srand(time(NULL));
+	heightNoise = new RandomNoise(w, h, 300, 0.5, 10, rand(), true);
+	rainNoise = new RandomNoise(w, h, 800, 0.5, 3, rand(), false);
+	//heightNoise->calculateIsland(true);
+	//rainNoise->calculateIsland(false);
+	rain = rainNoise->getVector();
+	heights = heightNoise->getVector();
+	position = Vector2f(-w*scale / 5, -h*scale / 5);
+	heur.loadFromFile("./resources/map/Map.png");
 
-	//	heightNoise.GetImage().saveToFile("height1.png");
-	rainNoise.GetImage().saveToFile("rain.png");
+	heightNoise->getImage().saveToFile("h.png");
+	rainNoise->getImage().saveToFile("r.png");
 
 	currentTile = lastTile = Vector2i(w / 2, h / 2);
 
-	this->Calculate(heightNoise.GetVector(), rainNoise.GetVector());
+	this->Calculate(heightNoise->getVector(), rain);
 
 	col[0] = sf::Color(0, 18, 25);
 	col[1] = sf::Color(200, 180, 120);
@@ -26,39 +32,28 @@ MapGenerator::MapGenerator(int w, int h, int s) {
 	col[6] = sf::Color(50, 50, 50);
 	col[7] = sf::Color(30, 30, 30);
 
-	scale *= 5;
 
-	int zoom =	18;
-	double p =	0.95;
-	int octaves = 7;
+	int zoom = 15;
+	double p = 0.6;
+	int octaves = 6;
+	bool island = false;
 
-	perlin[0] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[1] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[2] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[3] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[4] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[5] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[6] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[7] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[8] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[9] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[10] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[11] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[12] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[13] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[14] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
-	perlin[15] = new PerlinNoise(scale, scale, zoom, p, octaves, true);
 
-	scale /= 5;
+
 
 	for (int i = 0; i < 16; i++) {
-		img[i] = perlin[i]->GetImage();
 		tiles[i] = new Texture();
-		tiles[i]->create(scale * 5, scale * 5);
+		tiles[i]->create(scale, scale);
 		//tiles[i].setRepeated(true);
 		tiles[i]->loadFromImage(img[i]);
-		delete perlin[i];
 	}
+
+
+	Image iWhite;
+	iWhite.create(scale, scale, sf::Color::White);
+	white.loadFromImage(iWhite);
+	white.setRepeated(false);
+
 }
 
 MapGenerator::~MapGenerator() {
@@ -73,7 +68,7 @@ MapGenerator::~MapGenerator() {
 }
 
 void MapGenerator::Calculate(vector<vector<int>> const & heightMap, vector<vector<int>> const & rainMap) {
-	int iter = 4;
+	int iter = 1;
 	int w = width;
 	int h = height;
 
@@ -86,30 +81,30 @@ void MapGenerator::Calculate(vector<vector<int>> const & heightMap, vector<vecto
 		for (int x = 0; x < h; ++x) {
 
 			int height = heightMap[x][y];
-			int rain = rainMap[x][y];
+			int rain = 100;// rainMap[x][y];
 
-			if (height <= 75) {
+			if (height <= 80) {
 				points[x][y] = 0; // water
 			}
-			else if (height <= 78) { //sand
+			else if (height <= 90) { //sand
 				points[x][y] = 1;
 			}
-			else if (height <= 135) { //lower terrain
-				if (rain <= 50) {
+			else if (height <= 160) { //lower terrain
+				if (rain <= 80) {
 					points[x][y] = 2; //desert
 				}
-				else if (rain <= 75) {
+				else if (rain <= 130) {
 					points[x][y] = 3; //grassland
 				}
 				else {
 					points[x][y] = 4; //tropical forest
 				}
 			}
-			else if (height <= 180) { //
-				if (rain <= 60) {
+			else if (height <= 200) { //
+				if (rain <= 100) {
 					points[x][y] = 2; //desert
 				}
-				else if (rain <= 75) {
+				else if (rain <= 140) {
 					points[x][y] = 3; //grassland
 				}
 				else {
@@ -140,41 +135,43 @@ void MapGenerator::loadMap(int startX, int  startY, int  endX, int endY) {
 	int startYY = startY;
 	int endXX = endX;
 	int endYY = endY;
+	int sx, ex, sy, ey;
+	sx = ex = sy = ey = 3;
 
-	if (startX > 0) {
+	while (startXX > 0 && sx > 0) {
 		--startXX;
+		--sx;
 	}
 
-	if (endX < width - 1) {
+	while (endXX < width - 1 && ex > 0) {
 		++endXX;
+		--ex;
 	}
 
-	if (startY > 0) {
+	while (startYY > 0 && sy > 0) {
 		--startYY;
+		--sy;
 	}
 
-	if (endY > 0) {
+	while (endYY < height - 1 && ey>0) {
 		++endYY;
+		--ey;
 	}
 
 	for (int i = startXX; i < endXX; ++i) {
 		for (int j = startYY; j < endYY; ++j) {
-			if (maps[i][j]) {
-				delete maps[i][j];
-				maps[i][j] = NULL;
+
+			if (i < startXX || j < startYY || i > endXX || j > endYY) {
+				if (maps[i][j]) {
+
+					delete maps[i][j];
+					maps[i][j] = NULL;
+				}
 			}
-
-			if (i < startX || j < startY || i > endX || j > endY) {
-
-			}
-
 			else {
 
 				if (!(maps[i][j])) {
-
-					maps[i][j] = new MapTile();
-					maps[i][j]->setTexture(*tiles[ (int)(8 + 8 *sin(j*i)) % 16]);
-					maps[i][j]->setColor(col[points[i][j]]);
+					maps[i][j] = new MapTile(i, j, scale, 30000, 0.3, *heightNoise, 100);// col[points[i][j]], col[points[i][j + 1]], col[points[i + 1][j + 1]], col[points[i + 1][j]]);
 				}
 			}
 		}
@@ -213,18 +210,9 @@ void MapGenerator::draw(sf::RenderWindow* target) {
 	vector<thread> threads;
 	for (int i = startX; i < endX; ++i) {
 		for (int j = startY; j < endY; ++j) {
-
-			//if (maps[i][j].isInitilaized()) {
-			//	if (maps[i][j].getTexture()  == NULL) {
-			//maps[i][j].setTexture(*tiles[points[i][j]]);
-			//}
-			//maps[i][j].setTexture(tiles[points[i][j]]);
-			//loadMap(maps[i][j], tiles[points[i][j]]);
-			//threads.push_back( thread(loadMap, maps[i][j], tiles[points[i][j]]));
-			//threads[(i - startX)*(endX - startX) + (j - startY)].join();
-			//if (maps[i][j].getTexture() != new Texture()) {
 			if (maps[i][j]) {
 				maps[i][j]->setPosition(i*scale + position.x, j*scale + position.y);
+				//maps[i][j]->initialize();
 				target->draw(*maps[i][j]);
 			}
 		}
@@ -232,12 +220,11 @@ void MapGenerator::draw(sf::RenderWindow* target) {
 }
 
 sf::Image MapGenerator::GetMap() {
-
 	map.create(width, height, sf::Color::Black);
 
 	for (int i = 0; i < width; ++i) {
 		for (int j = 0; j < height; ++j) {
-			map.setPixel(i, j, col[points[i][j]]);
+			map.setPixel(i, j, heur.getPixel(rain[i][j], heights[i][j]));
 		}
 	}
 

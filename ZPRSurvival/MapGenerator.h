@@ -2,7 +2,7 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Window.hpp>
 #include "MidpointDisplacementNoise.h"
-#include "PerlinNoise.h"
+#include "RandomNoise.h"
 #include "MapTile.h"
 #include <thread>
 #include <iostream>
@@ -22,13 +22,19 @@ public:
 	sf::Image randomNoise(int width, int height);
 private:
 	//thread loader;
+	RandomNoise * heightNoise;
+	RandomNoise * rainNoise;
 	Vector2<float> position;
 	Vector2i currentTile, lastTile;
 	vector<vector<int> > points;
+	vector<vector<int> > rain;
+	vector<vector<int> > heights;
 	vector<vector< MapTile *> > maps;
 	Image map;
+	Image heur;
 	Texture * tiles[16];
-	PerlinNoise * perlin[16];
+	Texture white;
+	RandomNoise * perlin[16];
 	Image img[16];
 	Color col[8];
 	int height, width, scale;
