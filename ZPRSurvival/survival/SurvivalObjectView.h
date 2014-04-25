@@ -41,15 +41,21 @@ public:
 	// Overloaded sf::Sprite draw method.
 	virtual void draw (sf::RenderWindow& window) const;
 
+	// Draw this object and all children.
+	virtual void drawAll (sf::RenderWindow& window) const;
+
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.
 	void attachChild (Ptr & child);
 
 	// Removes node from vector.
-	SurvivalObjectView::Ptr detachChild (const SurvivalObjectView& node);	//remove child from vector
+	void detachChild (const SurvivalObjectView& node);	//remove child from vector
 
-	// Draw this object and all children.
-	virtual void drawAll (sf::RenderWindow& window) const;
+	// Removes all (if any left) childs.
+	void detachAllChilds ();
+
+	// Check if had any childs.
+	bool hasChilds ();
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.

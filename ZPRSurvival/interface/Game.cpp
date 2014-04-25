@@ -27,10 +27,8 @@ Game::Game () {
 
 Game::~Game () {
 	delete gameWindow;
-	delete playerController;
-	//delete worldMap;		#TODO ERROR! CHECK THIS
-	//delete console;		#TODO ERROR! CHECK THIS
-	// #TODO Delete the rest of the objects
+	
+	// Scene graph's destructor deallocates all graph's objects (all views).
 }
 
 void Game::initialize () {
@@ -40,11 +38,6 @@ void Game::initialize () {
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
-
-	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
-	//mapSprite.setTexture(mapTexture);
-	//mapSprite.setPosition (-1024+600, -1024+350);			
-	//generator->GetMap ().saveToFile ("Map.png");		//....
 
 	// World information 
 	// #TODO put in different function
@@ -114,10 +107,12 @@ PlayerController * Game::getPlayerController () {
 }
 
 void Game::layersInit () {
+	// Attach map view to map layer
+	SurvivalObjectView::Ptr mapLayer (worldMap);
+	sceneLayers[Game::MAP]->attachChild (mapLayer);
+
 	// Attach console object to console layer
 	SurvivalObjectView::Ptr consoleLayer (console);
-	SurvivalObjectView::Ptr mapLayer(worldMap);
-	sceneLayers[Game::MAP]->attachChild(mapLayer);
 	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
 
 	// Attach player view to player layer
@@ -140,8 +135,7 @@ void Game::objectsInit () {
 
 void Game::applyOptions () {
 	// #TEMP
-	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
-
+	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
