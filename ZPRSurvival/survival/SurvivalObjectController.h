@@ -9,20 +9,22 @@
 */
 
 #pragma once
-#include "../survival/SurvivalObjectView.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#define PI 3.14159265		//converting degrees <-> radians
 
-/**
-	MVC's View for AnimatedObject class. Responsible for drawing animated objects on the screen.
-
-	\ base class: SurvivalObjectView
-	\ derived:    PlayerView, CreatureView
+/** 
+	MVC's Controller for SurvivalObject class. 
 */
-class AnimatedObjectView : public SurvivalObjectView {
+class SurvivalObjectController {
 public:
+	// Time for one tick. Initialized in Game::run()
+	static sf::Time deltaTime;
+
 	// Default constructor.
-	AnimatedObjectView ();
+	SurvivalObjectController ();
 
 	// Default destructor.
-	virtual ~AnimatedObjectView ();
+	virtual ~SurvivalObjectController ();
 };
 

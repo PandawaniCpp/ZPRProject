@@ -1,3 +1,13 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
+*/
+
 #include "SurvivalObjectView.h"
 
 SurvivalObjectView::SurvivalObjectView () {
@@ -6,35 +16,33 @@ SurvivalObjectView::SurvivalObjectView () {
 SurvivalObjectView::~SurvivalObjectView () {
 }
 
-void SurvivalObjectView::attachChild (Ptr child)
+void SurvivalObjectView::attachChild (Ptr & child)
 {
-	child->parent = this;		//caller is parent for attached child
-	children.push_back (std::move (child));		//insert new child
+	child->parent = this;		// Caller is parent for attached child.
+	children.push_back (std::move (child));		// Insert new child.
 }
 
 SurvivalObjectView::Ptr SurvivalObjectView::detachChild (const SurvivalObjectView& node)
 {
-	//lambda-expression search for child; return true if found
+	// Lambda-expression search for child; return true if found.
 	auto found = std::find_if (children.begin (), children.end (), [&] (Ptr& p) -> bool { return p.get () == &node; });
 	assert (found != children.end ());
-	Ptr result = std::move (*found);		//assign child pointer to 'result'
-	result->parent = nullptr;				//erase parent
-	children.erase (found);					//erase child
+	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
+	result->parent = nullptr;				// Erase parent.
+	children.erase (found);					// Erase child.
 	return result;
 }
 
-void SurvivalObjectView::drawCurrent (sf::RenderWindow& window) const {
+void SurvivalObjectView::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 }
 
 void SurvivalObjectView::drawAll (sf::RenderWindow& window) const {
-	drawCurrent (window);
+	// Draw myself.
+	this->draw (window);
+
+	// Draw all children.
 	for (const Ptr& child : children) {
 		child->drawAll (window);
 	}
-}
-
-
-void SurvivalObjectView::setTextureByID (int textureID) {
-
 }

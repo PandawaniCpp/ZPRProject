@@ -1,170 +1,265 @@
+/**
+	@author	Pawel Kaczynski
+	@date	03.04.2014
+
+	Part of the #TITLE survival game.
+
+	This software is provided 'as-is', without any express or implied warranty.
+	In no event will the authors be held liable for any damages arising from the use of this software.
+*/
+
 #include "Game.h"
 
-Game::Game() {
-	//all we need to play
-	gameWindow = new RenderWindow(VideoMode(1200, 700), "ZPR Survival");
-	keyboard = new KeyboardInterface();
-	mouse = new MouseInterface();
-	playerController = new PlayerController();
-	state = Game::State::INIT;
-	TIME_PER_FRAME = seconds(1.f / 60.0f);		//static frame (60 fps)
-							 
-	worldMap = new WorldMapView();
+std::string Game::TITLE = "#TITLE";
 
-	worldBounds.top = worldBounds.left = 0.f;	//top left corner (0, 0)
-	worldBounds.height = 0;			//world size
-	worldBounds.width = 0;			// #TODO put proper numbers
+Game::Game () {
+	// All we need to play.
+	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
+	playerController = new PlayerController ();
+	console = new Console ();
+	//generator = new MapGenerator (100, 100, 100);		//#TEMP
 	worldView = gameWindow->getDefaultView ();
-	font.loadFromFile("resources/segoeuil.ttf");
+	
+	state = Game::State::INIT;		// Proper first state
 }
 
-Game::~Game() {
+Game::~Game () {
 	delete gameWindow;
 	delete playerController;
-	delete keyboard;
-	delete mouse;
-	//delete generator;
+	delete generator;
+	//delete console;		#TODO ERROR! CHECK THIS
+	// #TODO Delete the rest of the objects
 }
 
-void Game::initialize() {
-	//GameState::State::INIT
-	gameWindow->setKeyRepeatEnabled (false);
-	gameWindow->setPosition(Vector2<int>(0, 0));		//push the gameWindow to the AnimatedState::LEFT-top corner
+void Game::initialize () {
+	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
+	//gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
+	
+	// Set fonts
+	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
+	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
+
+	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
+	//mapSprite.setTexture(mapTexture);
+	//mapSprite.setPosition (-1024+600, -1024+350);			
+	//generator->GetMap ().saveToFile ("Map.png");		//....
+
+	// World information 
+	// #TODO put in different function
+	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
+	worldBounds.height = 5000;					// World size
+	worldBounds.width = 5000;					// #TODO put proper numbers
+	worldView.setCenter (worldView.getSize ().x / 2.f, worldView.getSize ().y / 2.f);
+	scrollSpeed = playerController->getPlayer ()->getSpeed ();	// Scrolling speed is the player's moving speed.
+
+	// Initialize game scene graph
+	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
+		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
+		sceneLayers[i] = layer.get ();
+		sceneGraph.attachChild (layer);
+	}
+
+	// Initialize main layers.
+	layersInit ();
+
+	// Set default parameters of objects owned.
+	objectsInit ();
+
+	// Set default game options.
+	applyOptions ();
+	
+	// #TODO put this in other function (this is just initialization)
+	playerController->setPlayer ();	// Prepares player for the game.
+	// Set player position to the center of the screen.
+	playerController->getPlayer()->setPosition (Vector2<float> ((float)gameWindow->getSize ().x / 2, (float)gameWindow->getSize ().y / 2));
+	//.................................
+
+	// If everything's fine, move on to the next state.
 	this->state = Game::State::IN_MENU;
-
-		//GameState::State::IN_MENU
-	//empty (for now)
-
-		//GameState::State::PLAYING
-	//#TEMP later these calls will be in other methods
-
-	playerController->setPlayer();	//prepares player for the game		#TODO maybe put this in constructor
-		//set player position to the center of the screen
-	playerController->getPlayer()->setPosition(Vector2<float>((float)gameWindow->getSize().x / 2, (float)gameWindow->getSize().y / 2));
 }
 
-void Game::run() {
+void Game::run () {
+	// Calculates time difference between frames and corrects occasional lags (if occured).
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
+	SurvivalObjectController::deltaTime = timePerFrame;
 
-	while (gameWindow->isOpen()) {
-		processEvents();
-		timeSinceLastUpdate += clock.restart ();			//this whole idea is to prevent...
+	// Main game loop (handle events -> update everything -> render eveything)
+	while (gameWindow->isOpen ()) {
+		processEvents ();
+		timeSinceLastUpdate += clock.restart ();			// This whole idea is to protect...
 
-		while (timeSinceLastUpdate > TIME_PER_FRAME) {
-			timeSinceLastUpdate -= TIME_PER_FRAME;
-			processEvents();
+		while (timeSinceLastUpdate > timePerFrame) {
+			timeSinceLastUpdate -= timePerFrame;
+			processEvents ();
 
 			if (state == Game::State::EXIT)
-				gameWindow->close();
+				gameWindow->close ();
 
-			update(TIME_PER_FRAME);						//...game from occasional lags
+			update ();										//...game from lags' consequences. 
 		}
-		render();
+		render ();
 	}
 }
 
-void Game::terminate() {
+void Game::terminate () {
 
 }
 
-void Game::processEvents() {
-		//handle mouse position and imput
-	mouse->capturePosition(*gameWindow);
+PlayerController * Game::getPlayerController () {
+	return playerController;
+}
 
-		//handle keyboard input
+void Game::layersInit () {
+	// Attach console object to console layer
+	SurvivalObjectView::Ptr consoleLayer (console);
+	sceneLayers[Game::CONSOLE]->attachChild (consoleLayer);
+
+	// Attach player view to player layer
+	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
+	sceneLayers[Game::PLAYER]->attachChild (playerLayer);
+}
+
+void Game::objectsInit () {
+	// Set default console's parameters
+	console->insert ("x", 0);
+	console->insert ("y", 0);
+	console->insert ("dx", 0);
+	console->insert ("dy", 0);
+	console->insert ("direction", 0);
+	console->insert ("rotation", 0);
+	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
+	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
+	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
+}
+
+void Game::applyOptions () {
+	// #TEMP
+	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
+
+	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
+	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
+	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
+	sf::Style::Fullscreen;
+}
+
+void Game::processEvents () {
+	// Handle mouse position and clicks.
+	mouseInput ();
+
+	// Handle keyboard input.
 	Event event;
-	int newState = -1;
-	while (gameWindow->pollEvent(event)) {
+	
+	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-		case Event::KeyPressed:			//inputHandle() returns proper new state
-			newState = keyboard->inputHandle(event.key.code, true, state, playerController);
-			break;
-		case Event::KeyReleased:
-			newState = keyboard->inputHandle(event.key.code, false, state, playerController);
-			break;
-		case Event::Closed:
-			gameWindow->close();
-			break;
-		default:
-			break;
+			case Event::KeyPressed:			// Pass it forward to keyboardInput().
+				keyboardInput (event);
+				break;
+			case Event::KeyReleased:
+				keyboardInput (event);
+				break;
+			case Event::Closed:
+				gameWindow->close ();
+				break;
+			default:
+				break;
 		}
 	}
+}
 
-	switch (newState) {
-		case Game::State::UNKNOWN: state = Game::State::UNKNOWN; break;
-		case Game::State::INIT: state = Game::State::INIT; break;
-		case Game::State::IN_MENU: state = Game::State::IN_MENU; break;
-		case Game::State::PLAYING: state = Game::State::PLAYING; break;
-		case Game::State::PAUSE: state = Game::State::PAUSE; break;
-		case Game::State::EXIT: state = Game::State::EXIT; break;
+void Game::keyboardInput (const Event event) {
+	// #TODO
+	//		PASS SPECIFIC KEY FUNCTIONALITY TO KEYBOARD INTERFACE
+	// #TODO
+
+	// Special keys prepared for later interpretation.
+	unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
+
+	// #TODO Check if these conditions can be written with 'else-if'
+	if (event.key.code == Keyboard::Escape)		//exit the game
+		state = Game::EXIT;						//#TEMP
+
+	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code))
+		Console::visible = !Console::visible;
+
+	// Toggles fullscreen on/off
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL &&  event.key.code == Keyboard::F && Keyboard::isKeyPressed (event.key.code)) {
+		if (GraphicsOptions::fullscreenModeOn)
+			setFullscreenEnabled (false);
+		else
+			setFullscreenEnabled (true);
+	}
+
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Add && Keyboard::isKeyPressed (event.key.code)) {
+		GraphicsOptions::switchResolution (true);
+		applyOptions ();
+	}
+
+	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Subtract && Keyboard::isKeyPressed (event.key.code)) {
+		GraphicsOptions::switchResolution (false);
+		applyOptions ();
+	}
+
+	switch (state) {							//controls the game state
+		case Game::State::IN_MENU:
+			if (event.key.code == Keyboard::Return)		//#TEMP
+				state = Game::PLAYING;				//pseudo-start of the game
+			break;
+		case Game::State::PLAYING: 						//all events in the actual game
+			playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
+			state = Game::PLAYING;
 		default:
 			break;
 	}
 }
 
-void Game::update(Time deltaTime) {
-	playerController->setDeltaTime(deltaTime);
-	playerController->update (mouse->getPosition ());
-	//set the world displacement vector relatively to player
-	globalDisplacement = playerController->getPlayer()->getDisplacement();
-	//generator->move(-globalDisplacement);
-	// ^ mind the sign!
+void Game::mouseInput () {
+	mousePosition = Mouse::getPosition (*gameWindow);
 }
 
-void Game::render() {
-	gameWindow->clear();
-	playerController->render ();
-	this->draw();
+void Game::update () {
+	playerController->update (mousePosition);	//update player according to mouse position change.
 
-	//#TEMP test
-	stringstream ss;
-	ss << playerController->getPlayer()->getDisplacement().x;
-	std::string result(ss.str());
-	Text text(result, font);
-	text.setCharacterSize(30);
-	text.setColor(Color::White);
-	text.setPosition(10, 5);
-	gameWindow->draw(text);
+	// Update console ouput.
+	console->update ("x", playerController->getPlayer ()->getPosition ().x);
+	console->update ("y", playerController->getPlayer ()->getPosition ().y);
+	console->update ("dx", playerController->getPlayer ()->getDisplacement ().x);
+	console->update ("dy", playerController->getPlayer ()->getDisplacement ().y);
+	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
+	console->update ("rotation", playerController->getPlayer ()->getRotation ());
 
-	ss.str("");
-	ss << playerController->getPlayer ()->getDisplacement().y;
-	result = ss.str();
-	text.setString(result);
-	text.setPosition(10, 30);
-	gameWindow->draw(text);
-
-	ss.str("");
-//	ss << generator->getPosition().x;
-	result = ss.str();
-	text.setString(result);
-	text.setPosition(10, 55);
-	gameWindow->draw(text);
-
-	ss.str("");
-//	ss << generator->getPosition().y;
-	result = ss.str();
-	text.setString(result);
-	text.setPosition(10, 80);
-	gameWindow->draw(text);
-
-	ss.str ("");
-	ss << playerController->getPlayer()->getDirection ();
-	result = ss.str ();
-	text.setString (result);
-	text.setPosition (10, 105);
-	gameWindow->draw (text);
-	//=================================
-
-	gameWindow->display();
+	// Set the world displacement vector relatively to player.
+	//	#TODO Change the world movement using sf::View
+	globalDisplacement = playerController->getPlayer ()->getDisplacement ();
+	//generator->move (-globalDisplacement);
 }
 
-void Game::draw() {
+void Game::render () {
+	gameWindow->clear ();		// Clear eveything.
+	draw ();
+	gameWindow->display ();
+}
+
+void Game::draw () {
 	//gameWindow->draw(mapSprite);
-	//generator->draw(gameWindow);
-	gameWindow->draw(*worldMap);
-	worldMap->t += 0.01f;
-	playerController->getPlayerView()->draw(*gameWindow);
+	playerController->prepareView ();
+	//generator->draw (gameWindow);
+
+	// Draw all layers in order.
+	sceneGraph.drawAll (*gameWindow);
+	
 }
 
+void Game::setFullscreenEnabled (bool enable) {
+	if (enable) {
+		gameWindow->create (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Fullscreen);
+		GraphicsOptions::videoStyle = sf::Style::Fullscreen;
+	}
+	else {
+		gameWindow->create (GraphicsOptions::videoMode, "ZPR Survival", sf::Style::Close | sf::Style::Titlebar);
+		GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
+	}
+
+	GraphicsOptions::fullscreenModeOn = !GraphicsOptions::fullscreenModeOn;
+}
