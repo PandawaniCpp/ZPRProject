@@ -43,3 +43,7 @@ sf::Image WorldMapView::getMapImage() {
 
 	return img;
 }
+
+sf::Vector2f WorldMapView::getSpawnPoint() {
+	return sf::Vector2f(mapa->getWidth(), mapa->getHeight());
+}
