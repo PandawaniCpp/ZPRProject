@@ -35,6 +35,8 @@ void WorldMap::initialize() {
 
 WorldMap::~WorldMap() {
 	delete perlinNoise;
+	delete perlinShader;
+	delete perlinTexture;
 }
 
 double WorldMap::getMap(int x, int y, int z) {

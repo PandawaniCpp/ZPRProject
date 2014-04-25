@@ -27,7 +27,7 @@ Game::Game () {
 Game::~Game () {
 	delete gameWindow;
 	delete playerController;
-	delete worldMap;
+	//delete worldMap;		#TODO ERROR! CHECK THIS
 	//delete console;		#TODO ERROR! CHECK THIS
 	// #TODO Delete the rest of the objects
 }

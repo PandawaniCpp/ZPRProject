@@ -13,7 +13,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "./../player/PlayerController.h"
-#include "./../MapGenerator.h"
+#include "./../map/WorldMapView.h"
 #include "Console.h"
 #include "KeyboardInterface.h"
 #include "../options/GraphicsOptions.h"
@@ -23,6 +23,10 @@
 	creating essential game objects, mouse and keyboard controls and
 	initializing as well as finalizing the game itself.
 */
+
+using namespace std;
+using namespace sf;
+
 class Game {
 public:
 	// Game title.
@@ -35,7 +39,7 @@ public:
 
 	// Game layers defining drawing order.
 	enum Layer {
-		BACKGROUND, GROUND, PLAYER, CONSOLE, LAYER_COUNT
+		MAP, PLAYER, CONSOLE, LAYER_COUNT
 	};
 
 	// Default constructor.
@@ -97,6 +101,7 @@ private:
 	PlayerController * playerController;	// MVC's controller of the player.
 	View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
+	WorldMapView * worldMap;
 
 	// Game parameters
 	Time timePerFrame;			// Keep the frame duration fixed.
@@ -108,10 +113,6 @@ private:
 	Vector2<int> mousePosition;			// Mouse position
 	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 
-	// #TEMP
-	MapGenerator * generator;			//-> move to another class (which will be an object here) 
-	Sprite mapSprite; //temporary		
-	Texture mapTexture; //temporary		-> move somewhere else
 
 	// #TEMP
 	Vector2<float> globalDisplacement;	//all object except player will move by the value of this vector
