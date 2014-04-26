@@ -9,12 +9,14 @@
 */
 
 #pragma once
+#include <map>
 #include <memory>
 #include <vector>
 #include <cassert>
 #include <algorithm>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include "../interface/ResourcesID.h"
 
 using sf::Sprite;
 using sf::Texture;
@@ -28,6 +30,9 @@ using sf::Texture;
 */
 class SurvivalObjectView : public Sprite {
 public:
+	// Stores frame count of particular animation (texture).
+	static std::map<Textures::ID, int> animationsSize;	
+
 	// Used to create scene nodes.
 	// Very often use of this particular unique_ptr.
 	typedef std::unique_ptr<SurvivalObjectView> Ptr;		
@@ -56,6 +61,15 @@ public:
 
 	// Check if had any childs.
 	bool hasChilds ();
+
+	// Animation handling.
+	void animate (sf::Time dt, int row);
+
+	// Change animation to draw.
+	void changeAnimation (Textures::ID textID);
+
+	// Get current aniumation
+	Textures::ID getCurrentAnimation ();
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.
@@ -63,8 +77,12 @@ protected:
 
 	Texture texture;				// Stores current texture for all Views.
 
-	sf::Vector2<int> frameSize;		// Size of one animation frame.
-	int frameNumber;				// Number of frame actually written.
-	int frameSet;					// Specifies, which row (which set) of texture is currently shown.
+	sf::Vector2<int> frameSize;			// Size of one animation frame.
+	Textures::ID currentAnimation;		// Animation state.
+	sf::Time frameDuration;
+	sf::Time elapsedTime;
+	int frameNumber;					// Number of frame actually written.
+	int frameSet;						// Specifies, which row (which set) of texture is currently shown.
+	bool animationRepeat;				// Animation is repeatable.
 };
 

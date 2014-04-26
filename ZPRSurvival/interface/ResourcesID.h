@@ -8,11 +8,13 @@
 	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
+#pragma once
 using sf::Texture;
 
 // List of all textures in the game.
 namespace Textures {
 	enum ID {
+		INIT_TEXTURE = 0,
 		P_SHEET,
 		P_IDLE,		//P_xxx - player textures
 		P_WALK,

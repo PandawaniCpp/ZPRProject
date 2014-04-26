@@ -10,6 +10,8 @@
 
 #include "SurvivalObjectView.h"
 
+std::map<Textures::ID, int> SurvivalObjectView::animationsSize = std::map<Textures::ID, int> ();
+
 SurvivalObjectView::SurvivalObjectView () {
 }
 
@@ -63,3 +65,36 @@ bool SurvivalObjectView::hasChilds () {
 		return true;
 }
 
+void SurvivalObjectView::animate (sf::Time dt, int row) {
+	// #TODO COMMENTS!!!!!!!!!!!
+	sf::Time timePerFrame = frameDuration / static_cast<float>(animationsSize[currentAnimation]);
+	elapsedTime += dt;
+	sf::Vector2i textureBounds (this->getTexture ()->getSize ());
+	sf::IntRect textureRect = this->getTextureRect ();
+
+	if (frameNumber == 0)
+		textureRect = sf::IntRect (0, row*frameSize.y, frameSize.x, frameSize.y);
+	while (elapsedTime >= timePerFrame && (frameNumber <= animationsSize[currentAnimation] || animationRepeat)) {
+		textureRect.left += textureRect.width;
+		if (textureRect.left + textureRect.width > textureBounds.x)
+			textureRect.left = 0;
+		elapsedTime -= timePerFrame;
+		if (animationRepeat) {
+			frameNumber = (frameNumber + 1) % animationsSize[currentAnimation];
+			if (frameNumber == 0)
+				textureRect = sf::IntRect (0, row*frameSize.y, frameSize.x, frameSize.y);
+		}
+		else {
+			frameNumber++;
+		}
+	}
+	this->setTextureRect (textureRect);
+}
+
+void SurvivalObjectView::changeAnimation (Textures::ID textID) {
+	currentAnimation = textID;
+}
+
+Textures::ID SurvivalObjectView::getCurrentAnimation () {
+	return currentAnimation;
+}
