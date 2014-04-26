@@ -238,9 +238,12 @@ void Game::update () {
 	player->setPosition (position);
 
 	// Set the world displacement vector relatively to player.
-	//worldView.move (-playerController->getPlayer ()->getDisplacement ());
 	worldView.setCenter (player->getPosition() + player->getOffset ());
 	gameWindow->setView (worldView);
+	worldMap->setPosition (worldView.getCenter () - worldView.getSize () / 2.0f);
+	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
+	vec.y -= GraphicsOptions::videoMode.height;
+	worldMap->setViewPosition (vec);
 }
 
 void Game::render () {
