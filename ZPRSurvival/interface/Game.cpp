@@ -17,8 +17,8 @@ Game::Game () {
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
-	worldMap = new WorldMapView();
-
+	worldMap = new WorldMapView(time(NULL), 0.5, 800, 2, 2000, 2000);
+	worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
 	gameWindow->setView (worldView);
