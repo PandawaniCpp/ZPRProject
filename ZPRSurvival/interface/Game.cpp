@@ -139,7 +139,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer()->getPosition());
+	worldView.setCenter(playerController->getPlayer ()->getPosition());
 	gameWindow->setView (worldView);
 }
 
@@ -222,15 +222,29 @@ void Game::mouseInput () {
 void Game::update () {
 	Player * player = playerController->getPlayer ();
 
-	playerController->update (mousePosition);	//update player according to mouse position change.
+	// Check if some keys are released (sometimes release event is not triggered somehow...).
+	int direction = player->getDirection ();
+	if (direction != 0) {
+		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
+			playerController->preparePlayerMove (Keyboard::W, false);
+		if (!Keyboard::isKeyPressed (Keyboard::S) && direction & Player::DOWN)
+			playerController->preparePlayerMove (Keyboard::S, false);
+		if (!Keyboard::isKeyPressed (Keyboard::A) && direction & Player::LEFT)
+			playerController->preparePlayerMove (Keyboard::A, false);
+		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
+			playerController->preparePlayerMove (Keyboard::D, false);
+	}
+	
+	// Update player accordingly to mouse position change.
+	playerController->update (mousePosition);	
 
 	// Update console ouput.
-	console->update ("x", playerController->getPlayer ()->getPosition ().x);
-	console->update ("y", playerController->getPlayer ()->getPosition ().y);
-	console->update ("dx", playerController->getPlayer ()->getDisplacement ().x);
-	console->update ("dy", playerController->getPlayer ()->getDisplacement ().y);
-	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
-	console->update ("rotation", playerController->getPlayer ()->getRotation ());
+	console->update ("x", player->getPosition ().x);
+	console->update ("y", player->getPosition ().y);
+	console->update ("dx", player->getDisplacement ().x);
+	console->update ("dy", player->getDisplacement ().y);
+	console->update ("direction", (float)player->getDirection ());
+	console->update ("rotation", player->getRotation ());
 
 	// Move player
 	Vector2f position = player->getPosition ();
@@ -240,10 +254,17 @@ void Game::update () {
 	// Set the world displacement vector relatively to player.
 	worldView.setCenter (player->getPosition() + player->getOffset ());
 	gameWindow->setView (worldView);
-	worldMap->setPosition (worldView.getCenter () - worldView.getSize () / 2.0f);
+
+	// Vector for displacement correction.
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
-	vec.y -= worldMap->getWorldBounds().y - worldView.getSize().y;
-	worldMap->setViewPosition (vec);
+
+	// Correct console displacement (always in top-left corner).
+	console->setPosition (vec);
+
+	// Correct map displacement.
+	worldMap->setPosition (vec);
+	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height/2.0;		// !!!!!
+	worldMap->setViewPosition (vec);	
 }
 
 void Game::render () {

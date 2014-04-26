@@ -14,7 +14,7 @@ WorldMapView::WorldMapView() {
 	texture = new sf::Texture();
 	blank = new sf::Texture();
 	image->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Blue);
-	image->loadFromFile("./resources/textures/background/grassx2.jpg");
+	image->loadFromFile("./resources/textures/background/grassx.png");
 
 	texture->loadFromImage(*image);
 	texture->setRepeated(true);
