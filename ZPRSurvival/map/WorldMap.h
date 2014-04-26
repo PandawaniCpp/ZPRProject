@@ -9,8 +9,8 @@
 #define WIDTH 1000
 #define HEIGHT 1000
 #define PERSISTENCE 0.5
-#define ZOOM 1000
-#define OCTAVES 8
+#define ZOOM 750
+#define OCTAVES 9
 
 class WorldMap : public SurvivalObject {
 public:
@@ -25,10 +25,13 @@ public:
 	int getWidth();
 	int getHeight();
 	sf::Shader & getShader();
+	sf::Vector2f getViewPosition();
 	//setter
+	void setViewPosition(sf::Vector2f position);
 private:
 	void initialize();
 
+	sf::Vector2f viewPosition;
 	PerlinNoise * perlinNoise;
 	sf::Shader * perlinShader;
 	sf::Texture * perlinTexture;
