@@ -32,6 +32,10 @@ public:
 	static VideoMode testVideoMode;		// For testing.
 	static int videoStyle;
 
+	// Metric definition (for Box2D)
+	static float pixelPerMeter;
+	static float meterPerPixel;
+
 	// Returns all available resolutions as string. 
 	// Each row represents "width x height (depth)"
 	static std::string getResolutionsAvailable ();

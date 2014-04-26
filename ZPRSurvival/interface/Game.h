@@ -12,6 +12,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <Box2D/Box2D.h>
 #include "./../player/PlayerController.h"
 #include "./../map/WorldMapView.h"
 #include "Console.h"

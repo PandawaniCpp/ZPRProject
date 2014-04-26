@@ -68,6 +68,9 @@ public:
 	// Change animation to draw.
 	void changeAnimation (Textures::ID textID);
 
+	// Reset frames and times for next animation.
+	void resetAnimation ();
+
 	// Get current aniumation
 	Textures::ID getCurrentAnimation ();
 	
@@ -82,7 +85,7 @@ protected:
 	sf::Time frameDuration;
 	sf::Time elapsedTime;
 	int frameNumber;					// Number of frame actually written.
-	int frameSet;						// Specifies, which row (which set) of texture is currently shown.
+	//int frameSet;						// Specifies, which row (which set) of texture is currently shown.
 	bool animationRepeat;				// Animation is repeatable.
 };
 
