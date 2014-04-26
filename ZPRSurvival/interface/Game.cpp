@@ -17,33 +17,13 @@ Game::Game () {
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
-	worldMap = new WorldMapView(time(NULL), 0.5, 800, 2, 2000, 2000);
-	worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
-
+	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 200000, 200000);
+	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
 	gameWindow->setView (worldView);
 	
 	state = Game::State::INIT;		// Proper first state
-
-	b2BodyDef bodyDef;
-	b2Body * boxBody;
-	bodyDef.position = b2Vec2 (worldView.getCenter ().x / GraphicsOptions::pixelPerMeter,
-							   (worldView.getCenter ().y - 200) / GraphicsOptions::pixelPerMeter);
-	bodyDef.type = b2_staticBody;
-	boxBody = GraphicsOptions::boxWorld.CreateBody (&bodyDef);
-	b2PolygonShape shape;
-	shape.SetAsBox (
-		100 / 2 / GraphicsOptions::pixelPerMeter,
-		100 / 2 / GraphicsOptions::pixelPerMeter);
-	b2FixtureDef fixtureDef;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.7f;
-	fixtureDef.shape = &shape;
-	boxBody->CreateFixture (&fixtureDef);
-
-	console->insert ("object body x", worldView.getCenter ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("object body y", worldView.getCenter ().y / GraphicsOptions::pixelPerMeter);
 }
 
 Game::~Game () {
@@ -137,7 +117,7 @@ void Game::objectsInit () {
 	playerController->setPlayer ();	
 
 	// Set player position to the spawn point defined in World Map.
-	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint ());
+	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
 
 	// Set default console's parameters
 	console->insert ("x", 0);
@@ -147,8 +127,6 @@ void Game::objectsInit () {
 	console->insert ("direction", 0);
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
-	console->insert ("player body x", playerController->getPlayerView()-> getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("player body y", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
@@ -156,13 +134,12 @@ void Game::objectsInit () {
 void Game::applyOptions () {
 	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
-	if (state != Game::INIT)
-		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
+	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer ()->getPosition());
+	worldView.setCenter(playerController->getPlayer()->getPosition());
 	gameWindow->setView (worldView);
 }
 
@@ -245,9 +222,7 @@ void Game::mouseInput () {
 void Game::update () {
 	Player * player = playerController->getPlayer ();
 
-	// Update Box2D World.
-	GraphicsOptions::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
-
+	worldMap->t += rand()%750/100000.0;
 
 	// Check if some keys are released (sometimes release event is not triggered somehow...).
 	int direction = player->getDirection ();
@@ -272,8 +247,6 @@ void Game::update () {
 	console->update ("dy", player->getDisplacement ().y);
 	console->update ("direction", (float)player->getDirection ());
 	console->update ("rotation", player->getRotation ());
-	console->update ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->update ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
 
 	// Move player
 	Vector2f position = player->getPosition ();
@@ -292,7 +265,7 @@ void Game::update () {
 
 	// Correct map displacement.
 	worldMap->setPosition (vec);
-	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height/2.0;		// !!!!!
+	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
 	worldMap->setViewPosition (vec);	
 }
 

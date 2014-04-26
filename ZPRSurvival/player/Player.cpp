@@ -15,7 +15,7 @@ Player::Player (){
 	displacement.y = 0;
 	size.x = 50;
 	size.y = 50;
-	speed = 400;
+	speed = 4000;
 	rotation = 0;
 	direction = 0;
 }
