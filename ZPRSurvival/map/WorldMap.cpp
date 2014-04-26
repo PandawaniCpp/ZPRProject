@@ -19,6 +19,7 @@ WorldMap::WorldMap(int seed, double persistence, double zoom, int octaves, int w
 	this->octaves = octaves;
 	this->width = width;
 	this->height = height;
+	viewPosition = sf::Vector2f(0.0f, 0.0f);
 	perlinNoise = new PerlinNoise(seed);
 	perlinShader = new sf::Shader();
 	perlinTexture = new sf::Texture();
