@@ -10,6 +10,7 @@ WorldMapView::WorldMapView() {
 
 WorldMapView::WorldMapView(int seed, double persistence, double zoom, int octaves, int width, int height) {
 	mapa = new WorldMap(seed, persistence, zoom, octaves, width, height);
+	t = 0.0f;
 	initialize();
 }
 
@@ -43,9 +44,11 @@ void WorldMapView::initialize() {
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	mapa->getShader().setParameter("offsetX", mapa->getViewPosition().x);
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
-	mapa->getShader().setParameter("deepWater", 117/255.0);
+	mapa->getShader().setParameter("deepWater", 125/255.0);
 	mapa->getShader().setParameter("shallowWater", 127/255.0);
-	mapa->getShader().setParameter("sand", 135/255.0);
+	mapa->getShader().setParameter("sand", 131/255.0);
+	mapa->getShader().setParameter("time", t);
+
 	//target.draw(*grass);
 
 	target.draw(*waterSprite);
@@ -79,13 +82,13 @@ sf::Image WorldMapView::getMapImage() {
 			int mapHeight = mapa->getMap(x, y, 0);
 			sf::Color mapColor;
 
-			if (mapHeight < 117) {
+			if (mapHeight < 124) {
 				mapColor = sf::Color(0, 10, 80 * mapHeight / 255.0);
 			}
 			else if (mapHeight < 127) {
 				mapColor = sf::Color(0, 80, 220 * mapHeight / 255.0);
 			}
-			else if (mapHeight < 135) {
+			else if (mapHeight < 131) {
 				mapColor = sf::Color(255 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
 			}
 			else if (mapHeight < 180) {
@@ -104,7 +107,7 @@ sf::Image WorldMapView::getMapImage() {
 }
 
 sf::Vector2f WorldMapView::getSpawnPoint() {
-	return sf::Vector2f(mapa->getWidth() /2.0f, mapa->getHeight() / 2.0f);
+	return sf::Vector2f(mapa->getWidth() /3.5f, mapa->getHeight() / 3.5f);
 }
 
 void WorldMapView::setViewPosition(sf::Vector2f position) {
