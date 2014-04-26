@@ -29,6 +29,9 @@ public:
 	// Overloaded sf::Sprite draw() method for Player.
 	virtual void draw (sf::RenderWindow& window) const;
 
+	// Connects Texture::ID with row number of the .png file.
+	std::map<Textures::ID, int> textureIdRow;
+
 private:
 	// Hold all player's textures listed by Textures::ID.
 	ResourceHolder<Texture, Textures::ID> textureHolder;
