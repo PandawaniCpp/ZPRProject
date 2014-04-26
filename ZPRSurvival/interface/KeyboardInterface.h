@@ -25,6 +25,7 @@ public:
 		ALT = 4,
 		SYSTEM = 8
 	};
+
 	// Default constructor
 	KeyboardInterface ();
 

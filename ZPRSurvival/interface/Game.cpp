@@ -222,15 +222,29 @@ void Game::mouseInput () {
 void Game::update () {
 	Player * player = playerController->getPlayer ();
 
-	playerController->update (mousePosition);	//update player according to mouse position change.
+	// Check if some keys are released (sometimes release event is not triggered somehow...).
+	int direction = player->getDirection ();
+	if (direction != 0) {
+		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
+			playerController->preparePlayerMove (Keyboard::W, false);
+		if (!Keyboard::isKeyPressed (Keyboard::S) && direction & Player::DOWN)
+			playerController->preparePlayerMove (Keyboard::S, false);
+		if (!Keyboard::isKeyPressed (Keyboard::A) && direction & Player::LEFT)
+			playerController->preparePlayerMove (Keyboard::A, false);
+		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
+			playerController->preparePlayerMove (Keyboard::D, false);
+	}
+	
+	// Update player accordingly to mouse position change.
+	playerController->update (mousePosition);	
 
 	// Update console ouput.
-	console->update ("x", playerController->getPlayer ()->getPosition ().x);
-	console->update ("y", playerController->getPlayer ()->getPosition ().y);
-	console->update ("dx", playerController->getPlayer ()->getDisplacement ().x);
-	console->update ("dy", playerController->getPlayer ()->getDisplacement ().y);
-	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
-	console->update ("rotation", playerController->getPlayer ()->getRotation ());
+	console->update ("x", player->getPosition ().x);
+	console->update ("y", player->getPosition ().y);
+	console->update ("dx", player->getDisplacement ().x);
+	console->update ("dy", player->getDisplacement ().y);
+	console->update ("direction", (float)player->getDirection ());
+	console->update ("rotation", player->getRotation ());
 
 	// Move player
 	Vector2f position = player->getPosition ();
