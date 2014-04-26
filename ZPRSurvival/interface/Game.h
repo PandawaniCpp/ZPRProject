@@ -12,7 +12,6 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <Box2D/Box2D.h>
 #include "./../player/PlayerController.h"
 #include "./../map/WorldMapView.h"
 #include "Console.h"
@@ -108,7 +107,6 @@ private:
 	Time timePerFrame;			// Keep the frame duration fixed.
 	Game::State state;				// Describe, in which state the game is in the moment.
 	FloatRect worldBounds;			// World size (in px).
-	//float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
 	Vector2f mousePosition;			// Mouse position

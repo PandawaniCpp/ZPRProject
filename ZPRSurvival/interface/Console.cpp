@@ -36,6 +36,10 @@ Console::Console () {
 	keys.push_back ("direction");
 	keys.push_back ("rotation");
 	keys.push_back ("current resolution");
+	keys.push_back ("player body x");
+	keys.push_back ("player body y");
+	keys.push_back ("object body x");
+	keys.push_back ("object body y");
 	keys.push_back ("avail. resolutions");		// <- Should be the last one
 
 	// Set default param to game title and version.

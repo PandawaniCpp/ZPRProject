@@ -28,6 +28,9 @@ void PlayerController::update (Vector2<float> mousePosition) {
 	if ((player->getSpeed() != 0) || (player->getDirection() != 0))
 		calculatePlayerMove ();
 
+	// Box2D body update
+	playerView->moveBody (player->getDisplacement ());
+
 	// Position update.
 	Vector2<float> position = player->getPosition ();
 	playerView->setPosition (position.x, position.y);

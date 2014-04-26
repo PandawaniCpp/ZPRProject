@@ -11,6 +11,7 @@
 #pragma once
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <Box2D/Dynamics/b2World.h>
 #include <sstream>
 
 using sf::VideoMode;
@@ -46,5 +47,8 @@ public:
 
 	// Switch between resolutions.
 	static void switchResolution (bool higher);
+
+	// Box2D World
+	static b2World boxWorld;
 };
 
