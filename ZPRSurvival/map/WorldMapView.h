@@ -12,6 +12,7 @@ public:
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	float t;
 	sf::Image getMapImage();
+	void setViewPosition(sf::Vector2f position);
 	sf::Vector2f getSpawnPoint();
 private:
 	sf::Image* image;

@@ -19,6 +19,7 @@ WorldMap::WorldMap(int seed, double persistence, double zoom, int octaves, int w
 	this->octaves = octaves;
 	this->width = width;
 	this->height = height;
+	viewPosition = sf::Vector2f(0.0f, 0.0f);
 	perlinNoise = new PerlinNoise(seed);
 	perlinShader = new sf::Shader();
 	perlinTexture = new sf::Texture();
@@ -26,7 +27,7 @@ WorldMap::WorldMap(int seed, double persistence, double zoom, int octaves, int w
 }
 
 void WorldMap::initialize() {
-	perlinShader->loadFromFile("./shaders/PerlinShader.glsl", sf::Shader::Fragment);
+	perlinShader->loadFromFile("./shaders/MapShader.glsl", sf::Shader::Fragment);
 	perlinTexture->create(16, 16);
 	perlinTexture->loadFromImage(perlinNoise->getPermutationImage());
 	perlinNoise->getPermutationImage().saveToFile("./perlin.png");
@@ -34,6 +35,8 @@ void WorldMap::initialize() {
 
 	perlinShader->setParameter("offsetX", 0.0f);
 	perlinShader->setParameter("offsetY", 0.0f);
+	perlinShader->setParameter("height", height);
+	perlinShader->setParameter("width", width);
 	perlinShader->setParameter("zoom", zoom);
 	perlinShader->setParameter("persistence", persistence);
 	perlinShader->setParameter("octaves", octaves);
@@ -47,16 +50,34 @@ WorldMap::~WorldMap() {
 }
 
 double WorldMap::getMap(int x, int y, int z) {
-	double t = 0.0;
+	double t = 0.5;
 	double amplitude = 1.0;
 	double frequency = 1;
+	
+	if (x > 0.6*width) {
+		t -= 1.5*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
+	}
+	else if (x < 0.4f*width) {
+		t -= 1.5*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
+	}
+	if (y > 0.6*height) {
+		t -= 1.5*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
+	}
+	else if (y < 0.4*height) {
+		t -= 1.5*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
+	}
+
 	for (int i = 0; i < octaves; i++) {
 		t += perlinNoise->noise(x*frequency / zoom, y*frequency / zoom, z/1000.0)*amplitude;
 		amplitude *= persistence;
 		frequency *= 2;
 	}
 
-	return t;
+	if (t < -1.0) {
+		t = -1.0;
+	}
+
+	return 127.5*(t+1);
 }
 
 int WorldMap::getWidth() {
@@ -69,4 +90,12 @@ int WorldMap::getHeight() {
 
 sf::Shader & WorldMap::getShader() {
 	return *perlinShader;
+}
+
+void WorldMap::setViewPosition(sf::Vector2f position) {
+	viewPosition = position;
+}
+
+sf::Vector2f WorldMap::getViewPosition() {
+	return viewPosition;
 }
