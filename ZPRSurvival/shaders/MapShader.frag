@@ -22,6 +22,10 @@ float lerp(float t, float a, float b){
 	return a + t * (b - a);
 }
 
+vec3 lerpV(float t, vec3 a, vec3 b){
+	return a + t * (b - a);
+}
+
 float grad(int hash, float x, float y, float z){
 	int h = hash & 15;
 	// Convert lower 4 bits of hash inot 12 gradient directions
@@ -81,22 +85,22 @@ float sum1(float x, float y, float z){
 	float frequency = 1;
 	
 	if (x > 0.6*width) {
-		t -= 1.5*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
+		t -= 1.3*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
 	}
 	else if (x < 0.4f*width) {
-		t -= 1.5*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
+		t -= 1.3*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
 	}
 	if (y > 0.6*height) {
-		t -= 1.5*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
+		t -= 1.3*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
 	}
 	else if (y < 0.4*height) {
-		t -= 1.5*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
+		t -= 1.3*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
 	}
 
 	for (int i = 0; i < octaves; i++) {
 		t += noise( ((x*frequency) / zoom), ((y*frequency) / zoom), 0)*amplitude;
-		amplitude *= persistence;
-		frequency *= 4;
+		amplitude *= pow(persistence, 3);
+		frequency *= pow(2, 4);
 	}
 	
 	if (t < -1.0) {
@@ -117,21 +121,55 @@ float invert(float t){
 }
 
 void main() {
+	float offset0 = 0.001 + 0.0005*sin(-2*time + (7*gl_FragCoord.x + 2*gl_FragCoord.y)/(resolutionX*resolutionY/1000.0));
+;
+	float offset1 = 0.005;
+	float offset2 = 0.010;
+	float offset3 = 0.015;
+	float offset4 = 0.020;
 	float k = sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0);
 	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
-	vec4 pixel;// = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
-	if ( k < deepWater){
-		pixel = vec4(0, 10.0/255.0*k, 80.0/255.0*k, 1.0);
+	vec3 pixel;// = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
+	vec3 deepCol = vec3(0, 0.05, 0.35) * k;
+	vec3 shallowCol = vec3(0, 0.6, 0.9) * k;
+	vec3 sandCol = vec3(1.0, 0.8, 0.4) * k;
+	vec3 grassCol = vec3(0.2, 0.6, 0.1) * k;
+	vec3 kk = vec3(k);
+	float t;
+	float shallowWaterWaves = shallowWater 
+							+ 0.0006*sin(time + (2*gl_FragCoord.x + 7*gl_FragCoord.y)/(resolutionX*resolutionY/1000.0))
+							+ 0.0006*cos(-0.797*time + (1.3*gl_FragCoord.x + 4.8*gl_FragCoord.y)/(resolutionX*resolutionY/100.0));
+
+	
+	
+	if ( k < deepWater - offset2){
+		pixel = deepCol;
 	}
-	else if (k < shallowWater){
-		pixel = vec4(0, 80.0/255.0, 220.0/255.0*k, 1.0);
+	else if(k < deepWater){
+		t = fade((k + offset2 - deepWater)/offset2);
+		pixel = lerpV(t, deepCol, shallowCol); 
+	}
+	else if (k < shallowWater - offset2){
+		pixel = shallowCol;
+	}
+	else if (k < shallowWaterWaves){
+		t = fade((k - shallowWater + offset2)/(shallowWaterWaves - shallowWater + offset2));
+		pixel = lerpV(t, shallowCol, (1.5*sandCol+shallowCol)/2);
+	}
+	else if (k < shallowWaterWaves + offset0){
+		t = fade((k - shallowWaterWaves)/(offset0));
+		pixel = lerpV(t, (1.5*sandCol+shallowCol)/2, (1.7*sandCol+shallowCol)/2);
+	}
+	else if(k < sand - offset2){
+		pixel = sandCol;
 	}
 	else if(k < sand){
-		pixel = vec4(k, k*0.8, 102.0/255.0*k, 1.0);
+		t = fade((k + offset2 - sand)/offset2);
+		pixel = lerpV(t, sandCol, grassCol); 	
 	}
 	else{
-		pixel = vec4(0.2*k, 0.4*k, 0.8/255.0*k, 1.0);
+		pixel = grassCol;
 	}
 	
-	gl_FragColor = pixel;
+	gl_FragColor = vec4(pixel, 1.0);
 }

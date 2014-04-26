@@ -17,8 +17,8 @@ Game::Game () {
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
 	console = new Console ();
-	worldMap = new WorldMapView(time(NULL), 0.5, 800, 2, 2000, 2000);
-	worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
+	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 200000, 200000);
+	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
 	gameWindow->setView (worldView);
@@ -117,7 +117,7 @@ void Game::objectsInit () {
 	playerController->setPlayer ();	
 
 	// Set player position to the spawn point defined in World Map.
-	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint ());
+	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
 
 	// Set default console's parameters
 	console->insert ("x", 0);
@@ -139,7 +139,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer ()->getPosition());
+	worldView.setCenter(playerController->getPlayer()->getPosition());
 	gameWindow->setView (worldView);
 }
 
@@ -222,6 +222,8 @@ void Game::mouseInput () {
 void Game::update () {
 	Player * player = playerController->getPlayer ();
 
+	worldMap->t += rand()%750/100000.0;
+
 	// Check if some keys are released (sometimes release event is not triggered somehow...).
 	int direction = player->getDirection ();
 	if (direction != 0) {
@@ -260,12 +262,11 @@ void Game::update () {
 
 	// Correct console displacement (always in top-left corner).
 	console->setPosition (vec);
-	
+
 	// Correct map displacement.
 	worldMap->setPosition (vec);
-	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height/2.0;		// !!!!!
-	worldMap->setViewPosition (vec);
-	worldMap->update();
+	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
+	worldMap->setViewPosition (vec);	
 }
 
 void Game::render () {

@@ -95,6 +95,18 @@ void SurvivalObjectView::changeAnimation (Textures::ID textID) {
 	currentAnimation = textID;
 }
 
+void SurvivalObjectView::resetAnimation () {
+	elapsedTime = sf::Time::Zero;
+	frameNumber = 0;
+}
+
 Textures::ID SurvivalObjectView::getCurrentAnimation () {
 	return currentAnimation;
+}
+
+void SurvivalObjectView::moveBody (sf::Vector2<float> moveVector) {
+	boxBody->ApplyForce (b2Vec2 (moveVector.x / GraphicsOptions::pixelPerMeter,
+		moveVector.y / GraphicsOptions::pixelPerMeter),
+		b2Vec2 (this->getPosition().x / GraphicsOptions::pixelPerMeter,
+		this->getPosition().y / GraphicsOptions::pixelPerMeter), true);
 }

@@ -14,8 +14,7 @@ PlayerView::PlayerView () {
 	// Animation attributes init.
 	frameSize.x = frameSize.y = 50;
 	frameNumber = 0;
-	frameSet = 0;
-	frameDuration = sf::seconds (0.2);
+	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 
@@ -34,7 +33,23 @@ PlayerView::PlayerView () {
 	textureIdRow.insert (std::make_pair (Textures::P_WALK, 1));
 
 	// Initial texture
-	setTextureRect (sf::IntRect (frameNumber*frameSize.x, frameSet*frameSize.y, frameSize.x, frameSize.y));
+	setTextureRect (sf::IntRect (frameNumber*frameSize.x, 0, frameSize.x, frameSize.y));
+
+	// Create Box2D body for player.
+	b2BodyDef bodyDef;
+	bodyDef.position = b2Vec2 (this->getPosition().x / GraphicsOptions::pixelPerMeter, 
+							   this->getPosition().y / GraphicsOptions::pixelPerMeter);
+	bodyDef.type = b2_dynamicBody;
+	boxBody = GraphicsOptions::boxWorld.CreateBody (&bodyDef);
+	b2PolygonShape shape;
+	shape.SetAsBox (
+		this->getGlobalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,
+		this->getGlobalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
+	b2FixtureDef fixtureDef;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.7f;
+	fixtureDef.shape = &shape;
+	boxBody->CreateFixture (&fixtureDef);
 }
 
 PlayerView::~PlayerView () {

@@ -16,6 +16,10 @@
 #include <algorithm>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
+#include "../options/GraphicsOptions.h"
 #include "../interface/ResourcesID.h"
 
 using sf::Sprite;
@@ -68,8 +72,14 @@ public:
 	// Change animation to draw.
 	void changeAnimation (Textures::ID textID);
 
+	// Reset frames and times for next animation.
+	void resetAnimation ();
+
 	// Get current aniumation
 	Textures::ID getCurrentAnimation ();
+
+	// Move the Box2D body.
+	void moveBody (sf::Vector2<float> moveVector);
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.
@@ -82,7 +92,9 @@ protected:
 	sf::Time frameDuration;
 	sf::Time elapsedTime;
 	int frameNumber;					// Number of frame actually written.
-	int frameSet;						// Specifies, which row (which set) of texture is currently shown.
+	//int frameSet;						// Specifies, which row (which set) of texture is currently shown.
 	bool animationRepeat;				// Animation is repeatable.
+
+	b2Body * boxBody;					// Box2D Dynamic object.
 };
 
