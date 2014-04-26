@@ -11,17 +11,23 @@ WorldMapView::WorldMapView() {
 
 	// = new sf::RenderTexture();
 	image = new sf::Image();
+	texture = new sf::Texture();
+	blank = new sf::Texture();
 	image->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Blue);
-	texture = new Texture();
-	texture->create(width, height);
+	image->loadFromFile("./resources/textures/background/grassx2.jpg");
 
 	texture->loadFromImage(*image);
-	setTexture(*texture);
+	texture->setRepeated(true);
+	blank->create(width, height);
+	setTexture(*blank);
+	grass = new Sprite(*texture, sf::IntRect(0,0,width,height));
+
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	mapa->getShader().setParameter("offsetX", mapa->getViewPosition().x);
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
+	target.draw(*grass);
 	target.draw((Sprite)*this, &mapa->getShader());
 }
 
@@ -58,10 +64,7 @@ sf::Image WorldMapView::getMapImage() {
 
 			}
 
-				img.setPixel(x, y, mapColor);
-
-			
-			
+			img.setPixel(x, y, mapColor);
 		}
 	}
 
@@ -74,4 +77,8 @@ sf::Vector2f WorldMapView::getSpawnPoint() {
 
 void WorldMapView::setViewPosition(sf::Vector2f position) {
 	mapa->setViewPosition(position);
+}
+
+sf::Vector2f WorldMapView::getWorldBounds() {
+	return sf::Vector2f(mapa->getWidth(), mapa->getHeight());
 }

@@ -139,7 +139,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer ()->getPosition());
+	worldView.setCenter(playerController->getPlayer()->getPosition());
 	gameWindow->setView (worldView);
 }
 
@@ -242,7 +242,7 @@ void Game::update () {
 	gameWindow->setView (worldView);
 	worldMap->setPosition (worldView.getCenter () - worldView.getSize () / 2.0f);
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
-	vec.y -= GraphicsOptions::videoMode.height;
+	vec.y -= worldMap->getWorldBounds().y - worldView.getSize().y;
 	worldMap->setViewPosition (vec);
 }
 

@@ -6,10 +6,10 @@
 #include "./../options/GraphicsOptions.h"
 
 //default width, height, persistance, zoom and number of octaves
-#define WIDTH 2000
-#define HEIGHT 2000
+#define WIDTH 1400
+#define HEIGHT 1400
 #define PERSISTENCE 0.5
-#define ZOOM 1600
+#define ZOOM 1120
 #define OCTAVES 9
 
 class WorldMap : public SurvivalObject {

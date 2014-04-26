@@ -27,7 +27,8 @@ WorldMap::WorldMap(int seed, double persistence, double zoom, int octaves, int w
 }
 
 void WorldMap::initialize() {
-	perlinShader->loadFromFile("./shaders/MapShader.glsl", sf::Shader::Fragment);
+	perlinShader->loadFromFile("./shaders/MapShader.vert", "./shaders/MapShader.frag");
+	//perlinShader->loadFromFile("./shaders/TestShader.vert", "./shaders/TestShader.frag");	
 	perlinTexture->create(16, 16);
 	perlinTexture->loadFromImage(perlinNoise->getPermutationImage());
 	perlinNoise->getPermutationImage().saveToFile("./perlin.png");
