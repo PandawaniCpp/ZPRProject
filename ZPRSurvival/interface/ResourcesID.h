@@ -13,7 +13,9 @@ using sf::Texture;
 // List of all textures in the game.
 namespace Textures {
 	enum ID {
-		P_BASE,		//P_xxx - player textures
+		P_SHEET,
+		P_IDLE,		//P_xxx - player textures
+		P_WALK,
 		I_STONE = 100	//I_xxx - item textures
 		//C_xxx - creature textures
 		//M_xxx - map elements textures

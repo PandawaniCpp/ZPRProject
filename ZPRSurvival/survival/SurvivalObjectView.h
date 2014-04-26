@@ -61,6 +61,10 @@ protected:
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.
 	SurvivalObjectView* parent;		// Pointer ro the parent (one level above).
 
-	Texture texture;			// Stores current texture for all Views.
+	Texture texture;				// Stores current texture for all Views.
+
+	sf::Vector2<int> frameSize;		// Size of one animation frame.
+	int frameNumber;				// Number of frame actually written.
+	int frameSet;					// Specifies, which row (which set) of texture is currently shown.
 };
 
