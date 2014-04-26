@@ -78,6 +78,8 @@ void PlayerController::calculatePlayerRotation (Vector2<float> mousePosition) {
 	calculateRotation (rotation, rotationVector);
 
 	player->setRotation (rotation);
+
+	player->setOffset (Vector2<float> (deltaX / 5.0f, deltaY / 5.0f));
 }
 
 void PlayerController::setPlayer () {

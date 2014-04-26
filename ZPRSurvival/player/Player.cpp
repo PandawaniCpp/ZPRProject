@@ -27,6 +27,14 @@ Player::State Player::getState () {
 	return state;
 }
 
+Vector2<float> Player::getOffset () {
+	return offset;
+}
+
 void Player::setState (Player::State state) {
 	this->state = state;
+}
+
+void Player::setOffset (Vector2<float> offset) {
+	this->offset = offset;
 }
