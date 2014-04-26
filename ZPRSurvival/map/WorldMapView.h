@@ -4,6 +4,8 @@
 #include "./../survival/SurvivalObjectView.h"
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
+#include "ChunkView.h"
+#include "PoissonDiskSampling.h"
 
 class WorldMapView :
 	public SurvivalObjectView {
@@ -12,6 +14,7 @@ public:
 	WorldMapView(int seed, double persistence, double zoom, int octaves, int width, int height);
 	~WorldMapView();
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+	void update();
 	float t;
 	sf::Image getMapImage();
 	void setViewPosition(sf::Vector2f position);
@@ -32,4 +35,9 @@ private:
 	sf::Sprite * grassSprite;
 
 	WorldMap* mapa;
+	typedef std::vector < std::vector<ChunkView*>> ChunkArray;
+	typedef std::vector <std::vector<std::vector<sf::Vector2f>>> ChunkObjectsArray;
+	sf::Vector2i last;
+	ChunkArray chunkArray;
+	ChunkObjectsArray chunkObjectsArray;
 };

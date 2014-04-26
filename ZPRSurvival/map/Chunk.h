@@ -9,10 +9,11 @@ public:
 	virtual ~Chunk();
 	void load();
 	void unload();
-	void pushPosition(sf::Vector3i pos);
+	void setPositionsVector(const std::vector<sf::Vector2f> & vect);
+	void setObjcets();
 private:
 	//teksturyyyyyy
-	std::vector<sf::Vector3i> positions;
+	std::vector<sf::Vector2f> positions;
 	std::vector<SurvivalObject*> objects;
 
 };

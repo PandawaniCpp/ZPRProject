@@ -260,11 +260,12 @@ void Game::update () {
 
 	// Correct console displacement (always in top-left corner).
 	console->setPosition (vec);
-
+	
 	// Correct map displacement.
 	worldMap->setPosition (vec);
 	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height/2.0;		// !!!!!
-	worldMap->setViewPosition (vec);	
+	worldMap->setViewPosition (vec);
+	worldMap->update();
 }
 
 void Game::render () {
