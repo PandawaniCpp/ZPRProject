@@ -36,10 +36,23 @@ void PlayerController::update (Vector2<float> mousePosition) {
 	playerView->animate (deltaTime, playerView->textureIdRow[playerView->getCurrentAnimation()]);
 
 	// #TEMP Put animation change in different method.
-	if (player->getDirection ())
-		playerView->changeAnimation (Textures::P_WALK);
-	else
-		playerView->changeAnimation (Textures::P_IDLE);
+	Textures::ID playerTexture = playerView->getCurrentAnimation ();
+
+	switch (playerTexture) {
+		case Textures::P_IDLE: 
+			if (player->getDirection () != 0) {
+				playerView->resetAnimation ();
+				playerView->changeAnimation (Textures::P_WALK);
+			}
+			break;
+		case Textures::P_WALK: 
+			if (player->getDirection () == 0) {
+				playerView->resetAnimation ();
+				playerView->changeAnimation (Textures::P_IDLE);
+			}
+			break;
+		default: break;
+	}
 }
 
 void PlayerController::prepareView () {

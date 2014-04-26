@@ -14,8 +14,7 @@ PlayerView::PlayerView () {
 	// Animation attributes init.
 	frameSize.x = frameSize.y = 50;
 	frameNumber = 0;
-	frameSet = 0;
-	frameDuration = sf::seconds (0.2);
+	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 
@@ -34,7 +33,7 @@ PlayerView::PlayerView () {
 	textureIdRow.insert (std::make_pair (Textures::P_WALK, 1));
 
 	// Initial texture
-	setTextureRect (sf::IntRect (frameNumber*frameSize.x, frameSet*frameSize.y, frameSize.x, frameSize.y));
+	setTextureRect (sf::IntRect (frameNumber*frameSize.x, 0, frameSize.x, frameSize.y));
 }
 
 PlayerView::~PlayerView () {

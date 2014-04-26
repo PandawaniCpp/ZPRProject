@@ -95,6 +95,11 @@ void SurvivalObjectView::changeAnimation (Textures::ID textID) {
 	currentAnimation = textID;
 }
 
+void SurvivalObjectView::resetAnimation () {
+	elapsedTime = sf::Time::Zero;
+	frameNumber = 0;
+}
+
 Textures::ID SurvivalObjectView::getCurrentAnimation () {
 	return currentAnimation;
 }
