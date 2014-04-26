@@ -4,7 +4,9 @@
 #include "./../survival/SurvivalObjectView.h"
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
-
+#include "PoissonDiskSampling.h"
+#include "ChunkView.h"
+#include <Vector>
 class WorldMapView :
 	public SurvivalObjectView {
 public:
@@ -17,9 +19,13 @@ public:
 	sf::Vector2f getSpawnPoint();
 	sf::Vector2f getWorldBounds();
 private:
+	
 	sf::Image* image;
 	sf::Texture* texture;
 	sf::Texture* blank;
 	sf::Sprite * grass;
 	WorldMap* mapa;
+	PoissonDiskSampling* poisson;
+	std::vector<sf::CircleShape> mapContent;
+	std::vector<std::vector<ChunkView*>> chunks;
 };

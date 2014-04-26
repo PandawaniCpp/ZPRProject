@@ -3,7 +3,7 @@
 PoissonDiskSampling::PoissonDiskSampling(float width, float height) {
 	mapHeight = height;
 	mapWidth = width;
-	srand(time(NULL));
+	srand(DEFAULT_SEED);
 	objectsPosition();
 }
 
@@ -14,9 +14,9 @@ PoissonDiskSampling::~PoissonDiskSampling() {
 void PoissonDiskSampling::objectsPosition() {
 	float minDistance = 50.0f;
 
-	vector <Vector2f> activePoints;
+	std::vector <sf::Vector2f> activePoints;
 	//contenner in witch we are putting ceils with points.
-	vector <Vector2i> grid;
+	std::vector <sf::Vector2i> grid;
 
 	float cellSize = minDistance / SQRT2;
 	//computing size of our grid
@@ -24,7 +24,7 @@ void PoissonDiskSampling::objectsPosition() {
 	//int gridWidth = static_cast<int>(mapWidth / cellSize);
 
 
-	Vector2f firstPoint = randPoint();
+	sf::Vector2f firstPoint = randPoint();
 	////logger //log = //logger::getInstance();
 	//log << firstPoint.x;
 	//log << ";";
@@ -33,11 +33,11 @@ void PoissonDiskSampling::objectsPosition() {
 	activePoints.push_back(firstPoint);
 	positions.push_back(firstPoint);
 	grid.push_back(getGrid(firstPoint, cellSize));
-	//grid.push_back(Vector2i(static_cast<int>(randomPoint.x / cellSize), static_cast<int>(randomPoint.x / cellSize)))
+	//grid.push_back(sf::Vector2i(static_cast<int>(randomPoint.x / cellSize), static_cast<int>(randomPoint.x / cellSize)))
 
 	while (!activePoints.empty()) {
 	//select random from active
-		Vector2f basePoint = randomActive(activePoints);
+		sf::Vector2f basePoint = randomActive(activePoints);
 		//log << "==========================NOWY PUNKT============================";
 		//log << endl;
 		//log << "X: ";
@@ -48,7 +48,7 @@ void PoissonDiskSampling::objectsPosition() {
 		//int occupiedNeighbours = 0;
 		//log << "wchodzem w grida";
 		//log << endl;
-		Vector2i baseGrid = getGrid(basePoint, cellSize);
+		sf::Vector2i baseGrid = getGrid(basePoint, cellSize);
 		//log << "mam grida";
 		//log << endl;
 		// changing number of occupied cells around randomActive, max is 8
@@ -57,8 +57,8 @@ void PoissonDiskSampling::objectsPosition() {
 		int z = KMAX;
 		for (int i = 0; i < z; ++i) {
 			
-			Vector2f neighbour = randNeighbour(basePoint, minDistance);
-			Vector2i neighbourGrid = getGrid(neighbour, cellSize);
+			sf::Vector2f neighbour = randNeighbour(basePoint, minDistance);
+			sf::Vector2i neighbourGrid = getGrid(neighbour, cellSize);
 			
 			//log << "mój grid:";
 			//log << neighbourGrid.x;
@@ -97,27 +97,27 @@ void PoissonDiskSampling::objectsPosition() {
 	}
 }
 
-Vector2f PoissonDiskSampling::randPoint() {
+sf::Vector2f PoissonDiskSampling::randPoint() {
 
 	float y = static_cast <float> (rand() %static_cast<int> (mapHeight));
 
 	float x = static_cast <float> (rand() % static_cast<int> (mapWidth));
-	return Vector2f (x,y);
+	return sf::Vector2f (x,y);
 
 }
 
-Vector2i PoissonDiskSampling::getGrid(const Vector2f & point, const float & size) {
-	return Vector2i(static_cast<int>(point.x / size), static_cast<int>(point.y / size));
+sf::Vector2i PoissonDiskSampling::getGrid(const sf::Vector2f & point, const float & size) {
+	return sf::Vector2i(static_cast<int>(point.x / size), static_cast<int>(point.y / size));
 
 }
 
-Vector2f PoissonDiskSampling::randomActive(vector<Vector2f>& activeVector) {
+sf::Vector2f PoissonDiskSampling::randomActive(std::vector<sf::Vector2f>& activeVector) {
 	int length = activeVector.size();
 	int pos = (rand() % length);
 	return activeVector[pos];
 }
 /*
-int PoissonDiskSampling::checkOccupiedNeighbours(const Vector2i & grid, const vector<Vector2i> & gridVector){
+int PoissonDiskSampling::checkOccupiedNeighbours(const sf::Vector2i & grid, const std::vector<sf::Vector2i> & gridVector){
 	int i = 0;
 	for (auto& iter : gridVector) {
 		/* x = grid, y-neighbours
@@ -139,7 +139,7 @@ int PoissonDiskSampling::checkOccupiedNeighbours(const Vector2i & grid, const ve
 
 }
 */
-Vector2f PoissonDiskSampling::randNeighbour(const Vector2f & basePoint, const float & distance) {
+sf::Vector2f PoissonDiskSampling::randNeighbour(const sf::Vector2f & basePoint, const float & distance) {
 	//while position is not between f and 2f, randomize
 	float r;
 	float alpha;
@@ -155,14 +155,14 @@ Vector2f PoissonDiskSampling::randNeighbour(const Vector2f & basePoint, const fl
 	y = basePoint.y - r* cos(alpha);
 				
 	
-	return Vector2f(x, y);
+	return sf::Vector2f(x, y);
 
 }
 
-bool PoissonDiskSampling::checkNeighbour(const Vector2f & candidate, const float & minRange, const vector<Vector2i> & gridVector, const vector<Vector2f>& positions) {
+bool PoissonDiskSampling::checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const std::vector<sf::Vector2i> & gridVector, const std::vector<sf::Vector2f>& positions) {
 	bool yesItIs = false;
 	float cellSize = minRange / SQRT2;
-	Vector2i candidateGrid = getGrid(candidate, cellSize);
+	sf::Vector2i candidateGrid = getGrid(candidate, cellSize);
 	for (auto& iter : gridVector) {
 		if (iter == candidateGrid) {
 			return yesItIs;
@@ -170,7 +170,7 @@ bool PoissonDiskSampling::checkNeighbour(const Vector2f & candidate, const float
 		}
 	}
 		for (auto& iterator : positions) {
-			Vector2i pointGrid = getGrid(iterator, cellSize);
+			sf::Vector2i pointGrid = getGrid(iterator, cellSize);
 			// checking if grid is close to candidate's grid
 			if (abs(pointGrid.x - candidateGrid.x <= 2) && abs(pointGrid.y - candidateGrid.y <= 2)) {
 				// if yes, check if it is far enough to place a point
@@ -184,8 +184,8 @@ bool PoissonDiskSampling::checkNeighbour(const Vector2f & candidate, const float
 	return yesItIs;
 }
 
-void PoissonDiskSampling::deleteBasePoint(vector<Vector2f> & activeVector, const Vector2f & point) {
-	vector<Vector2f>::iterator iterator;
+void PoissonDiskSampling::deleteBasePoint(std::vector<sf::Vector2f> & activeVector, const sf::Vector2f & point) {
+	std::vector<sf::Vector2f>::iterator iterator;
 	iterator = activeVector.begin();
 
 	while ((*iterator) != point) {
@@ -193,7 +193,7 @@ void PoissonDiskSampling::deleteBasePoint(vector<Vector2f> & activeVector, const
 	}
 	activeVector.erase(iterator);
 
-	/*for (vector<Vector2f>::iterator iter = activeVector.begin(); iter != activeVector.end(); ++iter) {
+	/*for (std::vector<sf::Vector2f>::iterator iter = activeVector.begin(); iter != activeVector.end(); ++iter) {
 		if ((*iter) == point) {
 		
 			//	activeVector.erase(iter);
@@ -205,18 +205,18 @@ void PoissonDiskSampling::deleteBasePoint(vector<Vector2f> & activeVector, const
 void PoissonDiskSampling::drawlog() {
 	Logger log = Logger::getInstance();
 	log << "no jestem misku ;)";
-	log << endl;
+	log << std::endl;
 	for (auto& iterator : positions){
 		log << " x: ";
 		log << iterator.x;
 		log << " x: ";
 		log << iterator.y;
-		log << endl;
+		log << std::endl;
 
 	}
 }
 
-vector<Vector2f> PoissonDiskSampling::getPositions();
+std::vector<sf::Vector2f> PoissonDiskSampling::getPositions()
 {
 	return positions;
 }

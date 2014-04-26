@@ -20,6 +20,23 @@ WorldMapView::WorldMapView() {
 	blank->create(width, height);
 	setTexture(*blank);
 	grass = new Sprite(*texture, sf::IntRect(0,0,width,height));
+	//creating table of chunks
+	int chunksVer = mapa->getHeight() / 100;
+	int chunksHor = mapa->getWidth() / 100;
+	chunks.resize(chunksHor, std::vector<ChunkView*>(chunksVer,nullptr));
+	
+
+	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight());
+	std::vector<sf::Vector2f> coordinates = poisson->getPositions();
+	for (auto& iterator : coordinates) {
+		sf::CircleShape circle;
+		circle.setPosition(iterator);
+		circle.setOutlineColor(sf::Color::Red);
+		circle.setRadius(25);
+		circle.setFillColor(sf::Color::Cyan);
+		mapContent.push_back(circle);
+	}
+
 
 }
 
@@ -29,6 +46,9 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	
 	//target.draw(*grass);
 	target.draw(*grass, &mapa->getShader());
+	for (auto& iterator : mapContent) {
+		//target.draw(iterator);
+	}
 }
 
 WorldMapView::~WorldMapView() {
