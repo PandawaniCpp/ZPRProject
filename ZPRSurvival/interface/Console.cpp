@@ -15,8 +15,7 @@ Console::Console () {
 	// Set background texture.
 	assert (texture.loadFromFile ("resources/console_back.png"));
 	texture.setRepeated (true);
-	this->setPosition (0, 0);
-	this->setScale (sf::Vector2f (20, 20));		// #TODO Set scaling accordingly to window size.
+	this->setScale (sf::Vector2f (15, 15));		// #TODO Set scaling accordingly to window size.
 	this->setTexture (texture);
 
 	// Set font specifications.
@@ -93,6 +92,10 @@ void Console::draw (sf::RenderWindow& window) const {
 	
 	// Draw background.
 	window.draw (*this);
+
+	// Get sf::View from gameWindow to correct console displacement.
+	sf::View view = window.getView ();
+	sf::Vector2<float> vec (view.getCenter () - view.getSize () / 2.0f);
 	
 	sf::Text tempText = text;
 	float pos = 5;
@@ -104,13 +107,13 @@ void Console::draw (sf::RenderWindow& window) const {
 			continue;
 
 		tempText.setString (it->first);
-		tempText.setPosition (5, pos);
+		tempText.setPosition (vec.x + 10, vec.y + pos);
 		window.draw (tempText);
 
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::Yellow);
 		tempText.setString (it->second);
-		tempText.setPosition (150, pos);	// #TODO Set scaling to window accordingly
+		tempText.setPosition (vec.x + 150, vec.y + pos);	// #TODO Set scaling to window accordingly
 		window.draw (tempText);
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::White);

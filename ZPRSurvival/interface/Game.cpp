@@ -18,47 +18,32 @@ Game::Game () {
 	playerController = new PlayerController ();
 	console = new Console ();
 	worldMap = new WorldMapView();
-	//generator = new MapGenerator (100, 100, 100);		//#TEMP
+
+	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
+	gameWindow->setView (worldView);
 	
 	state = Game::State::INIT;		// Proper first state
 }
 
 Game::~Game () {
 	delete gameWindow;
-	delete playerController;
-	//delete worldMap;		#TODO ERROR! CHECK THIS
-	//delete console;		#TODO ERROR! CHECK THIS
-	// #TODO Delete the rest of the objects
+	
+	// Scene graph's destructor deallocates all graph's objects (all views).
 }
 
 void Game::initialize () {
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
-	//gameWindow->setPosition (Vector2<int> (0, 0));			// Push the gameWindow to the left-top corner
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
 
-	//mapTexture.loadFromImage(generator->GetMap());	// #TEMP
-	//mapSprite.setTexture(mapTexture);
-	//mapSprite.setPosition (-1024+600, -1024+350);			
-	//generator->GetMap ().saveToFile ("Map.png");		//....
-
 	// World information 
-	// #TODO put in different function
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
-	worldBounds.height = 5000;					// World size
-	worldBounds.width = 5000;					// #TODO put proper numbers
-	worldView.setCenter (worldView.getSize ().x / 2.f, worldView.getSize ().y / 2.f);
-	scrollSpeed = playerController->getPlayer ()->getSpeed ();	// Scrolling speed is the player's moving speed.
-
-	// Initialize game scene graph
-	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
-		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
-		sceneLayers[i] = layer.get ();
-		sceneGraph.attachChild (layer);
-	}
+	worldBounds.height = 10000;					// World size
+	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
+	worldView.setCenter (worldMap->getSpawnPoint());
 
 	// Initialize main layers.
 	layersInit ();
@@ -68,12 +53,6 @@ void Game::initialize () {
 
 	// Set default game options.
 	applyOptions ();
-	
-	// #TODO put this in other function (this is just initialization)
-	playerController->setPlayer ();	// Prepares player for the game.
-	// Set player position to the center of the screen.
-	playerController->getPlayer()->setPosition (Vector2<float> ((float)gameWindow->getSize ().x / 2, (float)gameWindow->getSize ().y / 2));
-	//.................................
 
 	// If everything's fine, move on to the next state.
 	this->state = Game::State::IN_MENU;
@@ -113,10 +92,19 @@ PlayerController * Game::getPlayerController () {
 }
 
 void Game::layersInit () {
+	// Initialize game scene graph
+	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
+		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
+		sceneLayers[i] = layer.get ();
+		sceneGraph.attachChild (layer);
+	}
+
+	// Attach map view to map layer
+	SurvivalObjectView::Ptr mapLayer (worldMap);
+	sceneLayers[Game::MAP]->attachChild (mapLayer);
+
 	// Attach console object to console layer
 	SurvivalObjectView::Ptr consoleLayer (console);
-	SurvivalObjectView::Ptr mapLayer(worldMap);
-	sceneLayers[Game::MAP]->attachChild(mapLayer);
 	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
 
 	// Attach player view to player layer
@@ -125,6 +113,12 @@ void Game::layersInit () {
 }
 
 void Game::objectsInit () {
+	// Prepares player for the game.
+	playerController->setPlayer ();	
+
+	// Set player position to the spawn point defined in World Map.
+	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint ());
+
 	// Set default console's parameters
 	console->insert ("x", 0);
 	console->insert ("y", 0);
@@ -138,13 +132,15 @@ void Game::objectsInit () {
 }
 
 void Game::applyOptions () {
-	// #TEMP
-	timePerFrame = seconds (1.f / 100.f);			// Static frame, (1 / x) = x fps.
-
+	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
-	sf::Style::Fullscreen;
+
+	// Update sf::View
+	worldView = gameWindow->getDefaultView ();
+	worldView.setCenter(playerController->getPlayer ()->getPosition());
+	gameWindow->setView (worldView);
 }
 
 void Game::processEvents () {
@@ -183,7 +179,7 @@ void Game::keyboardInput (const Event event) {
 	if (event.key.code == Keyboard::Escape)		//exit the game
 		state = Game::EXIT;						//#TEMP
 
-	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code))
+	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code)) 
 		Console::visible = !Console::visible;
 
 	// Toggles fullscreen on/off
@@ -218,24 +214,57 @@ void Game::keyboardInput (const Event event) {
 }
 
 void Game::mouseInput () {
-	mousePosition = Mouse::getPosition (*gameWindow);
+	mousePosition = static_cast<Vector2f>(Mouse::getPosition (*gameWindow)) + 
+		worldView.getCenter() -
+		worldView.getSize() / 2.0f;
 }
 
 void Game::update () {
-	playerController->update (mousePosition);	//update player according to mouse position change.
+	Player * player = playerController->getPlayer ();
+
+	// Check if some keys are released (sometimes release event is not triggered somehow...).
+	int direction = player->getDirection ();
+	if (direction != 0) {
+		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
+			playerController->preparePlayerMove (Keyboard::W, false);
+		if (!Keyboard::isKeyPressed (Keyboard::S) && direction & Player::DOWN)
+			playerController->preparePlayerMove (Keyboard::S, false);
+		if (!Keyboard::isKeyPressed (Keyboard::A) && direction & Player::LEFT)
+			playerController->preparePlayerMove (Keyboard::A, false);
+		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
+			playerController->preparePlayerMove (Keyboard::D, false);
+	}
+	
+	// Update player accordingly to mouse position change.
+	playerController->update (mousePosition);	
 
 	// Update console ouput.
-	console->update ("x", playerController->getPlayer ()->getPosition ().x);
-	console->update ("y", playerController->getPlayer ()->getPosition ().y);
-	console->update ("dx", playerController->getPlayer ()->getDisplacement ().x);
-	console->update ("dy", playerController->getPlayer ()->getDisplacement ().y);
-	console->update ("direction", (float)playerController->getPlayer ()->getDirection ());
-	console->update ("rotation", playerController->getPlayer ()->getRotation ());
+	console->update ("x", player->getPosition ().x);
+	console->update ("y", player->getPosition ().y);
+	console->update ("dx", player->getDisplacement ().x);
+	console->update ("dy", player->getDisplacement ().y);
+	console->update ("direction", (float)player->getDirection ());
+	console->update ("rotation", player->getRotation ());
+
+	// Move player
+	Vector2f position = player->getPosition ();
+	playerController->move (position, player->getDisplacement ());
+	player->setPosition (position);
 
 	// Set the world displacement vector relatively to player.
-	//	#TODO Change the world movement using sf::View
-	globalDisplacement = playerController->getPlayer ()->getDisplacement ();
-	//generator->move (-globalDisplacement);
+	worldView.setCenter (player->getPosition() + player->getOffset ());
+	gameWindow->setView (worldView);
+
+	// Vector for displacement correction.
+	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
+
+	// Correct console displacement (always in top-left corner).
+	console->setPosition (vec);
+
+	// Correct map displacement.
+	worldMap->setPosition (vec);
+	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height/2.0;		// !!!!!
+	worldMap->setViewPosition (vec);	
 }
 
 void Game::render () {
@@ -245,13 +274,10 @@ void Game::render () {
 }
 
 void Game::draw () {
-	//gameWindow->draw(mapSprite);
 	playerController->prepareView ();
-	//generator->draw (gameWindow);
 
 	// Draw all layers in order.
-	sceneGraph.drawAll (*gameWindow);
-	
+	sceneGraph.drawAll (gameWindow);
 }
 
 void Game::setFullscreenEnabled (bool enable) {

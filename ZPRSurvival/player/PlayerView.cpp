@@ -11,8 +11,18 @@
 #include "PlayerView.h"
 
 PlayerView::PlayerView () {
-	textureHolder.load (Textures::P_BASE, "resources/player/player_base.png");
-	setTexture (textureHolder.get (Textures::P_BASE));
+	// Animation attributes init.
+	frameSize.x = frameSize.y = 50;
+	frameNumber = 0;
+	frameSet = 0;
+
+	// Spritesheet for player.
+	textureHolder.load (Textures::P_SHEET, "resources/textures/player.png");
+	texture = textureHolder.get (Textures::P_SHEET);
+	texture.setSmooth (true);
+	setTexture (texture);
+
+	setTextureRect (sf::IntRect (frameNumber*frameSize.x, frameSet*frameSize.y, frameSize.x, frameSize.y));
 }
 
 PlayerView::~PlayerView () {

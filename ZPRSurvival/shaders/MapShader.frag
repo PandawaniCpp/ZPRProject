@@ -1,7 +1,12 @@
+uniform sampler2D texture;
 uniform sampler2D permutationVector;
 uniform float time;
+uniform float resolutionX;
+uniform float resolutionY;
 uniform float offsetX;
 uniform float offsetY;
+uniform float width;
+uniform float height;
 uniform float zoom;
 uniform float persistence;
 uniform float octaves;
@@ -68,15 +73,37 @@ float noise(float x, float y, float z){
 
 //suma fraktalna szumów
 float sum1(float x, float y, float z){
-	float t = 0.0;
+	float t = 0.5;
 	float amplitude = 1.0;
 	float frequency = 1;
 	
+	if (x > 0.6*width) {
+		t -= 1.5*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
+	}
+	else if (x < 0.4f*width) {
+		t -= 1.5*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
+	}
+	if (y > 0.6*height) {
+		t -= 1.5*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
+	}
+	else if (y < 0.4*height) {
+		t -= 1.5*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
+	}
+
 	for (int i = 0; i < octaves; i++) {
 		t += noise( ((x*frequency) / zoom), ((y*frequency) / zoom), 0)*amplitude;
 		amplitude *= persistence;
 		frequency *= 2;
 	}
+	
+	if (t < -1.0) {
+		t = -1.0;
+	}
+
+	if(x > width || x < 0.0 || y > height || y < 0){
+		t = 1.0;
+	}
+
 
 	return t;
 }
@@ -122,7 +149,9 @@ float invert(float t){
 }
 
 void main() {
-	float k = sum11(sum2(gl_FragCoord.x + offsetX , gl_FragCoord.y + offsetY, 0));
+	float k = sum11(sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0));
 	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
-    gl_FragColor = vec4(1.0, 1.0, 1.0, k);
+	vec4 pixel = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
+	pixel.a = k;
+	gl_FragColor = pixel;
 }
