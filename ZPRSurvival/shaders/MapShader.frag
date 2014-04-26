@@ -10,6 +10,9 @@ uniform float height;
 uniform float zoom;
 uniform float persistence;
 uniform float octaves;
+uniform float deepWater;
+uniform float shallowWater;
+uniform float sand;
 
 float fade(float t){
 	return t * t * t * (t * (t * 6 - 15) + 10);
@@ -93,7 +96,7 @@ float sum1(float x, float y, float z){
 	for (int i = 0; i < octaves; i++) {
 		t += noise( ((x*frequency) / zoom), ((y*frequency) / zoom), 0)*amplitude;
 		amplitude *= persistence;
-		frequency *= 2;
+		frequency *= 4;
 	}
 	
 	if (t < -1.0) {
@@ -105,42 +108,7 @@ float sum1(float x, float y, float z){
 	}
 
 
-	return t;
-}
-
-//Przekszta³cenie z wartoœci -1 do 1 na 0 do 1
-float sum11(float t){
 	return (t+1)/2.0;
-}
-
-//suma fraktalna wartoœci bezwzglêdnych
-float sum2(float x, float y, float z){
-	float t = 0.0;
-	float amplitude = 1.0;
-	float frequency = 1;
-
-	for (int i = 0; i < octaves; i++) {
-		t += abs(noise( ((x*frequency) / zoom), ((y*frequency) / zoom), z)*amplitude);
-		amplitude *= persistence;
-		frequency *= 2;
-	}
-
-	return t;
-}
-
-//mno¿enie kolejnych warstw, jeszcze nie wiem do czego ale zajebista opcja
-float sum3(float x, float y, float z){
-	float t = 1.0;
-	float amplitude = 1.0;
-	float frequency = 1;
-
-	for (int i = 0; i < 3; i++) {
-		t *= noise((x*frequency) / 100.0, (y*frequency) / 100.0, z);
-		amplitude *= 0.5;
-		frequency *= 2;
-	}
-
-	return t;
 }
 
 //odwracamy wartoœci szumu np 0.3 -> 0.7 0.2-> 0.8 itd.
@@ -149,9 +117,21 @@ float invert(float t){
 }
 
 void main() {
-	float k = sum11(sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0));
+	float k = sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0);
 	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
-	vec4 pixel = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
-	pixel.a = k;
+	vec4 pixel;// = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
+	if ( k < deepWater){
+		pixel = vec4(0, 10.0/255.0*k, 80.0/255.0*k, 1.0);
+	}
+	else if (k < shallowWater){
+		pixel = vec4(0, 80.0/255.0, 220.0/255.0*k, 1.0);
+	}
+	else if(k < sand){
+		pixel = vec4(k, k*0.8, 102.0/255.0*k, 1.0);
+	}
+	else{
+		pixel = vec4(0.2*k, 0.4*k, 0.8/255.0*k, 1.0);
+	}
+	
 	gl_FragColor = pixel;
 }

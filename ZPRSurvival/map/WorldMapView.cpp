@@ -3,44 +3,76 @@
 
 WorldMapView::WorldMapView() {
 	mapa = new WorldMap();
+	t = 0.0f;
+	// = new sf::RenderTexture();
+	initialize();
+}
+
+WorldMapView::WorldMapView(int seed, double persistence, double zoom, int octaves, int width, int height) {
+	mapa = new WorldMap(seed, persistence, zoom, octaves, width, height);
+	initialize();
+}
+
+void WorldMapView::initialize() {
 
 	int width = mapa->getWidth();
 	int height = mapa->getHeight();
 
-	t = 0.0f;
-
-	// = new sf::RenderTexture();
-	image = new sf::Image();
-	texture = new sf::Texture();
-	blank = new sf::Texture();
-	image->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Blue);
+	waterImage = new sf::Image();
+	sandImage = new sf::Image();
+	grassImage = new sf::Image();
+	waterTexture = new sf::Texture();
+	sandTexture = new sf::Texture();
+	grassTexture = new sf::Texture();
+	waterImage->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Blue);
+	sandImage->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Yellow);
+	grassImage->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Green);
 	//image->loadFromFile("./resources/textures/background/grassx.png");
-	texture->loadFromImage(*image);
-	texture->setRepeated(true);
-	blank->create(width, height);
-	setTexture(*blank);
-	grass = new Sprite(*texture, sf::IntRect(0,0,width,height));
+	waterTexture->loadFromImage(*waterImage);
+	sandTexture->loadFromImage(*sandImage);
+	grassTexture->loadFromImage(*grassImage);
+	waterTexture->setRepeated(true);
+	sandTexture->setRepeated(true);
+	grassTexture->setRepeated(true);
+	waterSprite = new Sprite(*waterTexture, sf::IntRect(0, 0, width, height));
+	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
+	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
 
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	mapa->getShader().setParameter("offsetX", mapa->getViewPosition().x);
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
-	
+	mapa->getShader().setParameter("deepWater", 117/255.0);
+	mapa->getShader().setParameter("shallowWater", 127/255.0);
+	mapa->getShader().setParameter("sand", 135/255.0);
 	//target.draw(*grass);
-	target.draw(*grass, &mapa->getShader());
+
+	target.draw(*waterSprite);
+	//mapa->getShader().setParameter("minValue", 0.5);
+	//mapa->getShader().setParameter("maxValue", 0.51);
+	//target.draw(*sandSprite, &mapa->getShader());
+	//mapa->getShader().setParameter("minValue", 0.55);
+	target.draw(*grassSprite, &mapa->getShader());
 }
 
 WorldMapView::~WorldMapView() {
 	delete mapa;
-	delete texture;
-	delete image;
+	delete waterSprite;
+	delete sandSprite;
+	delete grassSprite;
+	delete waterTexture;
+	delete sandTexture;
+	delete grassTexture;
+	delete waterImage;
+	delete sandImage;
+	delete grassImage;
 }
 
 sf::Image WorldMapView::getMapImage() {
 
 	sf::Image img;
-	img.create(WIDTH, HEIGHT, sf::Color::Black);
+	img.create(mapa->getWidth(), mapa->getHeight(), sf::Color::Black);
 
 	for (int x = 0; x < img.getSize().x; x++) {
 		for (int y = 0; y < img.getSize().y; y++) {
@@ -77,6 +109,10 @@ sf::Vector2f WorldMapView::getSpawnPoint() {
 
 void WorldMapView::setViewPosition(sf::Vector2f position) {
 	mapa->setViewPosition(position);
+}
+
+sf::Vector2f WorldMapView::getViewPosition() {
+	return mapa->getViewPosition();
 }
 
 sf::Vector2f WorldMapView::getWorldBounds() {

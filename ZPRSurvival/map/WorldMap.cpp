@@ -7,6 +7,7 @@ WorldMap::WorldMap() {
 	octaves = OCTAVES;
 	width = WIDTH;
 	height = HEIGHT;
+	viewPosition = sf::Vector2f(0.0f, 0.0f);
 	perlinNoise = new PerlinNoise();
 	perlinShader = new sf::Shader();
 	perlinTexture = new sf::Texture();

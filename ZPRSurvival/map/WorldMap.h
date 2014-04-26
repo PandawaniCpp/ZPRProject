@@ -8,9 +8,9 @@
 //default width, height, persistance, zoom and number of octaves
 #define WIDTH 2000
 #define HEIGHT 2000
-#define PERSISTENCE 0.5
-#define ZOOM 1600
-#define OCTAVES 9
+#define PERSISTENCE 0.6
+#define ZOOM 800
+#define OCTAVES 2
 
 class WorldMap : public SurvivalObject {
 public:
