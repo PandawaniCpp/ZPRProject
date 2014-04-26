@@ -14,8 +14,7 @@ WorldMapView::WorldMapView() {
 	texture = new sf::Texture();
 	blank = new sf::Texture();
 	image->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Blue);
-	image->loadFromFile("./resources/textures/background/grassx.png");
-
+	//image->loadFromFile("./resources/textures/background/grassx.png");
 	texture->loadFromImage(*image);
 	texture->setRepeated(true);
 	blank->create(width, height);
@@ -27,8 +26,9 @@ WorldMapView::WorldMapView() {
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	mapa->getShader().setParameter("offsetX", mapa->getViewPosition().x);
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
-	target.draw(*grass);
-	target.draw((Sprite)*this, &mapa->getShader());
+	
+	//target.draw(*grass);
+	target.draw(*grass, &mapa->getShader());
 }
 
 WorldMapView::~WorldMapView() {

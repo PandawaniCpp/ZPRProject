@@ -39,7 +39,7 @@ public:
 
 	// Game layers defining drawing order.
 	enum Layer {
-		MAP, PLAYER, CONSOLE, LAYER_COUNT
+		CONSOLE, MAP, PLAYER, LAYER_COUNT
 	};
 
 	// Default constructor.

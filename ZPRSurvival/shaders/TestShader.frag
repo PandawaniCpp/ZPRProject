@@ -1,9 +1,8 @@
-uniform sampler2D texture;
-uniform float offsetX;
-
-void main()
-{
-    vec4 pixel = gl_Color;
-    pixel.a = offsetX/gl_FragCoord.x;
-	gl_FragColor = pixel;
+in vec2 texCoordV;
+ 
+out vec4 colorOut;
+ 
+void main() {
+ 
+colorOut = vec4(texCoord, 0.0, 0.0);    
 }

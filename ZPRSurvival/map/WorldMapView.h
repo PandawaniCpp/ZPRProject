@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "./../survival/SurvivalObjectView.h"
+#include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
 
 class WorldMapView :

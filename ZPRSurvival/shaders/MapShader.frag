@@ -1,5 +1,8 @@
+uniform sampler2D texture;
 uniform sampler2D permutationVector;
 uniform float time;
+uniform float resolutionX;
+uniform float resolutionY;
 uniform float offsetX;
 uniform float offsetY;
 uniform float width;
@@ -97,8 +100,8 @@ float sum1(float x, float y, float z){
 		t = -1.0;
 	}
 
-	if(x>width || x<0.0 || y>height || y<0){
-		t = -1.0;
+	if(x > width || x < 0.0 || y > height || y < 0){
+		t = 1.0;
 	}
 
 
@@ -146,9 +149,9 @@ float invert(float t){
 }
 
 void main() {
-	float k = invert(sum11(sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0)));
+	float k = sum11(sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0));
 	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
-	vec4 pixel = vec4(0.0);
-    pixel.a = k;
+	vec4 pixel = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
+	pixel.a = k;
 	gl_FragColor = pixel;
 }

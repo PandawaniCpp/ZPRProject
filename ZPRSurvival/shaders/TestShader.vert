@@ -1,8 +1,12 @@
-void main()
-{
-    vec4 vertex = gl_ModelViewMatrix * gl_Vertex;
-
-	gl_Position = gl_ProjectionMatrix * vertex;
-	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
-	gl_FrontColor = gl_Color;
+uniform mat4 pvm;
+ 
+in vec4 position;
+in vec2 texCoord;
+ 
+out vec2 texCoordV;
+ 
+void main() {
+ 
+    texCoordV = texCoord;
+    gl_Position = pvm * position;
 }
