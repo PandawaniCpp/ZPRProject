@@ -18,7 +18,7 @@ PlayerController::PlayerController () {
 PlayerController::~PlayerController () {
 }
 
-void PlayerController::update (Vector2i mousePosition) {
+void PlayerController::update (Vector2<float> mousePosition) {
 	// #TODO insert texture update
 
 	// Rotation update.
@@ -68,7 +68,7 @@ void PlayerController::setPosition (Vector2<float> position) {
 	player->setPosition (position);
 }
 
-void PlayerController::calculatePlayerRotation (Vector2i mousePosition) {
+void PlayerController::calculatePlayerRotation (Vector2<float> mousePosition) {
 	// Difference between mouse and player position.
 	float deltaX = mousePosition.x - player->getPosition ().x;
 	float deltaY = mousePosition.y - player->getPosition ().y;

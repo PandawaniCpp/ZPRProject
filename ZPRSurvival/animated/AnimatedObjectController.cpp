@@ -98,7 +98,8 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) c
 	}
 	
 	// Keep static frame.
-	displacement *= deltaTime.asSeconds ();
+	// Negative, because opposite direction to the sf::View.
+	displacement *= -deltaTime.asSeconds ();
 
 	// Set new values in Model.
 	animatedObject->setSpeed (speed);
@@ -152,6 +153,8 @@ void AnimatedObjectController::calculateRotation (float & rotation, const Vector
 
 void AnimatedObjectController::move (Vector2<float> & position, const Vector2<float> & displacement) const {
 	// Update position (referenced from the Model).
-	position.x += displacement.x;
-	position.y += displacement.y;
+	position.x -= displacement.x;
+	position.y -= displacement.y;
+
+	// Set new position.
 }
