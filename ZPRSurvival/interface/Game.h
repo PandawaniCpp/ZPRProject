@@ -12,6 +12,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <Box2D/Box2D.h>
 #include "./../player/PlayerController.h"
 #include "./../map/WorldMapView.h"
 #include "Console.h"
@@ -39,7 +40,7 @@ public:
 
 	// Game layers defining drawing order.
 	enum Layer {
-		CONSOLE, MAP, PLAYER, LAYER_COUNT
+		MAP, PLAYER, CONSOLE, LAYER_COUNT
 	};
 
 	// Default constructor.

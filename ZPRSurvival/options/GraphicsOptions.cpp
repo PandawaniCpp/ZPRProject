@@ -19,6 +19,8 @@ int GraphicsOptions::fps = 120;
 VideoMode GraphicsOptions::testVideoMode = VideoMode (1280, 720, 32);
 VideoMode GraphicsOptions::videoMode = GraphicsOptions::testVideoMode;
 int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
+float GraphicsOptions::pixelPerMeter = 100.0f;
+float GraphicsOptions::meterPerPixel = 0.01f;
 
 std::string GraphicsOptions::getResolutionsAvailable () {
 	std::string resolutions = "";
