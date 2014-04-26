@@ -41,9 +41,9 @@ void Game::initialize () {
 
 	// World information 
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
-	worldBounds.height = 5000;					// World size
-	worldBounds.width = 5000;					// #TODO put proper numbers
-	worldView.setCenter (worldView.getSize ().x / 2.f, worldView.getSize ().y / 2.f);
+	worldBounds.height = 10000;					// World size
+	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
+	worldView.setCenter (worldMap->getSpawnPoint());
 
 	// Initialize main layers.
 	layersInit ();
@@ -139,6 +139,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
+	worldView.setCenter(playerController->getPlayer ()->getPosition());
 	gameWindow->setView (worldView);
 }
 
@@ -213,10 +214,14 @@ void Game::keyboardInput (const Event event) {
 }
 
 void Game::mouseInput () {
-	mousePosition = Mouse::getPosition (*gameWindow);
+	mousePosition = static_cast<Vector2f>(Mouse::getPosition (*gameWindow)) + 
+		worldView.getCenter() -
+		worldView.getSize() / 2.0f;
 }
 
 void Game::update () {
+	Player * player = playerController->getPlayer ();
+
 	playerController->update (mousePosition);	//update player according to mouse position change.
 
 	// Update console ouput.
@@ -228,6 +233,9 @@ void Game::update () {
 	console->update ("rotation", playerController->getPlayer ()->getRotation ());
 
 	// Move player
+	Vector2f position = player->getPosition ();
+	playerController->move (position, player->getDisplacement ());
+	player->setPosition (position);
 
 	// Set the world displacement vector relatively to player.
 	worldView.move (-playerController->getPlayer ()->getDisplacement ());
@@ -241,13 +249,10 @@ void Game::render () {
 }
 
 void Game::draw () {
-	//gameWindow->draw(mapSprite);
 	playerController->prepareView ();
-	//generator->draw (gameWindow);
 
 	// Draw all layers in order.
 	sceneGraph.drawAll (gameWindow);
-	
 }
 
 void Game::setFullscreenEnabled (bool enable) {

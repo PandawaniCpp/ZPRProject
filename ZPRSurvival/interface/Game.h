@@ -110,7 +110,7 @@ private:
 	//float scrollSpeed;				// Speed of gameView movement (mostly player's speed).
 	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
-	Vector2<int> mousePosition;			// Mouse position
+	Vector2f mousePosition;			// Mouse position
 	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 };
 

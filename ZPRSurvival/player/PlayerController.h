@@ -12,6 +12,7 @@
 #include "../animated/AnimatedObjectController.h"
 #include "Player.h"
 #include "PlayerView.h"
+#include <SFML/System.hpp>
 
 /**
 	MVC's Controller for Player class. Gets input from Game, update rotation, mediate between Player and
@@ -32,7 +33,7 @@ public:
 
 	// Calls other updates methods (rotation update, movement update...)
 	// \param mousePosition - (x,y) of mouse cursor location => rotation update.
-	void update (Vector2i mousePosition);
+	void update (Vector2<float> mousePosition);
 
 	// Gets data from Model and updates View (and Sprite ofc).
 	void prepareView ();
@@ -46,7 +47,7 @@ public:
 
 	// With given mousePosition calls AnimatedObjectController::calculateRotation.
 	// Also updated Model's rotation.
-	void calculatePlayerRotation (Vector2i mousePosition);
+	void calculatePlayerRotation (Vector2<float> mousePosition);
 
 	// Updated Model's position.
 	void setPosition (Vector2<float> position);	
