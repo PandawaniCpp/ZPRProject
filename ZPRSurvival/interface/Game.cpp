@@ -240,10 +240,17 @@ void Game::update () {
 	// Set the world displacement vector relatively to player.
 	worldView.setCenter (player->getPosition() + player->getOffset ());
 	gameWindow->setView (worldView);
-	worldMap->setPosition (worldView.getCenter () - worldView.getSize () / 2.0f);
+
+	// Vector for displacement correction.
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
-	vec.y -= GraphicsOptions::videoMode.height;
-	worldMap->setViewPosition (vec);
+
+	// Correct console displacement (always in top-left corner).
+	console->setPosition (vec);
+
+	// Correct map displacement.
+	worldMap->setPosition (vec);
+	//vec.y -= GraphicsOptions::videoMode.height;		// !!!!!
+	worldMap->setViewPosition (vec);	
 }
 
 void Game::render () {
