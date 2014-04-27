@@ -137,17 +137,21 @@ void Game::objectsInit () {
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 
 	// Items init.		#TEMP !!!!!
-	std::vector<sf::Vector2f> positions = worldMap->getPoisson()->getPositions ();
-	for (auto & pos : positions) {
-		//ItemView * item = new ItemView (itemTextureHolder.get (Textures::I_STONE));
-		//item->setPosition (pos.x, pos.y);
-		//item->setScale (0.5f, 0.5f);
-		SurvivalObjectView::Ptr itemEntity;
-		sf::Vector2f position (pos.x, pos.y);
-		ItemView * item = itemController->createItem (Textures::I_STONE, position);
-		if (item != nullptr)
-			itemEntity.reset (item);
-		sceneLayers[Game::ITEMS]->attachChild (itemEntity);
+	std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
+	for (auto & pos1 : positions) {
+		for (auto & pos2 : pos1) {
+			for (auto & pos : pos2) {
+				//ItemView * item = new ItemView (itemTextureHolder.get (Textures::I_STONE));
+				//item->setPosition (pos.x, pos.y);
+				//item->setScale (0.5f, 0.5f);
+				SurvivalObjectView::Ptr itemEntity;
+				sf::Vector2f position(pos.x, pos.y);
+				ItemView * item = itemController->createItem(Textures::I_STONE, position);
+				if (item != nullptr)
+					itemEntity.reset(item);
+				sceneLayers[Game::ITEMS]->attachChild(itemEntity);
+			}
+		}
 	}
 }
 

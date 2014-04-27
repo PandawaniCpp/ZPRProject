@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "./../interface/Logger.h"
-#include "WorldMap.h"
+#include "./WorldMap.h"
 
 #define SIZE_COUNT 3
 #define SQRT2 1.414213
@@ -30,13 +30,13 @@ public:
 	void objectsPosition(WorldMap* map);
 	sf::Vector2f randPoint();
 	sf::Vector2i getGrid(const sf::Vector2f & point, const float & size);
-	sf::Vector2f randomActive (std::vector<sf::Vector2f> & activeVector);
+	sf::Vector2f randomActive(std::vector<sf::Vector2f> & activeVector);
 	//int checkOccupiedNeighbours(const sf::Vector2i & Grid, const std::vector<sf::Vector2i> & gridVector);
 	sf::Vector2f randNeighbour(const sf::Vector2f & basePoint, const float & distance);
-	bool checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const std::vector<sf::Vector2i> & gridVector, const std::vector<sf::Vector2f>& positions);
+	bool checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const Grid& gridVector, const Positions& positions);
 	void deleteBasePoint(std::vector<sf::Vector2f> & activeVector, const sf::Vector2f & point);
 	void drawlog();
-	std::vector<sf::Vector2f>& getPositions();
+	std::vector<std::vector<std::vector<sf::Vector2f>>>& getPositions();
 
 private:
 	int ilosc;

@@ -40,6 +40,6 @@ private:
 	typedef std::vector < std::vector<ChunkView*>> ChunkArray;
 	//typedef std::vector <std::vector<std::vector<sf::Vector2f>>> ChunkObjectsArray;
 	sf::Vector2i last;
-	PoissonDiskSampling* poisson;
+	PoissonDiskSampling * poisson;
 	ChunkArray chunkArray;
 };
