@@ -110,7 +110,7 @@ sf::Image WorldMapView::getMapImage() {
 }
 
 sf::Vector2f WorldMapView::getSpawnPoint() {
-	return sf::Vector2f(mapa->getWidth() /3.7f, mapa->getHeight() / 3.7f);
+	return sf::Vector2f(mapa->getWidth() /3.6f, mapa->getHeight() / 3.6f);
 }
 
 void WorldMapView::setViewPosition(sf::Vector2f position) {
@@ -123,4 +123,8 @@ sf::Vector2f WorldMapView::getViewPosition() {
 
 sf::Vector2f WorldMapView::getWorldBounds() {
 	return sf::Vector2f(mapa->getWidth(), mapa->getHeight());
+}
+
+float WorldMapView::getMapa(int x, int y) {
+	return mapa->getMap(x, y, 0);
 }

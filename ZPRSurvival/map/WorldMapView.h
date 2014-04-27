@@ -18,6 +18,7 @@ public:
 	sf::Vector2f getSpawnPoint();
 	sf::Vector2f getViewPosition();
 	sf::Vector2f getWorldBounds();
+	float getMapa(int x, int y);
 private:
 	void initialize();
 
