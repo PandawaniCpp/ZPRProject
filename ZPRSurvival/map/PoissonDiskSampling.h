@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "./../interface/Logger.h"
-#include "WorldMapView.h"
+#include "WorldMap.h"
 
 #define SIZE_COUNT 3
 #define SQRT2 1.414213

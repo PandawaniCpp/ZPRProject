@@ -16,8 +16,9 @@ Game::Game () {
 	// All we need to play.
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	playerController = new PlayerController ();
+	itemController = new ItemController ();
 	console = new Console ();
-	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 200000, 200000);
+	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 20000, 20000);
 	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
 
 	// sf::View init.
@@ -26,25 +27,8 @@ Game::Game () {
 	
 	state = Game::State::INIT;		// Proper first state
 
-	/*b2BodyDef bodyDef;
-	b2Body * boxBody;
-	bodyDef.position = b2Vec2 (500,500);//worldView.getCenter ().x / GraphicsOptions::pixelPerMeter,
-							   //(worldView.getCenter ().y - 200) / GraphicsOptions::pixelPerMeter);
-	bodyDef.type = b2_staticBody;
-	boxBody = GraphicsOptions::boxWorld.CreateBody (&bodyDef);
-	b2PolygonShape shape;
-	shape.SetAsBox (
-		1000.0 / 2.0 / GraphicsOptions::pixelPerMeter,
-		1000.0 / 2.0 / GraphicsOptions::pixelPerMeter);
-	b2FixtureDef fixtureDef;
-	fixtureDef.density = 100.0f;
-	fixtureDef.friction = 0.9f;
-	fixtureDef.shape = &shape;
-	boxBody->CreateFixture (&fixtureDef);*/
-
 	console->insert ("object body x", worldView.getCenter ().x / GraphicsOptions::pixelPerMeter);
 	console->insert ("object body y", worldView.getCenter ().y / GraphicsOptions::pixelPerMeter);
-
 }
 
 Game::~Game () {
@@ -59,7 +43,6 @@ void Game::initialize () {
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
-
 	// World information 
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
 	worldBounds.height = 10000;					// World size
@@ -152,6 +135,20 @@ void Game::objectsInit () {
 	console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
+
+	// Items init.		#TEMP !!!!!
+	std::vector<sf::Vector2f> positions = worldMap->poisson->getPositions ();
+	for (auto & pos : positions) {
+		//ItemView * item = new ItemView (itemTextureHolder.get (Textures::I_STONE));
+		//item->setPosition (pos.x, pos.y);
+		//item->setScale (0.5f, 0.5f);
+		SurvivalObjectView::Ptr itemEntity;
+		sf::Vector2f position (pos.x, pos.y);
+		ItemView * item = itemController->createItem (Textures::I_STONE, position);
+		if (item != nullptr)
+			itemEntity.reset (item);
+		sceneLayers[Game::ITEMS]->attachChild (itemEntity);
+	}
 }
 
 void Game::applyOptions () {
@@ -186,35 +183,6 @@ void Game::processEvents () {
 			case Event::Closed:
 				gameWindow->close ();
 				break;
-				// #TEMP
-			case Event::MouseButtonReleased :
-				if (event.mouseButton.button == Mouse::Left) {
-					int MouseX = sf::Mouse::getPosition (*gameWindow).x;
-					int MouseY = sf::Mouse::getPosition (*gameWindow).y;
-					sf::Texture BoxTexture;
-					BoxTexture.loadFromFile ("./resources/textures/background/groundx.png", sf::IntRect(0, 0, 100, 100));
-					b2BodyDef BodyDef;
-					BodyDef.position = b2Vec2 ((MouseX + worldView.getCenter ().x) / GraphicsOptions::pixelPerMeter, (MouseY + worldView.getCenter ().y) / GraphicsOptions::pixelPerMeter);
-					BodyDef.type = b2_staticBody;
-					b2Body* Body = GraphicsOptions::boxWorld.CreateBody (&BodyDef);
-
-					b2PolygonShape Shape;
-					Shape.SetAsBox ((100.f / 2) / GraphicsOptions::pixelPerMeter, (100.f / 2) / GraphicsOptions::pixelPerMeter);
-					b2FixtureDef FixtureDef;
-					FixtureDef.density = 1.f;
-					//FixtureDef.friction = 0.7f;
-					FixtureDef.shape = &Shape;
-					Body->CreateFixture (&FixtureDef);
-					
-					sf::Sprite Sprite;
-					Sprite.setTexture (BoxTexture);
-					Sprite.setOrigin (50.f, 50.f);
-					Sprite.setPosition (GraphicsOptions::pixelPerMeter * Body->GetPosition ().x, GraphicsOptions::pixelPerMeter * Body->GetPosition ().y);
-					gameWindow->draw (Sprite);
-
-
-				}
-				// #TEMP
 			default:
 				break;
 		}
@@ -278,8 +246,8 @@ void Game::update () {
 
 	worldMap->t += rand()%750/100000.0;
 
-	GraphicsOptions::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
-	for (b2Body* BodyIterator = GraphicsOptions::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
+	SurvivalObjectView::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
+	for (b2Body* BodyIterator = SurvivalObjectView::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
 
 	}
 

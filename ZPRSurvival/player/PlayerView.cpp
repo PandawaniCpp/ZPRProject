@@ -40,7 +40,7 @@ PlayerView::PlayerView () {
 	bodyDef.position = b2Vec2 (this->getPosition().x / GraphicsOptions::pixelPerMeter, 
 							   this->getPosition().y / GraphicsOptions::pixelPerMeter);
 	bodyDef.type = b2_dynamicBody;
-	boxBody = GraphicsOptions::boxWorld.CreateBody (&bodyDef);
+	boxBody = boxWorld.CreateBody (&bodyDef);
 	b2PolygonShape shape;
 	shape.SetAsBox (
 		this->getGlobalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,

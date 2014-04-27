@@ -11,6 +11,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <Box2D/Dynamics/b2World.h>
 #define PI 3.14159265		//converting degrees <-> radians
 
 /** 

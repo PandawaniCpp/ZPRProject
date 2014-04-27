@@ -39,8 +39,7 @@ void WorldMapView::initialize() {
 	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
 	Logger::getInstance() << "Lets start this shit";
-	Logger::getInstance() << std::endl;
-	PoissonDiskSampling* poisson;
+	Logger::getInstance () << std::endl;
 	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
 	
 	//std::vector<sf::Vector2f>& allPoints = poisson->getPositions();

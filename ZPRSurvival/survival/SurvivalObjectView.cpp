@@ -11,6 +11,7 @@
 #include "SurvivalObjectView.h"
 
 std::map<Textures::ID, int> SurvivalObjectView::animationsSize = std::map<Textures::ID, int> ();
+b2World SurvivalObjectView::boxWorld = b2World (b2Vec2 (0.0f, 0.0f));
 
 SurvivalObjectView::SurvivalObjectView () {
 }
