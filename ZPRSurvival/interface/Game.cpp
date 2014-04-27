@@ -19,11 +19,32 @@ Game::Game () {
 	console = new Console ();
 	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 200000, 200000);
 	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
+
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
 	gameWindow->setView (worldView);
 	
 	state = Game::State::INIT;		// Proper first state
+
+	/*b2BodyDef bodyDef;
+	b2Body * boxBody;
+	bodyDef.position = b2Vec2 (500,500);//worldView.getCenter ().x / GraphicsOptions::pixelPerMeter,
+							   //(worldView.getCenter ().y - 200) / GraphicsOptions::pixelPerMeter);
+	bodyDef.type = b2_staticBody;
+	boxBody = GraphicsOptions::boxWorld.CreateBody (&bodyDef);
+	b2PolygonShape shape;
+	shape.SetAsBox (
+		1000.0 / 2.0 / GraphicsOptions::pixelPerMeter,
+		1000.0 / 2.0 / GraphicsOptions::pixelPerMeter);
+	b2FixtureDef fixtureDef;
+	fixtureDef.density = 100.0f;
+	fixtureDef.friction = 0.9f;
+	fixtureDef.shape = &shape;
+	boxBody->CreateFixture (&fixtureDef);*/
+
+	console->insert ("object body x", worldView.getCenter ().x / GraphicsOptions::pixelPerMeter);
+	console->insert ("object body y", worldView.getCenter ().y / GraphicsOptions::pixelPerMeter);
+
 }
 
 Game::~Game () {
@@ -127,6 +148,8 @@ void Game::objectsInit () {
 	console->insert ("direction", 0);
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
+	console->insert ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
+	console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
@@ -134,7 +157,9 @@ void Game::objectsInit () {
 void Game::applyOptions () {
 	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
-	gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
+
+	if (state != Game::INIT)
+		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 
 	// Update sf::View
@@ -161,6 +186,35 @@ void Game::processEvents () {
 			case Event::Closed:
 				gameWindow->close ();
 				break;
+				// #TEMP
+			case Event::MouseButtonReleased :
+				if (event.mouseButton.button == Mouse::Left) {
+					int MouseX = sf::Mouse::getPosition (*gameWindow).x;
+					int MouseY = sf::Mouse::getPosition (*gameWindow).y;
+					sf::Texture BoxTexture;
+					BoxTexture.loadFromFile ("./resources/textures/background/groundx.png", sf::IntRect(0, 0, 100, 100));
+					b2BodyDef BodyDef;
+					BodyDef.position = b2Vec2 ((MouseX + worldView.getCenter ().x) / GraphicsOptions::pixelPerMeter, (MouseY + worldView.getCenter ().y) / GraphicsOptions::pixelPerMeter);
+					BodyDef.type = b2_staticBody;
+					b2Body* Body = GraphicsOptions::boxWorld.CreateBody (&BodyDef);
+
+					b2PolygonShape Shape;
+					Shape.SetAsBox ((100.f / 2) / GraphicsOptions::pixelPerMeter, (100.f / 2) / GraphicsOptions::pixelPerMeter);
+					b2FixtureDef FixtureDef;
+					FixtureDef.density = 1.f;
+					//FixtureDef.friction = 0.7f;
+					FixtureDef.shape = &Shape;
+					Body->CreateFixture (&FixtureDef);
+					
+					sf::Sprite Sprite;
+					Sprite.setTexture (BoxTexture);
+					Sprite.setOrigin (50.f, 50.f);
+					Sprite.setPosition (GraphicsOptions::pixelPerMeter * Body->GetPosition ().x, GraphicsOptions::pixelPerMeter * Body->GetPosition ().y);
+					gameWindow->draw (Sprite);
+
+
+				}
+				// #TEMP
 			default:
 				break;
 		}
@@ -224,6 +278,11 @@ void Game::update () {
 
 	worldMap->t += rand()%750/100000.0;
 
+	GraphicsOptions::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
+	for (b2Body* BodyIterator = GraphicsOptions::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
+
+	}
+
 	// Check if some keys are released (sometimes release event is not triggered somehow...).
 	int direction = player->getDirection ();
 	if (direction != 0) {
@@ -247,6 +306,9 @@ void Game::update () {
 	console->update ("dy", player->getDisplacement ().y);
 	console->update ("direction", (float)player->getDirection ());
 	console->update ("rotation", player->getRotation ());
+	console->update ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
+	console->update ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
+
 
 	// Move player
 	Vector2f position = player->getPosition ();
