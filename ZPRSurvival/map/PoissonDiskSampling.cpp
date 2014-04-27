@@ -1,6 +1,6 @@
 #include "PoissonDiskSampling.h"
 
-PoissonDiskSampling::PoissonDiskSampling(float width, float height, WorldMapView* map) {
+PoissonDiskSampling::PoissonDiskSampling(float width, float height, WorldMap* map) {
 	mapHeight = height;
 	mapWidth = width;
 	srand(DEFAULT_SEED);
@@ -11,7 +11,7 @@ PoissonDiskSampling::PoissonDiskSampling(float width, float height, WorldMapView
 PoissonDiskSampling::~PoissonDiskSampling() {
 }
 
-void PoissonDiskSampling::objectsPosition(WorldMapView* map) {
+void PoissonDiskSampling::objectsPosition(WorldMap* map) {
 	float minDistance = DISTANCE;
 
 	std::vector <sf::Vector2f> activePoints;

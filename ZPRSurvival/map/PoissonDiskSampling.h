@@ -16,7 +16,7 @@ It also return in vector size of point (trees are bigger than blades of grass)
 */
 class PoissonDiskSampling {
 public:
-	PoissonDiskSampling(float width, float height, WorldMapView* mamp);
+	PoissonDiskSampling(float width, float height, WorldMap* map);
 	~PoissonDiskSampling();
 	/*
 	generate location data of objects on map
@@ -25,7 +25,7 @@ public:
 	-position y
 	-size of drawen object
 	*/
-	void objectsPosition(WorldMapView* map);
+	void objectsPosition(WorldMap* map);
 	sf::Vector2f randPoint();
 	sf::Vector2i getGrid(const sf::Vector2f & point, const float & size);
 	sf::Vector2f randomActive (std::vector<sf::Vector2f> & activeVector);

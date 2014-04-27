@@ -41,7 +41,7 @@ void WorldMapView::initialize() {
 	Logger::getInstance() << "Lets start this shit";
 	Logger::getInstance() << std::endl;
 	PoissonDiskSampling* poisson;
-	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight());
+	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
 	
 	//std::vector<sf::Vector2f>& allPoints = poisson->getPositions();
 	//Logger::getInstance() << allPoints.size() ;
