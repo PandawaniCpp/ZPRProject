@@ -29,6 +29,8 @@ void WorldMapView::initialize() {
 	sandImage->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Yellow);
 	grassImage->create(static_cast<float>(GraphicsOptions::videoMode.width), static_cast<float>(GraphicsOptions::videoMode.height), sf::Color::Green);
 	//image->loadFromFile("./resources/textures/background/grassx.png");
+	grassImage->loadFromFile("./resources/textures/background/grassx.png");
+	sandImage->loadFromFile("./resources/textures/background/piachx.png");
 	waterTexture->loadFromImage(*waterImage);
 	sandTexture->loadFromImage(*sandImage);
 	grassTexture->loadFromImage(*grassImage);
@@ -38,6 +40,10 @@ void WorldMapView::initialize() {
 	waterSprite = new Sprite(*waterTexture, sf::IntRect(0, 0, width, height));
 	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
+<<<<<<< HEAD
+=======
+	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
+>>>>>>> b203bf3360d43bde0c0e7439b1d8e1ce523ba905
 	
 	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
 	int chunksInX = mapa->getWidth() / 500;
@@ -51,13 +57,14 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
 	mapa->getShader().setParameter("deepWater", 125/255.0);
 	mapa->getShader().setParameter("shallowWater", 127/255.0);
-	mapa->getShader().setParameter("sand", 131/255.0);
+	mapa->getShader().setParameter("sand", 132/255.0);
 	mapa->getShader().setParameter("time", t);
 
 	//target.draw(*grass);
 
 	target.draw(*waterSprite);
-	//mapa->getShader().setParameter("minValue", 0.5);
+	mapa->getShader().setParameter("sandTexture", *sandTexture);
+	//mapa->getShader().setParameter("groundTexture", *groundTexture);
 	//mapa->getShader().setParameter("maxValue", 0.51);
 	//target.draw(*sandSprite, &mapa->getShader());
 	//mapa->getShader().setParameter("minValue", 0.55);
@@ -136,7 +143,7 @@ sf::Image WorldMapView::getMapImage() {
 			else if (mapHeight < 127) {
 				mapColor = sf::Color(0, 80, 220 * mapHeight / 255.0);
 			}
-			else if (mapHeight < 131) {
+			else if (mapHeight < 132) {
 				mapColor = sf::Color(255 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
 			}
 			else if (mapHeight < 180) {
@@ -155,7 +162,7 @@ sf::Image WorldMapView::getMapImage() {
 }
 
 sf::Vector2f WorldMapView::getSpawnPoint() {
-	return sf::Vector2f(mapa->getWidth() /3.5f, mapa->getHeight() / 3.5f);
+	return sf::Vector2f(mapa->getWidth() /3.6f, mapa->getHeight() / 3.6f);
 }
 
 void WorldMapView::setViewPosition(sf::Vector2f position) {

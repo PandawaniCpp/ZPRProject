@@ -12,15 +12,13 @@
 
 PlayerController::PlayerController () {
 	player = new Player;
-	playerView = new PlayerView;
+	playerView = new PlayerView ();
 }
 
 PlayerController::~PlayerController () {
 }
 
 void PlayerController::update (Vector2<float> mousePosition) {
-	// #TODO insert texture update
-
 	// Rotation update.
 	calculatePlayerRotation (mousePosition);
 

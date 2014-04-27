@@ -47,8 +47,5 @@ public:
 
 	// Switch between resolutions.
 	static void switchResolution (bool higher);
-
-	// Box2D World
-	static b2World boxWorld;
 };
 

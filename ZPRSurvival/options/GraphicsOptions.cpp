@@ -22,7 +22,7 @@ int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
 float GraphicsOptions::pixelPerMeter = 100.0f;
 float GraphicsOptions::meterPerPixel = 0.01f;
 
-b2World GraphicsOptions::boxWorld = b2World (b2Vec2 (0.0f, 9.8f));
+
 
 
 std::string GraphicsOptions::getResolutionsAvailable () {

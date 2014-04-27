@@ -37,6 +37,12 @@ public:
 	// Stores frame count of particular animation (texture).
 	static std::map<Textures::ID, int> animationsSize;	
 
+	// Connects Texture::ID with row number of the .png file.
+	std::map<Textures::ID, int> textureIdRow;
+
+	// Box2D World
+	static b2World boxWorld;
+
 	// Used to create scene nodes.
 	// Very often use of this particular unique_ptr.
 	typedef std::unique_ptr<SurvivalObjectView> Ptr;		
