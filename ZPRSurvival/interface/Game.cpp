@@ -329,7 +329,7 @@ void Game::update () {
 	worldMap->setPosition (vec);
 	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
 	worldMap->setViewPosition (vec);	
-	//worldMap->update();
+	worldMap->update();
 }
 
 void Game::render () {

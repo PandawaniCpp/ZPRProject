@@ -5,7 +5,7 @@
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
 #include "ChunkView.h"
-#include "PoissonDiskSampling.h"
+#include "./PoissonDiskSampling.h"
 
 class WorldMapView :
 	public SurvivalObjectView {
@@ -36,8 +36,8 @@ private:
 
 	WorldMap* mapa;
 	typedef std::vector < std::vector<ChunkView*>> ChunkArray;
-	typedef std::vector <std::vector<std::vector<sf::Vector2f>>> ChunkObjectsArray;
+	//typedef std::vector <std::vector<std::vector<sf::Vector2f>>> ChunkObjectsArray;
 	sf::Vector2i last;
+	PoissonDiskSampling* poisson;
 	ChunkArray chunkArray;
-	ChunkObjectsArray chunkObjectsArray;
 };

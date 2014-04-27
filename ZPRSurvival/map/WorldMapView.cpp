@@ -38,28 +38,12 @@ void WorldMapView::initialize() {
 	waterSprite = new Sprite(*waterTexture, sf::IntRect(0, 0, width, height));
 	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
-	Logger::getInstance() << "Lets start this shit";
-	Logger::getInstance() << std::endl;
-	PoissonDiskSampling* poisson;
-	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
 	
-	//std::vector<sf::Vector2f>& allPoints = poisson->getPositions();
-	//Logger::getInstance() << allPoints.size() ;
-	//Logger::getInstance() << std::endl;
-	/*
-	int chunksInX = mapa->getWidth() / 1000;
-	int chunksInY = mapa->getHeight() / 1000;
+	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
+	int chunksInX = mapa->getWidth() / 500;
+	int chunksInY = mapa->getHeight() / 500;
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
-	chunkObjectsArray.resize(chunksInX, std::vector<std::vector<sf::Vector2f>>(chunksInY, std::vector<sf::Vector2f>(0)));
-	PoissonDiskSampling* poisson;
-	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight());
-	std::vector<sf::Vector2f> allPoints = poisson->getPositions();
-	for (auto &iterator : allPoints) {
-		int indexX = iterator.x / 100;
-		int indexY = iterator.y / 100;
-		chunkObjectsArray[indexX][indexY].push_back(iterator);
-	}
-	*/
+	
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -107,8 +91,19 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		
 		}
 	}*/
+	sf::Vector2f midScreen = getPosition();
 
-
+	midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
+	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
+	int posX = static_cast<int>(midScreen.x / 500);
+	int posY = static_cast<int>(midScreen.y / 500);
+	for (int x = posX; x <= posX + 1; ++x) {
+		for (int y = posY; y <= posY + 1; ++y) {
+			if (chunkArray[x][y] != nullptr) {
+				chunkArray[x][y]->draw(target, states);
+			}
+		}
+	}
 
 }
 
@@ -182,10 +177,11 @@ void WorldMapView::update() {
 	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
 
 	//calculate chunk position
-	int posX = static_cast<int>(midScreen.x / 100);
-	int posY = static_cast<int>(midScreen.y / 100);
-	int maxX = static_cast<int> (mapa->getWidth() / 100);
-	int maxY = 20;
+	int posX = static_cast<int>(midScreen.x / 500);
+	int posY = static_cast<int>(midScreen.y / 500);
+	int maxX = static_cast<int> (mapa->getWidth() / 500);
+	int maxY = static_cast<int> (mapa->getHeight() / 500);
+
 	//log << "position - x:";
 	//log << posX;
 	//log << " y:";
@@ -197,6 +193,8 @@ void WorldMapView::update() {
 		last.x = posX;
 		last.y = posY;
 
+
+
 		for (int x = posX - 1; x <= posX + 1; ++x) {
 			for (int y = posY - 1; y <= posY + 1; ++y) {
 				// if isn't outside the map
@@ -205,21 +203,24 @@ void WorldMapView::update() {
 					if (!chunkArray[x][y]) {
 						//create
 						chunkArray[x][y] = new ChunkView();
-						chunkArray[x][y]->setObiectArray(chunkObjectsArray[x][y]);
-						Logger::getInstance() << std::endl;
-						Logger::getInstance() << "midx" << midScreen.x <<" midy "<< midScreen.y;
-						Logger::getInstance() << std::endl;
-						Logger::getInstance() << " max x " << maxX << "max y" << maxY;
-						Logger::getInstance() << "created chunk - x:";
-						Logger::getInstance() << x;
-						Logger::getInstance() << " y:";
-						Logger::getInstance() << y;
-						Logger::getInstance() << std::endl;
-					}
+						chunkArray[x][y]->setObiectArray(poisson->getPositions()[x][y]);
+											}
 				}
 
 			}
 		}
-	}
 
+		for (int x = posX - 2; x <= posX + 2; ++x) {
+			for (int y = posY - 2; y <= posY + 2; ++y) {
+				if ((abs(x - posX) == 2 || abs(y - posY) == 2)) {
+					if (chunkArray[x][y] != nullptr) {
+						delete chunkArray[x][y];						
+						chunkArray[x][y] = nullptr;
+						//assert(chunkArray[x][y] != nullptr);
+					}
+				}
+			}
+		}
+
+	}
 }
