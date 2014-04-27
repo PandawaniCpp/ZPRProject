@@ -1,4 +1,6 @@
 uniform sampler2D texture;
+uniform sampler2D sandTexture;
+uniform sampler2D groundTexture;
 uniform sampler2D permutationVector;
 uniform float time;
 uniform float resolutionX;
@@ -115,25 +117,41 @@ float sum1(float x, float y, float z){
 	return (t+1)/2.0;
 }
 
+float sum2(float x, float y, float z){
+	float t = 0.0;
+	float amplitude = 1.0;
+	float frequency = 1;
+
+	for (int i = 0; i < 2; i++) {
+		t += abs(noise( ((x*frequency) / 200), ((y*frequency) / 200), z)*amplitude);
+		amplitude *= 0.2;
+		frequency *= 2;
+	}
+
+	return t;
+}
+
+
 //odwracamy wartoœci szumu np 0.3 -> 0.7 0.2-> 0.8 itd.
-float invert(float t){
+float inverse(float t){
 	return abs(t-1);
 }
 
 void main() {
-	float offset0 = 0.001 + 0.0005*sin(-2*time + (7*gl_FragCoord.x + 2*gl_FragCoord.y)/(resolutionX*resolutionY/1000.0));
-;
+	float offset0 = 0.0025;
+	float offset00 =  0.001 + 0.0005*sin(-2*time + (7*gl_FragCoord.x + 2*gl_FragCoord.y)/(resolutionX*resolutionY/1000.0));
 	float offset1 = 0.005;
-	float offset2 = 0.010;
+	float offset2 = 0.008;
 	float offset3 = 0.015;
 	float offset4 = 0.020;
 	float k = sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0);
-	float c = abs(noise(gl_FragCoord.x/100.0, gl_FragCoord.y/100.0 ,time));
-	vec3 pixel;// = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/resolutionX, (gl_FragCoord.y - offsetY)/resolutionY));
-	vec3 deepCol = vec3(0, 0.05, 0.35) * k;
-	vec3 shallowCol = vec3(0, 0.6, 0.9) * k;
-	vec3 sandCol = vec3(1.0, 0.8, 0.4) * k;
-	vec3 grassCol = vec3(0.2, 0.6, 0.1) * k;
+	float c = inverse(sum2(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, time)/4);
+	vec3 pixel;
+	vec3 deepCol = vec3(0, 0.01, 0.15) * c;
+	
+	vec3 shallowCol = vec3(0, 0.2, 0.35) * c;
+	vec3 sandCol = texture2D(sandTexture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), (gl_FragCoord.y - offsetY)/(resolutionX/3.0))).xyz; // = vec3(1.0, 0.8, 0.4) * k;
+	vec3 grassCol = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), (gl_FragCoord.y - offsetY)/(resolutionX/3.0))).xyz; // = vec3(0.2, 0.6, 0.1) * k;
 	vec3 kk = vec3(k);
 	float t;
 	float shallowWaterWaves = shallowWater 
@@ -154,18 +172,19 @@ void main() {
 	}
 	else if (k < shallowWaterWaves){
 		t = fade((k - shallowWater + offset2)/(shallowWaterWaves - shallowWater + offset2));
-		pixel = lerpV(t, shallowCol, (1.5*sandCol+shallowCol)/2);
+		pixel = lerpV(t, shallowCol, (sandCol + 2*shallowCol)/3);
 	}
-	else if (k < shallowWaterWaves + offset0){
-		t = fade((k - shallowWaterWaves)/(offset0));
-		pixel = lerpV(t, (1.5*sandCol+shallowCol)/2, (1.7*sandCol+shallowCol)/2);
+	else if (k < shallowWaterWaves + offset00){
+		t = fade((k - shallowWaterWaves)/(offset00));
+		pixel = lerpV(t, (sandCol + 2*shallowCol)/3, (2*sandCol+shallowCol)/2);
 	}
-	else if(k < sand - offset2){
+	else if(k < sand - offset1){
 		pixel = sandCol;
 	}
 	else if(k < sand){
-		t = fade((k + offset2 - sand)/offset2);
+		t = fade((k + offset1- sand)/offset1);
 		pixel = lerpV(t, sandCol, grassCol); 	
+
 	}
 	else{
 		pixel = grassCol;
