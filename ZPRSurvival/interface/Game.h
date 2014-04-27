@@ -40,7 +40,7 @@ public:
 
 	// Game layers defining drawing order.
 	enum Layer {
-		MAP, ITEMS, PLAYER, CONSOLE, LAYER_COUNT
+		MAP, ITEMS, PLAYER, LIGHTS, CONSOLE, LAYER_COUNT
 	};
 
 	// Default constructor.
@@ -100,7 +100,7 @@ private:
 	// Main game objects
 	RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController * playerController;	// MVC's controller of the player.
-	ItemController * itemController;		// MVC's controller for items.
+	ItemController * itemController;
 	View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
