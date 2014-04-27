@@ -38,9 +38,17 @@ void WorldMapView::initialize() {
 	waterSprite = new Sprite(*waterTexture, sf::IntRect(0, 0, width, height));
 	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
+	Logger::getInstance() << "Lets start this shit";
+	Logger::getInstance() << std::endl;
+	PoissonDiskSampling* poisson;
+	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight());
 	
-	int chunksInX = mapa->getWidth() / 100;
-	int chunksInY = mapa->getHeight() / 100;
+	//std::vector<sf::Vector2f>& allPoints = poisson->getPositions();
+	//Logger::getInstance() << allPoints.size() ;
+	//Logger::getInstance() << std::endl;
+	/*
+	int chunksInX = mapa->getWidth() / 1000;
+	int chunksInY = mapa->getHeight() / 1000;
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
 	chunkObjectsArray.resize(chunksInX, std::vector<std::vector<sf::Vector2f>>(chunksInY, std::vector<sf::Vector2f>(0)));
 	PoissonDiskSampling* poisson;
@@ -51,7 +59,7 @@ void WorldMapView::initialize() {
 		int indexY = iterator.y / 100;
 		chunkObjectsArray[indexX][indexY].push_back(iterator);
 	}
-
+	*/
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {

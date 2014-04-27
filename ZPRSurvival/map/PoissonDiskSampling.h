@@ -2,20 +2,21 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "./../interface/Logger.h"
+#include "WorldMapView.h"
 
 #define SIZE_COUNT 3
 #define SQRT2 1.414213
 #define KMAX 30
 #define PI 3.1415
 #define DEFAULT_SEED 12483201
-
+#define DISTANCE 5000.0
 /*
 Poisson Disk Sampling class is a class wich computes positions of all objects inluded in game, like trees, stones, buildings and so on.
 It also return in vector size of point (trees are bigger than blades of grass)
 */
 class PoissonDiskSampling {
 public:
-	PoissonDiskSampling(float width, float height);
+	PoissonDiskSampling(float width, float height, WorldMapView* mamp);
 	~PoissonDiskSampling();
 	/*
 	generate location data of objects on map
@@ -24,7 +25,7 @@ public:
 	-position y
 	-size of drawen object
 	*/
-	void objectsPosition();
+	void objectsPosition(WorldMapView* map);
 	sf::Vector2f randPoint();
 	sf::Vector2i getGrid(const sf::Vector2f & point, const float & size);
 	sf::Vector2f randomActive (std::vector<sf::Vector2f> & activeVector);
@@ -33,7 +34,7 @@ public:
 	bool checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const std::vector<sf::Vector2i> & gridVector, const std::vector<sf::Vector2f>& positions);
 	void deleteBasePoint(std::vector<sf::Vector2f> & activeVector, const sf::Vector2f & point);
 	void drawlog();
-	std::vector<sf::Vector2f> getPositions();
+	std::vector<sf::Vector2f>& getPositions();
 
 private:
 	std::vector<sf::Vector2f> positions;
