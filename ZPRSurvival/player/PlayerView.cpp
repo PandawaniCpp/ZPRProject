@@ -47,7 +47,6 @@ PlayerView::PlayerView () {
 		this->getGlobalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.7f;
 	fixtureDef.shape = &shape;
 	boxBody->CreateFixture (&fixtureDef);
 }

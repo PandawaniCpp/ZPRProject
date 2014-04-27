@@ -18,6 +18,8 @@ void Chunk::unload(){
 
 }
 
-void Chunk::pushPosition(sf::Vector3i pos){
-	positions.push_back(pos);
+void Chunk::setPositionsVector(const std::vector<sf::Vector2f> & vect) {
+	for (auto& iterator : vect){
+		positions.push_back(iterator);
+	}
 }

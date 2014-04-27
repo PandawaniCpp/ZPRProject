@@ -1,18 +1,18 @@
 #include "PoissonDiskSampling.h"
 
-PoissonDiskSampling::PoissonDiskSampling(float width, float height) {
+PoissonDiskSampling::PoissonDiskSampling(float width, float height, WorldMap* map) {
 	mapHeight = height;
 	mapWidth = width;
 	srand(DEFAULT_SEED);
-	objectsPosition();
+	objectsPosition(map);
 }
 
 
 PoissonDiskSampling::~PoissonDiskSampling() {
 }
 
-void PoissonDiskSampling::objectsPosition() {
-	float minDistance = 50.0f;
+void PoissonDiskSampling::objectsPosition(WorldMap* map) {
+	float minDistance = DISTANCE;
 
 	std::vector <sf::Vector2f> activePoints;
 	//contenner in witch we are putting ceils with points.
@@ -95,6 +95,8 @@ void PoissonDiskSampling::objectsPosition() {
 		deleteBasePoint(activePoints, basePoint);
 	//
 	}
+
+	Logger::getInstance() << positions.size();
 }
 
 sf::Vector2f PoissonDiskSampling::randPoint() {
@@ -216,7 +218,7 @@ void PoissonDiskSampling::drawlog() {
 	}
 }
 
-std::vector<sf::Vector2f> PoissonDiskSampling::getPositions()
+std::vector<sf::Vector2f>& PoissonDiskSampling::getPositions()
 {
 	return positions;
 }
