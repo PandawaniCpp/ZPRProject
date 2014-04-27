@@ -179,7 +179,7 @@ sf::Vector2f PoissonDiskSampling::randNeighbour(const sf::Vector2f & basePoint, 
 
 }
 
-bool PoissonDiskSampling::checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const Grid & gridVector, const Positions& positions) {
+bool PoissonDiskSampling::checkNeighbour (const sf::Vector2f & candidate, const float & minRange, const std::vector<sf::Vector2i> & gridVector, const std::vector<sf::Vector2f>& positions) {
 	bool yesItIs = false;
 	float cellSize = minRange / SQRT2;
 	int maxx = mapWidth / cellSize;
@@ -193,9 +193,10 @@ bool PoissonDiskSampling::checkNeighbour(const sf::Vector2f & candidate, const f
 		for (int x = candidateGrid.x - 3; x <= candidateGrid.x + 3; ++x) {
 			for (int y = candidateGrid.y - 3; y <= candidateGrid.y + 3; ++y) {
 				if (x >= 0 && y >= 0 && x < maxx && y < maxy)
-					for (auto& iterator : positions[x][y])
-						if (sqrt((candidate.x - iterator.x)*(candidate.x - iterator.x) + (candidate.y - iterator.y)*(candidate.y - iterator.y)) < minRange)
-							return yesItIs;
+				for (auto & iterator : positions[x][y]) {
+					if (sqrt ((candidate.x - iterator.x)*(candidate.x - iterator.x) + (candidate.y - iterator.y)*(candidate.y - iterator.y)) < minRange)
+						return yesItIs;
+			}
 
 			}
 		}
@@ -251,6 +252,6 @@ void PoissonDiskSampling::drawlog() {
 
 }
 
-std::vector<std::vector<std::vector<sf::Vector2f>>>& PoissonDiskSampling::getPositions() {
-	return positions;
+std::vector<sf::Vector2f>& PoissonDiskSampling::getPositions () {
+	//return positions;
 }

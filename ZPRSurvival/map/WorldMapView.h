@@ -21,7 +21,8 @@ public:
 	sf::Vector2f getSpawnPoint();
 	sf::Vector2f getViewPosition();
 	sf::Vector2f getWorldBounds();
-	PoissonDiskSampling * poisson;
+	PoissonDiskSampling * getPoisson ();
+
 private:
 	void initialize();
 

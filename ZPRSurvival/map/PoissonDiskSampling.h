@@ -25,6 +25,8 @@ public:
 	-position y
 	-size of drawen object
 	*/
+	typedef std::vector<std::vector<std::vector<sf::Vector2f>>> Positions;
+	typedef std::vector <std::vector<bool>> Grid;
 	void objectsPosition(WorldMap* map);
 	sf::Vector2f randPoint();
 	sf::Vector2i getGrid(const sf::Vector2f & point, const float & size);
@@ -37,7 +39,8 @@ public:
 	std::vector<sf::Vector2f>& getPositions();
 
 private:
-	std::vector<sf::Vector2f> positions;
+	int ilosc;
+	Positions positions;
 	float mapHeight;
 	float mapWidth;
 };

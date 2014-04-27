@@ -40,12 +40,8 @@ void WorldMapView::initialize() {
 	waterSprite = new Sprite(*waterTexture, sf::IntRect(0, 0, width, height));
 	sandSprite = new Sprite(*sandTexture, sf::IntRect(0, 0, width, height));
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
-<<<<<<< HEAD
-=======
 	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
->>>>>>> b203bf3360d43bde0c0e7439b1d8e1ce523ba905
-	
-	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
+
 	int chunksInX = mapa->getWidth() / 500;
 	int chunksInY = mapa->getHeight() / 500;
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
@@ -175,6 +171,10 @@ sf::Vector2f WorldMapView::getViewPosition() {
 
 sf::Vector2f WorldMapView::getWorldBounds() {
 	return sf::Vector2f(mapa->getWidth(), mapa->getHeight());
+}
+
+PoissonDiskSampling * WorldMapView::getPoisson (){
+	return poisson;
 }
 
 void WorldMapView::update() {

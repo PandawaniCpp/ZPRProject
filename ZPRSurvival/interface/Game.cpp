@@ -137,7 +137,7 @@ void Game::objectsInit () {
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 
 	// Items init.		#TEMP !!!!!
-	std::vector<sf::Vector2f> positions = worldMap->poisson->getPositions ();
+	std::vector<sf::Vector2f> positions = worldMap->getPoisson()->getPositions ();
 	for (auto & pos : positions) {
 		//ItemView * item = new ItemView (itemTextureHolder.get (Textures::I_STONE));
 		//item->setPosition (pos.x, pos.y);
