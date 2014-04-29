@@ -27,7 +27,7 @@ public:
 	virtual ~ItemController ();
 
 	// Creates new item and return pointer to it. If failed, return nullptr.
-	ItemView * ItemController::createItem (Textures::ID textureID, sf::Vector2f position);
+	ItemView * createItem (Textures::ID textureID, sf::Vector2f position);
 
 	// All items textures.
 	ResourceHolder<Texture, Textures::ID> itemTextureHolder;

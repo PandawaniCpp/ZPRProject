@@ -23,7 +23,7 @@ public:
 
 	// Constructs ItemView with given texture.
 	// Does not set Item::texture attribute.
-	ItemView::ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f position);
+	ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f position);
 
 	// Default destructor.
 	virtual ~ItemView ();

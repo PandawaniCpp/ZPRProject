@@ -8,7 +8,7 @@ using namespace std;
 
 class MidpointDisplacementNoise {
 public:
-	MidpointDisplacementNoise::MidpointDisplacementNoise();
+	MidpointDisplacementNoise();
 	MidpointDisplacementNoise(int _offset);
 	~MidpointDisplacementNoise();
 	Image GetImage();

@@ -9,7 +9,7 @@ using namespace sf;
 class MapTile : public Sprite {
 public:
 	MapTile(int x, int y, int scale, int zoom, double p, RandomNoise & perlin, int m);
-	void MapTile::calculateTexture(int & x, int & y, int & scale, int & zoom, double & p, RandomNoise & perlin, int & m);
+	void calculateTexture(int & x, int & y, int & scale, int & zoom, double & p, RandomNoise & perlin, int & m);
 	~MapTile();
 	void setTexture(Texture & texture);
 	void draw(RenderTarget &target, RenderStates states) const;
