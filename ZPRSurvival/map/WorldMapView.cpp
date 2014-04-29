@@ -96,7 +96,7 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	}*/
 	sf::Vector2f midScreen = getPosition();
 
-	midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
+	/*midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
 	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
 	int posX = static_cast<int>(midScreen.x / 500);
 	int posY = static_cast<int>(midScreen.y / 500);
@@ -106,7 +106,7 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 				chunkArray[x][y]->draw(target, states);
 			}
 		}
-	}
+	}*/
 
 }
 
