@@ -18,12 +18,12 @@ SurvivalObject::~SurvivalObject (){
 
 // Getters
 
-Vector2<float> SurvivalObject::getPosition () {
+sf::Vector2<float> SurvivalObject::getPosition () {
 	return position;
 }
 
 // Setters
 
-void SurvivalObject::setPosition (Vector2<float> position) {
+void SurvivalObject::setPosition (sf::Vector2<float> position) {
 	this->position = position;
 }

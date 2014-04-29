@@ -11,8 +11,6 @@
 #include "ItemView.h"
 
 ItemView::ItemView () {
-	assert (texture.loadFromFile ("./resources/textures/background/piachx.png", sf::IntRect(0,0,200,200)));
-	this->setTexture (texture);
 }
 
 ItemView::ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f position) {

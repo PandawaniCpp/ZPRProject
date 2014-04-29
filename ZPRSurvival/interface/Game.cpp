@@ -18,7 +18,7 @@ Game::Game () {
 	playerController = new PlayerController ();
 	itemController = new ItemController ();
 	console = new Console ();
-	worldMap = new WorldMapView(0.0, 0.3, 80000, 3, 20000, 20000);
+	worldMap = new WorldMapView(0.0, 0.3, 8000, 3, 20000, 20000);
 	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
 
 	// sf::View init.

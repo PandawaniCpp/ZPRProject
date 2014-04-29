@@ -29,8 +29,11 @@ public:
 	// Overloaded sf::Sprite draw() method for Player.
 	virtual void draw (sf::RenderWindow& window) const;
 
+	// Switch texture with new texture from textureHolder
+	void changeTexture ();
+
 private:
 	// Hold all player's textures listed by Textures::ID.
-	ResourceHolder<Texture, Textures::ID> textureHolder;
+	ResourceHolder<sf::Texture, Textures::ID> textureHolder;
 };
 

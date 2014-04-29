@@ -11,29 +11,25 @@
 #include "PlayerView.h"
 
 PlayerView::PlayerView () {
-	// Animation attributes init.
-	frameSize.x = frameSize.y = 50;
+	// Set sizes for every animation of the player.
+	SurvivalObjectView::frameData.insert (std::make_pair (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10)));
+	SurvivalObjectView::frameData.insert (std::make_pair (Textures::P_WALK, sf::Vector3<int> (50, 50, 10)));
+
+	// Current animation parameters
 	frameNumber = 0;
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 
-	// Spritesheet for player.
-	textureHolder.load (Textures::P_SHEET, "resources/textures/player.png");
-	texture = textureHolder.get (Textures::P_SHEET);
-	texture.setSmooth (true);
-	setTexture (texture);
-
-	// Set sizes for every animation of the player.
-	SurvivalObjectView::animationsSize.insert (std::make_pair (Textures::P_IDLE, 10));
-	SurvivalObjectView::animationsSize.insert (std::make_pair (Textures::P_WALK, 10));
-
-	// Associate Texture::ID with row number of given .png file.
-	textureIdRow.insert (std::make_pair (Textures::P_IDLE, 0));
-	textureIdRow.insert (std::make_pair (Textures::P_WALK, 1));
-
-	// Initial texture
-	setTextureRect (sf::IntRect (frameNumber*frameSize.x, 0, frameSize.x, frameSize.y));
+	// Load player textures.
+	for (unsigned int i = Textures::P_INIT + 1; i < Textures::P_END; ++i) {
+		textureHolder.load (static_cast<Textures::ID>(i), "resources/textures/player.png", sf::IntRect(
+			0,
+			frameData[static_cast<Textures::ID>(i)].y*(i - Textures::P_INIT - 1),
+			frameData[static_cast<Textures::ID>(i)].x*frameData[static_cast<Textures::ID>(i)].z,
+			frameData[static_cast<Textures::ID>(i)].y));
+	}
+	setTexture (textureHolder.get (Textures::P_IDLE));
 
 	// Create Box2D body for player.
 	b2BodyDef bodyDef;
@@ -56,4 +52,8 @@ PlayerView::~PlayerView () {
 
 void PlayerView::draw (sf::RenderWindow& window) const {
 	window.draw(*this);
+}
+
+void PlayerView::changeTexture () {
+	this->setTexture (textureHolder.get (currentAnimation));
 }

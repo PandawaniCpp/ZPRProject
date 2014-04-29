@@ -10,7 +10,7 @@
 
 #include "SurvivalObjectView.h"
 
-std::map<Textures::ID, int> SurvivalObjectView::animationsSize = std::map<Textures::ID, int> ();
+std::map<Textures::ID, sf::Vector3<int>> SurvivalObjectView::frameData = std::map<Textures::ID, sf::Vector3<int>> ();
 b2World SurvivalObjectView::boxWorld = b2World (b2Vec2 (0.0f, 0.0f));
 
 SurvivalObjectView::SurvivalObjectView () {
@@ -66,24 +66,24 @@ bool SurvivalObjectView::hasChilds () {
 		return true;
 }
 
-void SurvivalObjectView::animate (sf::Time dt, int row) {
+void SurvivalObjectView::animate (sf::Time dt) {
 	// #TODO COMMENTS!!!!!!!!!!!
-	sf::Time timePerFrame = frameDuration / static_cast<float>(animationsSize[currentAnimation]);
+	sf::Time timePerFrame = frameDuration / static_cast<float>(frameData[currentAnimation].z);
 	elapsedTime += dt;
 	sf::Vector2i textureBounds (this->getTexture ()->getSize ());
 	sf::IntRect textureRect = this->getTextureRect ();
 
 	if (frameNumber == 0)
-		textureRect = sf::IntRect (0, row*frameSize.y, frameSize.x, frameSize.y);
-	while (elapsedTime >= timePerFrame && (frameNumber <= animationsSize[currentAnimation] || animationRepeat)) {
+		textureRect = sf::IntRect (0, 0, frameData[currentAnimation].x, frameData[currentAnimation].y);
+	while (elapsedTime >= timePerFrame && (frameNumber <= frameData[currentAnimation].z || animationRepeat)) {
 		textureRect.left += textureRect.width;
 		if (textureRect.left + textureRect.width > textureBounds.x)
 			textureRect.left = 0;
 		elapsedTime -= timePerFrame;
 		if (animationRepeat) {
-			frameNumber = (frameNumber + 1) % animationsSize[currentAnimation];
+			frameNumber = (frameNumber + 1) % frameData[currentAnimation].z;
 			if (frameNumber == 0)
-				textureRect = sf::IntRect (0, row*frameSize.y, frameSize.x, frameSize.y);
+				textureRect = sf::IntRect (0, 0, frameData[currentAnimation].x, frameData[currentAnimation].y);
 		}
 		else {
 			frameNumber++;
@@ -103,8 +103,4 @@ void SurvivalObjectView::resetAnimation () {
 
 Textures::ID SurvivalObjectView::getCurrentAnimation () {
 	return currentAnimation;
-}
-
-void SurvivalObjectView::moveBody (sf::Vector2<float> moveVector) {
-	boxBody->SetLinearVelocity (b2Vec2 (moveVector.x / GraphicsOptions::pixelPerMeter, moveVector.y / GraphicsOptions::pixelPerMeter));
 }

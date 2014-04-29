@@ -18,7 +18,7 @@ PlayerController::PlayerController () {
 PlayerController::~PlayerController () {
 }
 
-void PlayerController::update (Vector2<float> mousePosition) {
+void PlayerController::update (sf::Vector2<float> mousePosition) {
 	// Rotation update.
 	calculatePlayerRotation (mousePosition);
 
@@ -26,15 +26,12 @@ void PlayerController::update (Vector2<float> mousePosition) {
 	if ((player->getSpeed() != 0) || (player->getDirection() != 0))
 		calculatePlayerMove ();
 
-	// Box2D body update
-	playerView->moveBody (player->getDisplacement ());
-
 	// Position update.
-	Vector2<float> position = player->getPosition ();
+	sf::Vector2<float> position = player->getPosition ();
 	playerView->setPosition (position.x, position.y);
 
 	// Animation update.
-	playerView->animate (deltaTime, playerView->textureIdRow[playerView->getCurrentAnimation()]);
+	playerView->animate (deltaTime);
 
 	// #TEMP Put animation change in different method.
 	Textures::ID playerTexture = playerView->getCurrentAnimation ();
@@ -54,6 +51,8 @@ void PlayerController::update (Vector2<float> mousePosition) {
 			break;
 		default: break;
 	}
+
+	playerView->changeTexture ();
 }
 
 void PlayerController::prepareView () {
@@ -62,7 +61,7 @@ void PlayerController::prepareView () {
 }
 
 
-void PlayerController::preparePlayerMove (Keyboard::Key key, bool isPressed) {
+void PlayerController::preparePlayerMove (sf::Keyboard::Key key, bool isPressed) {
 	int direction = player->getDirection ();
 	int directionChange = 0;					
 	
@@ -87,15 +86,15 @@ void PlayerController::calculatePlayerMove () {
 	calculateMove (player);
 }
 
-void PlayerController::setPosition (Vector2<float> position) {
+void PlayerController::setPosition (sf::Vector2<float> position) {
 	player->setPosition (position);
 }
 
-void PlayerController::calculatePlayerRotation (Vector2<float> mousePosition) {
+void PlayerController::calculatePlayerRotation (sf::Vector2<float> mousePosition) {
 	// Difference between mouse and player position.
 	float deltaX = mousePosition.x - player->getPosition ().x;
 	float deltaY = mousePosition.y - player->getPosition ().y;
-	Vector2<float> rotationVector (deltaX, deltaY);
+	sf::Vector2<float> rotationVector (deltaX, deltaY);
 	float rotation = 0;
 
 	calculateRotation (rotation, rotationVector);
@@ -103,7 +102,7 @@ void PlayerController::calculatePlayerRotation (Vector2<float> mousePosition) {
 	player->setRotation (rotation);
 
 	// Set additional displacement because of mouse movement.
-	player->setOffset (Vector2<float> (deltaX / 8.0f, deltaY / 8.0f));
+	player->setOffset (sf::Vector2<float> (deltaX / 8.0f, deltaY / 8.0f));
 }
 
 void PlayerController::setPlayer () {

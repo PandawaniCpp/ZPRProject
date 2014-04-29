@@ -11,9 +11,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-using sf::Sprite;
-using sf::Vector2;
-
 /**
 	MVC's Model for SurvivalObject class. Base for other Models in whole game.
 
@@ -29,14 +26,14 @@ public:
 
 	// Getters
 
-	Vector2<float> getPosition ();
+	sf::Vector2<float> getPosition ();
 		
 	// Setters
 
-	void setPosition (Vector2<float> position);
+	void setPosition (sf::Vector2<float> position);
 
 private:
-	Vector2<float> position;		// Object position (in game world).
+	sf::Vector2<float> position;		// Object position (in game world).
 };
 
 /**

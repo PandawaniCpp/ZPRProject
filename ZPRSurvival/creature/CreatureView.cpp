@@ -2,7 +2,7 @@
 
 
 CreatureView::CreatureView() {
-	texture.loadFromFile("resources/buzka.png");
+	//texture.loadFromFile("resources/buzka.png");
 }
 
 

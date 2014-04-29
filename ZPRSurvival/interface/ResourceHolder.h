@@ -45,6 +45,9 @@ public:
 	// Calls the non-const method.
 	Resource& get (Identifier id);
 
+	// Erase resource from container.
+	void erase (Identifier id);
+
 private:
 	// Resource container - type and pointer.
 	std::map<Identifier, std::unique_ptr<Resource >> resourceMap;
@@ -96,4 +99,7 @@ Resource & ResourceHolder<Resource, Identifier>::get (Identifier id) {
 	return const_cast<Resource&> (static_cast<const ResourceHolder*>(this)->get (id));
 }
 
-
+template <typename Resource, typename Identifier>
+void ResourceHolder<Resource, Identifier>::erase (Identifier id) {
+	resourceMap.erase (id);
+}

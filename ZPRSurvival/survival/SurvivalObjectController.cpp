@@ -16,3 +16,7 @@ SurvivalObjectController::SurvivalObjectController () {
 
 SurvivalObjectController::~SurvivalObjectController () {
 }
+
+void SurvivalObjectController::insertAnimationData (Textures::ID textureID, sf::Vector3<int> frameData) {
+	SurvivalObjectView::frameData.insert (std::make_pair (textureID, frameData));
+}

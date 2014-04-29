@@ -14,11 +14,6 @@
 #include "../survival/SurvivalObjectController.h"
 #include <sstream>
 
-using sf::Vector2;
-using sf::Vector2i;
-using sf::Keyboard;
-using sf::RenderWindow;
-
 /**
 	MVC's Controller for AnimatedObject class. Provides functionality and mediate between
 	model and view. Do all the general calculations such as moving, rotating etc.
@@ -38,11 +33,11 @@ public:
 	// Calculates new rotation based on vector.
 	// \param rotation - current rotation value
 	// \param rotationVector - which way heading
-	void calculateRotation (float & rotation, const Vector2<float> & rotationVector) const;
+	void calculateRotation (float & rotation, const sf::Vector2<float> & rotationVector) const;
 
 	// Updates position by displacement vector. Relatively to current position.
 	// \params position/displacement - current position/displacement from Model.
-	void move (Vector2<float> & position, const Vector2<float> & displacement) const;		
+	void move (sf::Vector2<float> & position, const sf::Vector2<float> & displacement) const;		
 };
 
 /**

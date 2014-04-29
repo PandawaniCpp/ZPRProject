@@ -30,6 +30,6 @@ public:
 	ItemView * createItem (Textures::ID textureID, sf::Vector2f position);
 
 	// All items textures.
-	ResourceHolder<Texture, Textures::ID> itemTextureHolder;
+	ResourceHolder<sf::Texture, Textures::ID> itemTextureHolder;
 };
 

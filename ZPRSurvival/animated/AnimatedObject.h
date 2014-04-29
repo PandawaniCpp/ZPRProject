@@ -33,23 +33,23 @@ public:
 
 	// Getters
 
-	Vector2<float> getDisplacement ();
-	Vector2<float> getSize ();
+	sf::Vector2<float> getDisplacement ();
+	sf::Vector2<float> getSize ();
 	float getSpeed ();
 	float getRotation ();
 	int getDirection ();
 
 	// Setters
 
-	void setDisplacement (Vector2<float> displacement);
-	void setSize (Vector2<float> size);
+	void setDisplacement (sf::Vector2<float> displacement);
+	void setSize (sf::Vector2<float> size);
 	void setSpeed (float revSpeed);
 	void setRotation (float rotation);
 	void setDirection (int direction);
 
 protected:
-	Vector2<float> displacement;	// Position change (scaled accordingly to the time frame).
-	Vector2<float> size;			// Width and height.
+	sf::Vector2<float> displacement;	// Position change (scaled accordingly to the time frame).
+	sf::Vector2<float> size;			// Width and height.
 	float speed;					// Moving speed (in px)
 	float rotation;				    // Which way headed (0 degree == 'north').
 	int direction;					// Combination of UP, DOWN, LEFT and RIGHT enum flags, see: AnimatedObject::Direction.

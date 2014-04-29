@@ -22,9 +22,6 @@
 #include "../options/GraphicsOptions.h"
 #include "../interface/ResourcesID.h"
 
-using sf::Sprite;
-using sf::Texture;
-
 /**
 	MVC's View for SurvivalObject class. Implements scene graph to draw objects with and
 	stores current view's texture.
@@ -32,13 +29,13 @@ using sf::Texture;
 	\base class: sf::Sprite
 	\derived: AnimatedObjectView, Console
 */
-class SurvivalObjectView : public Sprite {
+class SurvivalObjectView : public sf::Sprite {
 public:
 	// Stores frame count of particular animation (texture).
-	static std::map<Textures::ID, int> animationsSize;	
-
-	// Connects Texture::ID with row number of the .png file.
-	std::map<Textures::ID, int> textureIdRow;
+	// x-param : frame width
+	// y-param : frame height
+	// z-param : frame count
+	static std::map<Textures::ID, sf::Vector3<int>> frameData;	
 
 	// Box2D World
 	static b2World boxWorld;
@@ -73,7 +70,7 @@ public:
 	bool hasChilds ();
 
 	// Animation handling.
-	void animate (sf::Time dt, int row);
+	void animate (sf::Time dt);
 
 	// Change animation to draw.
 	void changeAnimation (Textures::ID textID);
@@ -85,21 +82,18 @@ public:
 	Textures::ID getCurrentAnimation ();
 
 	// Move the Box2D body.
-	void moveBody (sf::Vector2<float> moveVector);
+	//void moveBody (sf::Vector2<float> moveVector);
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.
 	SurvivalObjectView* parent;		// Pointer ro the parent (one level above).
 
-	Texture texture;				// Stores current texture for all Views.
-
-	sf::Vector2<int> frameSize;			// Size of one animation frame.
 	Textures::ID currentAnimation;		// Animation state.
 	sf::Time frameDuration;
 	sf::Time elapsedTime;
 	int frameNumber;					// Number of frame actually written.
-	//int frameSet;						// Specifies, which row (which set) of texture is currently shown.
 	bool animationRepeat;				// Animation is repeatable.
+	//bool animationActive;				// #TODO Check if neccessary
 
 	b2Body * boxBody;					// Box2D Dynamic object.
 };

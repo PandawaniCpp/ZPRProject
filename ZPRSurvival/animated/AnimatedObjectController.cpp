@@ -22,7 +22,7 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) c
 	int direction = animatedObject->getDirection ();
 	float speed = animatedObject->getSpeed ();
 	float rotation = animatedObject->getRotation ();
-	Vector2<float> displacement = animatedObject->getDisplacement ();
+	sf::Vector2<float> displacement = animatedObject->getDisplacement ();
 
 	// #TODO Implement terrain speed modifiers.
 		
@@ -107,7 +107,7 @@ void AnimatedObjectController::calculateMove (AnimatedObject * animatedObject) c
 	animatedObject->setDisplacement (displacement);
 }
 
-void AnimatedObjectController::calculateRotation (float & rotation, const Vector2<float> & rotationVector) const {
+void AnimatedObjectController::calculateRotation (float & rotation, const sf::Vector2<float> & rotationVector) const {
 	// Save the difference between vector and current position.
 	float deltaX = rotationVector.x;
 	float deltaY = rotationVector.y;
@@ -151,7 +151,7 @@ void AnimatedObjectController::calculateRotation (float & rotation, const Vector
 	}
 }
 
-void AnimatedObjectController::move (Vector2<float> & position, const Vector2<float> & displacement) const {
+void AnimatedObjectController::move (sf::Vector2<float> & position, const sf::Vector2<float> & displacement) const {
 	// Update position (referenced from the Model).
 	position.x -= displacement.x;
 	position.y -= displacement.y;

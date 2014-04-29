@@ -21,6 +21,7 @@
 	Mainly the game main function.
 */
 int main() {
+
 	Game * game;
 	game = new Game ();
 

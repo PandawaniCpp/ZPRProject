@@ -33,16 +33,16 @@ public:
 	// Getters
 
 	Player::State getState ();
-	Vector2<float> getOffset ();
+	sf::Vector2<float> getOffset ();
 		
 	// Setters
 
 	void setState (Player::State state);
-	void setOffset (Vector2<float> offset);
+	void setOffset (sf::Vector2<float> offset);
 
 private:
 	Player::State state = Player::IDLE;		// Holds current state.
-	Vector2<float> offset;		// Additional displacement when moving mouse away from the player.
+	sf::Vector2<float> offset;		// Additional displacement when moving mouse away from the player.
 };
 
 /**

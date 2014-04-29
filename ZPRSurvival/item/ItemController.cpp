@@ -11,7 +11,7 @@
 #include "ItemController.h"
 
 ItemController::ItemController () {
-	itemTextureHolder.load (Textures::I_STONE, "resources/textures/background/groundx.png", sf::IntRect(0,0,300,300));
+	itemTextureHolder.load (Textures::I_STONE, "resources/textures/background/groundx.png", sf::IntRect(0,0,100,100));
 }
 
 ItemController::~ItemController () {

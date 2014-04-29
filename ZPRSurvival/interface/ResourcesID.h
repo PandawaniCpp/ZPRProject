@@ -9,18 +9,18 @@
 */
 
 #pragma once
-using sf::Texture;
 
 // List of all textures in the game.
 namespace Textures {
 	enum ID {
-		INIT_TEXTURE = 0,
-		P_SHEET,
+		P_INIT = 0,
 		P_IDLE,		//P_xxx - player textures
 		P_WALK,
-		I_STONE = 100	//I_xxx - item textures
+		P_END,
+		I_STONE, // = 100	//I_xxx - item textures
 		//C_xxx - creature textures
 		//M_xxx - map elements textures
+		TEXTURE_COUNT
 	};
 }
 
@@ -28,6 +28,7 @@ namespace Textures {
 namespace Fonts {
 	enum ID {
 		F_MENU,
-		F_CONSOLE
+		F_CONSOLE,
+		FONT_COUNT
 	};
 }
