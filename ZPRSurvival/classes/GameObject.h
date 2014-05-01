@@ -21,34 +21,28 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include "../options/GraphicsOptions.h"
 #include "../interface/ResourcesID.h"
+#define RAD_TO_DEG 180.0f / b2_pi
 
 /**
-	MVC's View for SurvivalObject class. Implements scene graph to draw objects with and
-	stores current view's texture.
+	MVC's View for GameObject class. Implements scene graph to draw objects and provides
+	Box2D physics engine functionality
 
 	\base class: sf::Sprite
-	\derived: AnimatedObjectView, Console
+	\derived: Animated, Effectable, Dynamic, Console, Map
 */
-class SurvivalObjectView : public sf::Sprite {
+class GameObject : public sf::Sprite {
 public:
-	// Stores frame count of particular animation (texture).
-	// x-param : frame width
-	// y-param : frame height
-	// z-param : frame count
-	static std::map<Textures::ID, sf::Vector3<int>> frameData;	
-
 	// Box2D World
 	static b2World boxWorld;
 
 	// Used to create scene nodes.
-	// Very often use of this particular unique_ptr.
-	typedef std::unique_ptr<SurvivalObjectView> Ptr;		
+	typedef std::shared_ptr<GameObject> Ptr;
 
 	// Default constructor.
-	SurvivalObjectView ();
+	GameObject ();
 
 	// Default destructor.
-	virtual ~SurvivalObjectView ();
+	virtual ~GameObject ();
 
 	// Overloaded sf::Sprite draw method.
 	virtual void draw (sf::RenderWindow& window) const;
@@ -56,12 +50,15 @@ public:
 	// Draw this object and all children.
 	virtual void drawAll (sf::RenderWindow* window) const;
 
+	// Get updated position and rotation from b2Body and apply it to Sprite.
+	void updateFromBody ();
+
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.
 	void attachChild (Ptr & child);
 
 	// Removes node from vector.
-	void detachChild (const SurvivalObjectView& node);	//remove child from vector
+	void detachChild (const GameObject& node);	//remove child from vector
 
 	// Removes all (if any left) childs.
 	void detachAllChilds ();
@@ -69,32 +66,18 @@ public:
 	// Check if had any childs.
 	bool hasChilds ();
 
-	// Animation handling.
-	void animate (sf::Time dt);
-
-	// Change animation to draw.
-	void changeAnimation (Textures::ID textID);
-
-	// Reset frames and times for next animation.
-	void resetAnimation ();
-
-	// Get current aniumation
-	Textures::ID getCurrentAnimation ();
-
-	// Move the Box2D body.
-	//void moveBody (sf::Vector2<float> moveVector);
+	// Create b2Body 
+	void createB2Body (b2BodyType bodyType);
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.
-	SurvivalObjectView* parent;		// Pointer ro the parent (one level above).
-
-	Textures::ID currentAnimation;		// Animation state.
-	sf::Time frameDuration;
-	sf::Time elapsedTime;
-	int frameNumber;					// Number of frame actually written.
-	bool animationRepeat;				// Animation is repeatable.
-	//bool animationActive;				// #TODO Check if neccessary
-
+	GameObject* parent;			// Pointer ro the parent (one level above).
 	b2Body * boxBody;					// Box2D Dynamic object.
 };
+
+/**
+	GameObject has won "The Most Important Class In The Game" award, in particular circles
+	known as TMICITG, but no relation. During the ceremony, one of its rivals (taking its Sprite
+	issues into consideration) congratulate the winner with following words: Now you're the thirst.
+*/
 

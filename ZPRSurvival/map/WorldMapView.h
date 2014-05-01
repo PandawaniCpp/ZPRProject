@@ -1,14 +1,14 @@
 #pragma once
 
 #include "SFML/Graphics.hpp"
-#include "./../survival/SurvivalObjectView.h"
+#include "../classes/GameObject.h"
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
 #include "ChunkView.h"
 #include "./PoissonDiskSampling.h"
 
 class WorldMapView :
-	public SurvivalObjectView {
+	public GameObject {
 public:
 	WorldMapView();
 	WorldMapView(int seed, double persistence, double zoom, int octaves, int width, int height);

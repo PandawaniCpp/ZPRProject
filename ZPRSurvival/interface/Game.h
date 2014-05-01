@@ -12,12 +12,12 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "./../player/PlayerController.h"
-#include "./../map/WorldMapView.h"
-#include "Console.h"
-#include "KeyboardInterface.h"
+#include "../player/PlayerController.h"
+#include "../map/WorldMapView.h"
 #include "../options/GraphicsOptions.h"
 #include "../item/ItemController.h"
+#include "Console.h"
+#include "KeyboardInterface.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -93,6 +93,9 @@ private:
 	// #TEMP
 	void draw ();
 
+	// Attach new GameObject to given layer.
+	void attachChild (GameObject * object, Game::Layer layer);
+
 	// Graphics options triggers.
 	void setFullscreenEnabled (bool enabled);		// Fullscreen on/off
 
@@ -109,8 +112,8 @@ private:
 	Time timePerFrame;			// Keep the frame duration fixed.
 	Game::State state;				// Describe, in which state the game is in the moment.
 	FloatRect worldBounds;			// World size (in px).
-	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
-	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
+	GameObject sceneGraph;		// Tree with scene nodes put in render order.
+	std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
 	Vector2f mousePosition;			// Mouse position
 	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 };

@@ -11,20 +11,20 @@
 #include "ItemController.h"
 
 ItemController::ItemController () {
-	itemTextureHolder.load (Textures::I_STONE, "resources/textures/background/groundx.png", sf::IntRect(0,0,100,100));
+	textureHolder.load (Textures::I_STONE, "resources/textures/background/groundx.png", sf::IntRect(0,0,100,100));
 }
 
 ItemController::~ItemController () {
 }
 
-ItemView * ItemController::createItem (Textures::ID textureID, sf::Vector2f position) {
-	ItemView * newItem;
+Item * ItemController::createItem (Textures::ITEMS textureID, sf::Vector2f position) {
+	Item * newItem;
 	b2BodyType type;
 	switch (textureID) {
 		case Textures::I_STONE: type = b2_dynamicBody; break;
 		default: break;
 	}
-	newItem = new ItemView (itemTextureHolder.get (textureID), type, position);
+	newItem = new Item (textureHolder.get (textureID), type, position);
 	//newItem->setPosition (position);
 
 	return newItem;

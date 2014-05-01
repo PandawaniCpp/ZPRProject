@@ -9,20 +9,21 @@
 */
 
 #pragma once
-#include "../survival/SurvivalObjectView.h"
+#include "GameObject.h"
 
 /**
-	MVC's View for AnimatedObject class. Responsible for drawing animated objects on the screen.
+	MVC's View for Dynamic class. Represents objects, that can move, rotate and
+	dynamically behave in the game world.
 
-	\ base class: SurvivalObjectView
-	\ derived:    PlayerView, CreatureView
+	\base class: GameObject
+	\derived:	 Player, Creature, Item
 */
-class AnimatedObjectView : public SurvivalObjectView {
+class Dynamic : public GameObject {
 public:
 	// Default constructor.
-	AnimatedObjectView ();
+	Dynamic ();
 
 	// Default destructor.
-	virtual ~AnimatedObjectView ();
+	virtual ~Dynamic ();
 };
 

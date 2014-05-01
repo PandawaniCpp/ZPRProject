@@ -35,7 +35,6 @@ public:
 
 	// Metric definition (for Box2D)
 	static float pixelPerMeter;
-	static float meterPerPixel;
 
 	// Returns all available resolutions as string. 
 	// Each row represents "width x height (depth)"

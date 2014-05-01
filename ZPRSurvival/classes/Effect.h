@@ -8,10 +8,13 @@
 	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
-#include "AnimatedObjectView.h"
+#pragma once
+class Effect {
+public:
+	// Default constructor.
+	Effect ();
+	
+	// Default destructor.
+	virtual ~Effect ();
+};
 
-AnimatedObjectView::AnimatedObjectView ( ){
-}
-
-AnimatedObjectView::~AnimatedObjectView () {
-}

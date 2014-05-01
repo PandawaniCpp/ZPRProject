@@ -67,7 +67,7 @@ void Game::run () {
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
-	SurvivalObjectController::deltaTime = timePerFrame;
+	PlayerController::deltaTime = timePerFrame;
 
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
@@ -98,30 +98,32 @@ PlayerController * Game::getPlayerController () {
 void Game::layersInit () {
 	// Initialize game scene graph
 	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
-		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
+		GameObject::Ptr layer (new GameObject ());
 		sceneLayers[i] = layer.get ();
 		sceneGraph.attachChild (layer);
 	}
 
-	// Attach map view to map layer
-	SurvivalObjectView::Ptr mapLayer (worldMap);
-	sceneLayers[Game::MAP]->attachChild (mapLayer);
+	// Attach map, console and player to game layers
+	attachChild (worldMap, Game::MAP);
+	attachChild (console, Game::CONSOLE);
+	attachChild ((Animated<Textures::PLAYER>*)playerController->getEntity(0)->get(), Game::PLAYER);
 
-	// Attach console object to console layer
-	SurvivalObjectView::Ptr consoleLayer (console);
+	/*// Attach console object to console layer
+	GameObject::Ptr consoleLayer (console);
 	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
 
 	// Attach player view to player layer
-	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
-	sceneLayers[Game::PLAYER]->attachChild (playerLayer);
+	GameObject::Ptr playerLayer; 
+	playerLayer.swap(static_cast<GameObject::Ptr>(playerController->getEntity (0)));
+	sceneLayers[Game::PLAYER]->attachChild (playerLayer);*/
 }
 
 void Game::objectsInit () {
 	// Prepares player for the game.
-	playerController->setPlayer ();	
+	//playerController->setPlayer ();	
 
 	// Set player position to the spawn point defined in World Map.
-	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
+	//playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
 
 	// Set default console's parameters
 	console->insert ("x", 0);
@@ -131,13 +133,14 @@ void Game::objectsInit () {
 	console->insert ("direction", 0);
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
-	console->insert ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
+	console->insert ("b2Body counter", 0);
+	//console->insert ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
+	//console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 
 	// Items init.		#TEMP !!!!!
-	std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
+	/*std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
 	for (auto & pos1 : positions) {
 		for (auto & pos2 : pos1) {
 			for (auto & pos : pos2) {
@@ -152,7 +155,7 @@ void Game::objectsInit () {
 				sceneLayers[Game::ITEMS]->attachChild(itemEntity);
 			}
 		}
-	}
+	}*/
 }
 
 void Game::applyOptions () {
@@ -165,7 +168,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer()->getPosition());
+	worldView.setCenter(5000,5000);
 	gameWindow->setView (worldView);
 }
 
@@ -232,7 +235,7 @@ void Game::keyboardInput (const Event event) {
 				state = Game::PLAYING;				//pseudo-start of the game
 			break;
 		case Game::State::PLAYING: 						//all events in the actual game
-			playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
+			//playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
 			state = Game::PLAYING;
 		default:
 			break;
@@ -246,17 +249,17 @@ void Game::mouseInput () {
 }
 
 void Game::update () {
-	Player * player = playerController->getPlayer ();
-
 	worldMap->t += rand()%750/100000.0;
 
-	SurvivalObjectView::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
-	for (b2Body* BodyIterator = SurvivalObjectView::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
+	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
+	/*for (b2Body* BodyIterator = Player::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
+		BodyIterator->SetLinearVelocity (b2Vec2 (1, 1));
+	}*/
 
-	}
+	console->update ("b2Body counter", Player::boxWorld.GetBodyCount());
 
 	// Check if some keys are released (sometimes release event is not triggered somehow...).
-	int direction = player->getDirection ();
+	/*int direction = player->getDirection ();
 	if (direction != 0) {
 		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
 			playerController->preparePlayerMove (Keyboard::W, false);
@@ -266,30 +269,30 @@ void Game::update () {
 			playerController->preparePlayerMove (Keyboard::A, false);
 		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
 			playerController->preparePlayerMove (Keyboard::D, false);
-	}
+	}*/
 	
 	// Update player accordingly to mouse position change.
-	playerController->update (mousePosition);	
+	playerController->updateEntities ();	
 
 	// Update console ouput.
-	console->update ("x", player->getPosition ().x);
+	/*console->update ("x", player->getPosition ().x);
 	console->update ("y", player->getPosition ().y);
 	console->update ("dx", player->getDisplacement ().x);
 	console->update ("dy", player->getDisplacement ().y);
 	console->update ("direction", (float)player->getDirection ());
 	console->update ("rotation", player->getRotation ());
 	console->update ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->update ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
+	console->update ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);*/
 
 
 	// Move player
-	Vector2f position = player->getPosition ();
+	/*Vector2f position = player->getPosition ();
 	playerController->move (position, player->getDisplacement ());
 	player->setPosition (position);
 
 	// Set the world displacement vector relatively to player.
 	worldView.setCenter (player->getPosition() + player->getOffset ());
-	gameWindow->setView (worldView);
+	gameWindow->setView (worldView);*/
 
 	// Vector for displacement correction.
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
@@ -311,10 +314,15 @@ void Game::render () {
 }
 
 void Game::draw () {
-	playerController->prepareView ();
+	//playerController->prepareView ();
 
 	// Draw all layers in order.
 	sceneGraph.drawAll (gameWindow);
+}
+
+void Game::attachChild (GameObject * object, Game::Layer layer) {
+	GameObject::Ptr ptrLayer (object);
+	sceneLayers[layer]->attachChild (ptrLayer);
 }
 
 void Game::setFullscreenEnabled (bool enable) {

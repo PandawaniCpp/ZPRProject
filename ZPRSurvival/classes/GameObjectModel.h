@@ -12,17 +12,17 @@
 #include <SFML/Graphics.hpp>
 
 /**
-	MVC's Model for SurvivalObject class. Base for other Models in whole game.
+	MVC's Model for GameObject class. Base for other Models in whole game.
 
-	\derived: AnimatedObject
+	\derived: PlayerModel, CreatureModel, ItemModel
 */
-class SurvivalObject {
+class GameObjectModel {
 public:
 	// Default constructor.
-	SurvivalObject ();
+	GameObjectModel ();
 
 	// Default destructor.
-	virtual ~SurvivalObject ();
+	virtual ~GameObjectModel ();
 
 	// Getters
 
@@ -35,10 +35,3 @@ public:
 private:
 	sf::Vector2<float> position;		// Object position (in game world).
 };
-
-/**
-	SurvivalObject has won "The Most Important Class In The Game" award, in particular circles
-	known as TMICITG, but no relation. During the ceremony, one of its rivals (taking its Sprite
-	issues into consideration) congratulate the winner with following words: Now you're the thirst.
-*/
-

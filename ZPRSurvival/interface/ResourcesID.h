@@ -12,15 +12,23 @@
 
 // List of all textures in the game.
 namespace Textures {
-	enum ID {
-		P_INIT = 0,
-		P_IDLE,		//P_xxx - player textures
+	enum PLAYER {
+		P_INIT,
+		P_IDLE,		
 		P_WALK,
-		P_END,
-		I_STONE, // = 100	//I_xxx - item textures
-		//C_xxx - creature textures
-		//M_xxx - map elements textures
-		TEXTURE_COUNT
+		P_END
+	};
+
+	enum CREATURES {
+		C_INIT,
+		C_WOLF,
+		C_END
+	};
+
+	enum ITEMS {
+		I_INIT,
+		I_STONE,
+		I_END
 	};
 }
 
@@ -30,5 +38,20 @@ namespace Fonts {
 		F_MENU,
 		F_CONSOLE,
 		FONT_COUNT
+	};
+}
+
+namespace Effects {
+	enum ID {
+		TORCH_LIGHT,
+		EFFECT_COUNT
+	};
+}
+
+namespace Entities {
+	enum ID {
+		NONE,
+		PLAYER,
+		ENTITIES_COUNT
 	};
 }

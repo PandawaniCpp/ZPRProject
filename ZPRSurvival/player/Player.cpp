@@ -10,31 +10,29 @@
 
 #include "Player.h"
 
-Player::Player (){
-	displacement.x = 0;
-	displacement.y = 0;
-	size.x = 50;
-	size.y = 50;
-	speed = 2000;
-	rotation = 0;
-	direction = 0;
+Player::Player () {
+	// Set sizes for every animation of the player.
+	Animated::frameData.insert (std::make_pair (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10)));
+	Animated::frameData.insert (std::make_pair (Textures::P_WALK, sf::Vector3<int> (50, 50, 10)));
+
+	// Current animation parameters
+	frameNumber = 0;
+	frameDuration = sf::seconds (0.5f);
+	currentAnimation = Textures::P_IDLE;
+	animationRepeat = true;
+
+	Animated::setPosition (5000, 5000);
+	Animated::setOrigin (frameData[currentAnimation].x / 2, frameData[currentAnimation].y / 2);
 }
 
 Player::~Player () {
 }
 
-Player::State Player::getState () {
-	return state;
+void Player::draw (sf::RenderWindow& window) const {
+	GameObject * object = (Animated*) this;
+	window.draw (*object);
 }
 
-sf::Vector2<float> Player::getOffset () {
-	return offset;
-}
-
-void Player::setState (Player::State state) {
-	this->state = state;
-}
-
-void Player::setOffset (sf::Vector2<float> offset) {
-	this->offset = offset;
-}
+/*void Player::changeTexture () {
+	this->Animated::setTexture (textureHolder.get (currentAnimation));
+}*/

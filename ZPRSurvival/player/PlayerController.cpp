@@ -11,13 +11,28 @@
 #include "PlayerController.h"
 
 PlayerController::PlayerController () {
-	player = new Player;
-	playerView = new PlayerView ();
+	// Player init.
+	entityPtr newPlayer (new Player ());
+	entityHolder.push_back (std::move (newPlayer));
+
+	// Load player textures.
+	for (unsigned int i = Textures::P_INIT + 1; i < Textures::P_END; ++i) {
+		textureHolder.load (static_cast<Textures::PLAYER>(i), "resources/textures/player.png", sf::IntRect (
+			0,
+			Player::frameData[static_cast<Textures::PLAYER>(i)].y*(i - Textures::P_INIT - 1),
+			Player::frameData[static_cast<Textures::PLAYER>(i)].x*Player::frameData[static_cast<Textures::PLAYER> (i)].z,
+			Player::frameData[static_cast<Textures::PLAYER>(i)].y));
+	}
+	
+	// Attach texture and body.
+	entityHolder[0]->Animated::setTexture (textureHolder.get (Textures::P_IDLE));
+	entityHolder[0]->Animated::createB2Body (b2_dynamicBody);
 }
 
 PlayerController::~PlayerController () {
-}
 
+}
+/*
 void PlayerController::update (sf::Vector2<float> mousePosition) {
 	// Rotation update.
 	calculatePlayerRotation (mousePosition);
@@ -116,4 +131,4 @@ Player * PlayerController::getPlayer () {
 
 PlayerView * PlayerController::getPlayerView () {
 	return playerView;
-}
+}*/
