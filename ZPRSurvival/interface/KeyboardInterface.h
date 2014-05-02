@@ -8,6 +8,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Command.h"
+#include "Game.h"
 
 /**
 	Non-instantiable class for interpreting particular keys and their combinations. 
@@ -23,8 +24,9 @@ public:
 		SYSTEM = 1 << 3,
 	};
 
-	// Assign keys.
+	// Assign keys and actions.
 	static void assignKeys ();
+	static void assignActions ();
 
 	// Interprets keys based on game state.
 	static Command pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key);

@@ -15,3 +15,7 @@ Dynamic::Dynamic () {
 
 Dynamic::~Dynamic () {
 }
+
+void Dynamic::applyForce (sf::Vector2f force) {
+	this->boxBody->ApplyForceToCenter (b2Vec2 (force.x, force.y), true);
+}

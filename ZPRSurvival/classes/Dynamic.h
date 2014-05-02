@@ -25,5 +25,8 @@ public:
 
 	// Default destructor.
 	virtual ~Dynamic ();
+
+	// Apply force to b2Body
+	void applyForce (sf::Vector2f force);
 };
 

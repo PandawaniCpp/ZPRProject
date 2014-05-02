@@ -13,8 +13,8 @@
 // Represents phase of the game.
 namespace GameState {
 	enum ID {
-		KEY_RELEASED = 1,
-		INIT = 1 << 1, 
+		INIT = 1,
+		INTRO = 1 << 1, 
 		IN_MENU = 1 << 3,
 		PLAYING = 1 << 4, 
 		PAUSE = 1 << 5, 
@@ -74,7 +74,8 @@ namespace Entities {
 
 namespace Commands {
 	enum ID {
-		EXIT,
+		NONE,
+		G_EXIT,
 		MOVE_FORWARD,
 		COMMANDS_COUNT
 	};

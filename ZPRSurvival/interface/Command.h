@@ -13,6 +13,7 @@
 #include <functional>
 #include <cassert>
 #include "ResourcesID.h"
+#include "../classes/Dynamic.h"
 
 
 class GameObject;
@@ -22,10 +23,12 @@ struct Command {
 	typedef std::function<void (GameObject&, sf::Time)> Action;
 
 	// Default constructor
-	Command () : action (), category (Entities::NONE) {};
+	Command () : action (), category (Entities::NONE), commandType (Commands::NONE) {};
 
-	Action	action;			// Action performed on GameObject
-	Entities::ID category;	// Entity type
+	Action	action;				// Action performed on GameObject. If command considers Game itself, action is 
+								// empty and command is only passing type for further recognition.
+	Entities::ID category;		// Entity type
+	Commands::ID commandType;	// Type of action
 };
 
 // Specific action with type downcasting
@@ -37,6 +40,18 @@ Command::Action derivedAction (Function fn)
 		assert (dynamic_cast<Object*>(&node) != nullptr);
 
 		// Downcast node and invoke function on it
-		fn (static_cast<Object&>(node), dt);
+		fn (dynamic_cast<Object&>(node), dt);
 	};
 }
+
+// ==========
+//	COMMANDS
+// ==========
+
+struct EntityMover {
+	EntityMover (float vx, float vy) : force (vx, vy) {}
+	void operator() (Dynamic & object, sf::Time) const {
+		object.applyForce (force);
+	}
+	sf::Vector2f force;
+};

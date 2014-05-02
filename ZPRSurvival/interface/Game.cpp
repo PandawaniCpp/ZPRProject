@@ -39,6 +39,7 @@ void Game::initialize () {
 	// Initialize factory with prefabs and keyboard interface with key mappings.
 	EntityFactory::prefabInit ();
 	KeyboardInterface::assignKeys ();
+	KeyboardInterface::assignActions ();
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
@@ -198,13 +199,24 @@ void Game::processEvents () {
 	}
 }
 
+void Game::commandInterpret () {
+
+	while (!commandQueue.isEmpty ()) {
+		Command command = commandQueue.pop ();
+		if (command.category == Entities::NONE) {
+			if (command.commandType == Commands::G_EXIT)
+				gameWindow->close ();
+		}
+	}
+}
+
 void Game::keyboardInput (const Event event) {
 	// #TODO
 	//		PASS SPECIFIC KEY FUNCTIONALITY TO KEYBOARD INTERFACE
 	// #TODO
 
 	// Special keys prepared for later interpretation.
-	unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
+	/*unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
 
 	// #TODO Check if these conditions can be written with 'else-if'
 	if (event.key.code == Keyboard::Escape)		//exit the game
@@ -241,7 +253,7 @@ void Game::keyboardInput (const Event event) {
 			state = GameState::PLAYING;
 		default:
 			break;
-	}
+	}*/
 }
 
 void Game::mouseInput () {
@@ -252,6 +264,8 @@ void Game::mouseInput () {
 
 void Game::update () {
 	worldMap->t += rand()%750/100000.0;
+
+	commandInterpret ();
 
 	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
 	/*for (b2Body* BodyIterator = Player::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {

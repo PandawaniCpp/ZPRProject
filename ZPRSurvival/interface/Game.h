@@ -75,6 +75,9 @@ private:
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
 
+	// Interprets commands and pass them into scene graph if necessary.
+	void commandInterpret ();
+
 	// Interprets keys actions depending on state.
 	// \param  key - key pressed/released
 	void keyboardInput (const Event event);
