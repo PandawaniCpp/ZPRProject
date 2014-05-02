@@ -41,6 +41,7 @@ namespace Fonts {
 	};
 }
 
+// List of all shader effects in the game.
 namespace Effects {
 	enum ID {
 		TORCH_LIGHT,
@@ -48,10 +49,12 @@ namespace Effects {
 	};
 }
 
+// Identifiers for all game entities.
 namespace Entities {
 	enum ID {
 		NONE,
 		PLAYER,
+		STONE,
 		ENTITIES_COUNT
 	};
 }

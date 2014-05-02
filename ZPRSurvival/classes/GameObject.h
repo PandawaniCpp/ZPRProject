@@ -32,11 +32,24 @@
 */
 class GameObject : public sf::Sprite {
 public:
-	// Box2D World
-	static b2World boxWorld;
+	// Prefab structure defining all in-game object.
+	typedef struct Prefab {
+		int width = 1;
+		int height = 1;
+		float originX = 0;
+		float originY = 0;
+		float density = 0;
+		float friction = 0;
+		b2BodyType bodyType = b2_dynamicBody;
+		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
+		b2CircleShape * circleShape = nullptr;		// nullptr at a time.
+	};
 
 	// Used to create scene nodes.
 	typedef std::shared_ptr<GameObject> Ptr;
+
+	// Box2D World
+	static b2World boxWorld;
 
 	// Default constructor.
 	GameObject ();
@@ -67,7 +80,7 @@ public:
 	bool hasChilds ();
 
 	// Create b2Body 
-	void createB2Body (b2BodyType bodyType);
+	void createB2Body (Prefab prefab);
 	
 protected:	
 	std::vector<Ptr> children;		// All children to draw after this object is drawn.

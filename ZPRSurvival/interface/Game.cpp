@@ -15,40 +15,42 @@ std::string Game::TITLE = "#TITLE";
 Game::Game () {
 	// All we need to play.
 	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
-	playerController = new PlayerController ();
-	itemController = new ItemController ();
 	console = new Console ();
-	worldMap = new WorldMapView(0.0, 0.3, 8000, 3, 20000, 20000);
-	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
+	worldMap = new WorldMapView (0, 0.3, 8000.0, 3, 20000, 20000);
 
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
+	worldView.setCenter (5000.f, 5000.f);		// #SETSPAWN
 	gameWindow->setView (worldView);
-	
-	state = Game::State::INIT;		// Proper first state
 
-	console->insert ("object body x", worldView.getCenter ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("object body y", worldView.getCenter ().y / GraphicsOptions::pixelPerMeter);
+	state = Game::State::INIT;		// Proper first state
 }
 
 Game::~Game () {
 	delete gameWindow;
-	
+
 	// Scene graph's destructor deallocates all graph's objects (all views).
 }
 
 void Game::initialize () {
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
+
+	// Initialize factory.
+	EntityFactory::prefabInit ();
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
+
 	// World information 
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
 	worldBounds.height = 10000;					// World size
 	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
 	worldView.setCenter (worldMap->getSpawnPoint());
 
+	// Initialize entities
+	entitiesInit ();
+	
 	// Initialize main layers.
 	layersInit ();
 
@@ -91,8 +93,12 @@ void Game::terminate () {
 
 }
 
-PlayerController * Game::getPlayerController () {
-	return playerController;
+		/*PlayerController * Game::getPlayerController () {
+			return playerController;
+		}*/
+
+void Game::entitiesInit () {
+	playerController.createEntity (Entities::PLAYER, sf::Vector2f (5000.f, 5000.f));		// #SETSPAWN
 }
 
 void Game::layersInit () {
@@ -104,18 +110,11 @@ void Game::layersInit () {
 	}
 
 	// Attach map, console and player to game layers
-	attachChild (worldMap, Game::MAP);
-	attachChild (console, Game::CONSOLE);
-	attachChild ((Animated<Textures::PLAYER>*)playerController->getEntity(0)->get(), Game::PLAYER);
+	sceneLayers[Game::CONSOLE]->attachChild (GameObject::Ptr (console));
+	sceneLayers[Game::MAP]->attachChild (GameObject::Ptr (worldMap));
 
-	/*// Attach console object to console layer
-	GameObject::Ptr consoleLayer (console);
-	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
+	sceneLayers[Game::PLAYER]->attachChild (GameObject::Ptr (playerController[0]));
 
-	// Attach player view to player layer
-	GameObject::Ptr playerLayer; 
-	playerLayer.swap(static_cast<GameObject::Ptr>(playerController->getEntity (0)));
-	sceneLayers[Game::PLAYER]->attachChild (playerLayer);*/
 }
 
 void Game::objectsInit () {
@@ -134,8 +133,6 @@ void Game::objectsInit () {
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
 	console->insert ("b2Body counter", 0);
-	//console->insert ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	//console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 
@@ -168,7 +165,7 @@ void Game::applyOptions () {
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(5000,5000);
+	worldView.setCenter(5000, 5000);
 	gameWindow->setView (worldView);
 }
 
@@ -272,7 +269,7 @@ void Game::update () {
 	}*/
 	
 	// Update player accordingly to mouse position change.
-	playerController->updateEntities ();	
+	playerController.updateEntities ();	
 
 	// Update console ouput.
 	/*console->update ("x", player->getPosition ().x);
@@ -320,8 +317,8 @@ void Game::draw () {
 	sceneGraph.drawAll (gameWindow);
 }
 
-void Game::attachChild (GameObject * object, Game::Layer layer) {
-	GameObject::Ptr ptrLayer (object);
+void Game::attachChild (GameObject::Ptr * shPtr, Game::Layer layer) {
+	GameObject::Ptr ptrLayer (*shPtr);
 	sceneLayers[layer]->attachChild (ptrLayer);
 }
 

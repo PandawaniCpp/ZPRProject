@@ -31,7 +31,7 @@ void GameObject::detachChild (const GameObject& node)
 	assert (found != children.end ());
 	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
 	result->parent = nullptr;				// Erase parent.
-	result.reset();
+	//result.reset();
 	children.erase (found);					// Erase child.
 }
 
@@ -73,20 +73,27 @@ bool GameObject::hasChilds () {
 		return true;
 }
 
-void GameObject::createB2Body (b2BodyType bodyType) {
+void GameObject::createB2Body (Prefab prefab) {
 	// Create Box2D body for player.
-	b2BodyDef bodyDef;
+	b2BodyDef bodyDef;		// Body definitions
+
+	// Position == Sprite's origin
 	bodyDef.position = b2Vec2 (this->getPosition ().x / GraphicsOptions::pixelPerMeter,
 							   this->getPosition ().y / GraphicsOptions::pixelPerMeter);
-	bodyDef.type = bodyType;
-	boxBody = boxWorld.CreateBody (&bodyDef);
-	b2PolygonShape shape;
-	shape.SetAsBox (
-		this->getLocalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,
-		this->getLocalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
+
+	bodyDef.type = prefab.bodyType;		// Dynamic, static or kinetic.
+	boxBody = boxWorld.CreateBody (&bodyDef);	// B2Body creation and assigment.
+
+	// Fixture definition.
 	b2FixtureDef fixtureDef;
-	fixtureDef.density = 1.f;
-	fixtureDef.friction = 0.7f;
-	fixtureDef.shape = &shape;
+	fixtureDef.density = prefab.density;
+	fixtureDef.friction = prefab.friction;
+		
+	if (prefab.polyShape == nullptr)		// Chooses from available prefab's shape.
+		fixtureDef.shape = (b2Shape*)prefab.circleShape;
+	else
+		fixtureDef.shape = (b2Shape*)prefab.polyShape;
+
+	// Fixture creation
 	boxBody->CreateFixture (&fixtureDef);
 }

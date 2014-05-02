@@ -18,7 +18,7 @@ template <class Identifier>
 	\ base class: GameObject
 	\ derived:    Player, Creature, Item
 */
-class Animated : public GameObject {
+class Animated : virtual public GameObject {
 public:
 	// Stores frame count of particular animation (texture).
 	// x-param : frame width
@@ -28,7 +28,7 @@ public:
 
 	// Inserts new animation data for texture: frame size,
 	// frame count (which row, how many in a row) and texture id.
-	static void insertAnimationData (Identifier textureID, sf::Vector3<int> frameData);
+	static void insertAnimationData (Identifier textureID, sf::Vector3<int> frameInfo);
 
 	// Default constructor.
 	Animated ();
@@ -59,6 +59,11 @@ protected:
 
 template <class Identifier>
 std::map<Identifier, sf::Vector3<int>> Animated<Identifier>::frameData = std::map<Identifier, sf::Vector3<int>> ();
+
+template <class Identifier>
+void Animated<Identifier>::insertAnimationData (Identifier textureID, sf::Vector3<int> frameInfo) {
+	frameData.insert (std::make_pair (textureID, frameInfo));
+}
 
 template <class Identifier>
 Animated<Identifier>::Animated (){

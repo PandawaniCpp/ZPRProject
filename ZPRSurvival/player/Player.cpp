@@ -11,28 +11,32 @@
 #include "Player.h"
 
 Player::Player () {
-	// Set sizes for every animation of the player.
-	Animated::frameData.insert (std::make_pair (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10)));
-	Animated::frameData.insert (std::make_pair (Textures::P_WALK, sf::Vector3<int> (50, 50, 10)));
-
 	// Current animation parameters
 	frameNumber = 0;
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 
-	Animated::setPosition (5000, 5000);
-	Animated::setOrigin (frameData[currentAnimation].x / 2, frameData[currentAnimation].y / 2);
+	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
+}
+
+Player::Player (GameObject::Prefab prefab) {
+	// Current animation parameters
+	frameNumber = 0;
+	frameDuration = sf::seconds (0.5f);
+	currentAnimation = Textures::P_IDLE;
+	animationRepeat = true;
+
+	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
 }
 
 Player::~Player () {
 }
 
 void Player::draw (sf::RenderWindow& window) const {
-	GameObject * object = (Animated*) this;
-	window.draw (*object);
+	window.draw (*this);
 }
 
 /*void Player::changeTexture () {
-	this->Animated::setTexture (textureHolder.get (currentAnimation));
+	this->Dynamic::setTexture (textureHolder.get (currentAnimation));
 }*/

@@ -21,9 +21,13 @@
 	\base class: Animated, Dynamic, Effectable
 */
 class Player : public Animated<Textures::PLAYER>, public Dynamic, public Effectable {
+	friend class Game;
 public:
 	// Default constructor.
 	Player ();
+
+	// Prefab constructor.
+	Player (GameObject::Prefab prefab);
 
 	// Default destructor.
 	~Player ();
@@ -34,9 +38,5 @@ public:
 	// Switch texture with new texture from textureHolder
 	void changeTexture ();
 
-private:
-	// Hold all player's textures listed by Textures::ID.
-	//ResourceHolder<sf::Texture, Textures::ID> textureHolder;
-	// PUT THIS INTO CONTROLLER
 };
 

@@ -14,28 +14,27 @@ Item::Item () {
 }
 
 Item::Item (sf::Texture & texture, b2BodyType type, sf::Vector2f position) {
-	this->Animated::setTexture (texture);
-	this->Animated::setPosition (position);
-	this->Animated::setOrigin (this->Animated::getLocalBounds ().width/2, this->Animated::getLocalBounds ().height/2);
+	this->setTexture (texture);
+	this->setPosition (position);
+	this->setOrigin (this->getLocalBounds ().width/2, this->getLocalBounds ().height/2);
 	b2BodyDef bodyDef;
 	bodyDef.position = b2Vec2 (position.x / GraphicsOptions::pixelPerMeter,
 							   position.y / GraphicsOptions::pixelPerMeter);
 	bodyDef.type = type;
-	Animated::boxBody = boxWorld.CreateBody (&bodyDef);
+	boxBody = boxWorld.CreateBody (&bodyDef);
 	b2PolygonShape shape;
 	shape.SetAsBox (
-		this->Animated::getGlobalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,
-		this->Animated::getGlobalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
+		this->getGlobalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,
+		this->getGlobalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 1.0f;
 	fixtureDef.shape = &shape;
-	Animated::boxBody->CreateFixture (&fixtureDef);
+	boxBody->CreateFixture (&fixtureDef);
 }
 
 Item::~Item () {
 }
 
 void Item::draw (sf::RenderWindow& window) const {
-	GameObject * object = (Animated*) this;
-	window.draw (*object);
+	window.draw (*this);
 }

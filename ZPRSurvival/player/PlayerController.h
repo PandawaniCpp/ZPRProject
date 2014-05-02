@@ -28,6 +28,9 @@ public:
 	// Default destructor.
 	virtual ~PlayerController ();
 
+	// Creates entity with EntityFactory
+	void createEntity (Entities::ID entityID, sf::Vector2f position);
+	
 	// Update
 	//void update ();
 

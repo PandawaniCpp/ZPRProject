@@ -14,6 +14,7 @@
 #include <Box2D/Dynamics/b2World.h>
 #include "../interface/ResourcesID.h"
 #include "../interface/ResourceHolder.h"
+#include "../interface/EntityFactory.h"
 //#include "GameObject.h"
 //#define PI 3.14159265		//converting degrees <-> radians
 
@@ -24,7 +25,7 @@ template <class Type, class Identifier>
 class GameObjectController {
 public:
 	//friend class Game
-	typedef std::shared_ptr<Type> entityPtr;
+	//typedef Type* entityPtr;
 
 	// Time for one tick. Initialized in Game::run()
 	static sf::Time deltaTime;
@@ -35,15 +36,15 @@ public:
 	// Default destructor.
 	virtual ~GameObjectController ();
 
-	// Put entity outside controller to put it into game scene.
-	entityPtr * getEntity (const unsigned int entityID);
-
 	// Update all data about enitites
 	void updateEntities ();
+	
+	// Overloaded access operator for getting entities.
+	Type* operator[](std::size_t index);
 
 protected:
 	ResourceHolder<sf::Texture, Identifier> textureHolder;		// Template for all different texture holders
-	std::vector<entityPtr> entityHolder;			// Holds all entities
+	std::vector<Type*> entityHolder;			// Holds all entities
 };
 
 template <class Type, class Identifier>
@@ -55,14 +56,7 @@ GameObjectController<Type, Identifier>::GameObjectController () {
 
 template <class Type, class Identifier>
 GameObjectController<Type, Identifier>::~GameObjectController () {
-}
-
-template <class Type, class Identifier>
-std::shared_ptr<Type> * GameObjectController<Type, Identifier>::getEntity (const unsigned int entityID) {
-	if (entityID < entityHolder.size ())
-		return &entityHolder[entityID];
-	else
-		return nullptr;
+	
 }
 
 template <class Type, class Identifier>
@@ -70,6 +64,12 @@ void GameObjectController<Type, Identifier>::updateEntities () {
 	for (auto & entity : entityHolder) {
 		//Type * downEntity = dynamic_cast<Type*>(entity.get());
 		entity->animate (deltaTime);
-		entity->Animated::updateFromBody ();
+		entity->updateFromBody ();
 	}
+}
+
+template <class Type, class Identifier>
+Type * GameObjectController<Type, Identifier>::operator[](std::size_t index) {
+	assert (index < entityHolder.size ());
+	return entityHolder[index];
 }

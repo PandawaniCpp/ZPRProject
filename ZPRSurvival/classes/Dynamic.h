@@ -18,7 +18,7 @@
 	\base class: GameObject
 	\derived:	 Player, Creature, Item
 */
-class Dynamic : public GameObject {
+class Dynamic : virtual public GameObject {
 public:
 	// Default constructor.
 	Dynamic ();

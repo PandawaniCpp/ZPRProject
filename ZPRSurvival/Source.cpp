@@ -22,14 +22,11 @@
 */
 int main() {
 
-	Game * game;
-	game = new Game ();
+	Game game;
 
-	game->initialize ();
-	game->run();
-	game->terminate ();
-
-	delete game;
+	game.initialize ();
+	game.run();
+	game.terminate ();
 
 	return 0;
 }

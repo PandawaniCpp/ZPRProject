@@ -16,7 +16,7 @@
 	MVC's View for Effectable class. Despite being a GameObject, also stores shader
 	effect that can be triggered on demand.
 */
-class Effectable : public GameObject {
+class Effectable : virtual public GameObject {
 public:
 	// Used to store effects and manage them.
 	typedef std::unique_ptr<Effect> EffectrPtr;

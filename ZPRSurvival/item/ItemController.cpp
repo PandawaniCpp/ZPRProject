@@ -15,6 +15,7 @@ ItemController::ItemController () {
 }
 
 ItemController::~ItemController () {
+
 }
 
 Item * ItemController::createItem (Textures::ITEMS textureID, sf::Vector2f position) {

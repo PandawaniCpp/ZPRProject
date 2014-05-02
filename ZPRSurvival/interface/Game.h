@@ -61,9 +61,12 @@ public:
 	// Objects deallocation, saving data etc.
 	void terminate ();
 
-	PlayerController * getPlayerController ();
+			//PlayerController * getPlayerController ();
 
 private:
+	// Initialize controller with entities from factory.
+	void entitiesInit ();
+
 	// Initialize layers with default objects.
 	void layersInit ();
 
@@ -94,7 +97,7 @@ private:
 	void draw ();
 
 	// Attach new GameObject to given layer.
-	void attachChild (GameObject * object, Game::Layer layer);
+	void attachChild (GameObject::Ptr * shPtr, Game::Layer layer);
 
 	// Graphics options triggers.
 	void setFullscreenEnabled (bool enabled);		// Fullscreen on/off
@@ -102,8 +105,8 @@ private:
 private:
 	// Main game objects
 	RenderWindow * gameWindow;			// Main window for displaying the game.
-	PlayerController * playerController;	// MVC's controller of the player.
-	ItemController * itemController;
+	PlayerController playerController;	// MVC's controller of the player.
+	ItemController itemController;
 	View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
