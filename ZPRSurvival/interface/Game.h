@@ -18,6 +18,7 @@
 #include "../item/ItemController.h"
 #include "Console.h"
 #include "KeyboardInterface.h"
+#include "CommandQueue.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -32,11 +33,6 @@ class Game {
 public:
 	// Game title.
 	static std::string TITLE;
-
-	// Represents phase of the game.
-	enum State {
-		UNKNOWN = 0, INIT, IN_MENU, PLAYING, PAUSE, EXIT, STATE_COUNT
-	};
 
 	// Game layers defining drawing order.
 	enum Layer {
@@ -110,13 +106,14 @@ private:
 	View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
+	CommandQueue commandQueue;
 
 	// Game parameters
-	Time timePerFrame;			// Keep the frame duration fixed.
-	Game::State state;				// Describe, in which state the game is in the moment.
-	FloatRect worldBounds;			// World size (in px).
 	GameObject sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
+	Time timePerFrame;			// Keep the frame duration fixed.
+	GameState::ID state;				// Describe, in which state the game is in the moment.
+	FloatRect worldBounds;			// World size (in px).
 	Vector2f mousePosition;			// Mouse position
 	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 };

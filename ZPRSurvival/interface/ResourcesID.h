@@ -10,6 +10,19 @@
 
 #pragma once
 
+// Represents phase of the game.
+namespace GameState {
+	enum ID {
+		KEY_RELEASED = 1,
+		INIT = 1 << 1, 
+		IN_MENU = 1 << 3,
+		PLAYING = 1 << 4, 
+		PAUSE = 1 << 5, 
+		EXIT = 1 << 6,
+	};
+}
+
+
 // List of all textures in the game.
 namespace Textures {
 	enum PLAYER {
@@ -37,7 +50,7 @@ namespace Fonts {
 	enum ID {
 		F_MENU,
 		F_CONSOLE,
-		FONT_COUNT
+		FONTS_COUNT
 	};
 }
 
@@ -45,7 +58,7 @@ namespace Fonts {
 namespace Effects {
 	enum ID {
 		TORCH_LIGHT,
-		EFFECT_COUNT
+		EFFECTS_COUNT
 	};
 }
 
@@ -56,5 +69,13 @@ namespace Entities {
 		PLAYER,
 		STONE,
 		ENTITIES_COUNT
+	};
+}
+
+namespace Commands {
+	enum ID {
+		EXIT,
+		MOVE_FORWARD,
+		COMMANDS_COUNT
 	};
 }

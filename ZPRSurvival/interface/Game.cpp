@@ -10,6 +10,7 @@
 
 #include "Game.h"
 
+// #TITLE
 std::string Game::TITLE = "#TITLE";
 
 Game::Game () {
@@ -23,7 +24,7 @@ Game::Game () {
 	worldView.setCenter (5000.f, 5000.f);		// #SETSPAWN
 	gameWindow->setView (worldView);
 
-	state = Game::State::INIT;		// Proper first state
+	state = GameState::INIT;		// Proper first state
 }
 
 Game::~Game () {
@@ -35,18 +36,22 @@ Game::~Game () {
 void Game::initialize () {
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
 
-	// Initialize factory.
+	// Initialize factory with prefabs and keyboard interface with key mappings.
 	EntityFactory::prefabInit ();
+	KeyboardInterface::assignKeys ();
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
 
 	// World information 
+	// #TODO Delete this crap?
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
 	worldBounds.height = 10000;					// World size
 	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
-	worldView.setCenter (worldMap->getSpawnPoint());
+
+	// Center the sf::View to player position.
+	worldView.setCenter (worldMap->getSpawnPoint());	
 
 	// Initialize entities
 	entitiesInit ();
@@ -61,7 +66,7 @@ void Game::initialize () {
 	applyOptions ();
 
 	// If everything's fine, move on to the next state.
-	this->state = Game::State::IN_MENU;
+	this->state = GameState::IN_MENU;
 }
 
 void Game::run () {
@@ -80,7 +85,7 @@ void Game::run () {
 			timeSinceLastUpdate -= timePerFrame;
 			processEvents ();
 
-			if (state == Game::State::EXIT)
+			if (state == GameState::EXIT)
 				gameWindow->close ();
 
 			update ();										//...game from lags' consequences. 
@@ -159,7 +164,7 @@ void Game::applyOptions () {
 	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 
-	if (state != Game::INIT)
+	if (state != GameState::INIT)
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 
@@ -178,11 +183,11 @@ void Game::processEvents () {
 	
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-			case Event::KeyPressed:			// Pass it forward to keyboardInput().
-				keyboardInput (event);
+			case Event::KeyPressed:
+				commandQueue.push (KeyboardInterface::pressedKeyHandle (state, event.key.code));
 				break;
 			case Event::KeyReleased:
-				keyboardInput (event);
+				commandQueue.push (KeyboardInterface::releasedKeyHandle (state, event.key.code));
 				break;
 			case Event::Closed:
 				gameWindow->close ();
@@ -203,7 +208,7 @@ void Game::keyboardInput (const Event event) {
 
 	// #TODO Check if these conditions can be written with 'else-if'
 	if (event.key.code == Keyboard::Escape)		//exit the game
-		state = Game::EXIT;						//#TEMP
+		state = GameState::EXIT;						//#TEMP
 
 	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code)) 
 		Console::visible = !Console::visible;
@@ -227,13 +232,13 @@ void Game::keyboardInput (const Event event) {
 	}
 
 	switch (state) {							//controls the game state
-		case Game::State::IN_MENU:
+		case GameState::IN_MENU:
 			if (event.key.code == Keyboard::Return)		//#TEMP
-				state = Game::PLAYING;				//pseudo-start of the game
+				state = GameState::PLAYING;				//pseudo-start of the game
 			break;
-		case Game::State::PLAYING: 						//all events in the actual game
+		case GameState::PLAYING: 						//all events in the actual game
 			//playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
-			state = Game::PLAYING;
+			state = GameState::PLAYING;
 		default:
 			break;
 	}
