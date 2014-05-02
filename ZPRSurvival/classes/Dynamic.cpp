@@ -17,5 +17,11 @@ Dynamic::~Dynamic () {
 }
 
 void Dynamic::applyForce (sf::Vector2f force) {
-	this->boxBody->ApplyForceToCenter (b2Vec2 (force.x, force.y), true);
+
+	this->boxBody->ApplyForceToCenter (b2Vec2 (force.x * cos (boxBody->GetAngle ()), force.y*sin (boxBody->GetAngle ())), true);
+}
+
+void Dynamic::applyRotation (float angularForce) {
+	//this->boxBody->ApplyAngularImpulse (angularForce, true);
+	boxBody->ApplyTorque (angularForce, true);
 }

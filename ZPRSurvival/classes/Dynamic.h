@@ -28,5 +28,23 @@ public:
 
 	// Apply force to b2Body
 	void applyForce (sf::Vector2f force);
+
+	// Apply rotation to b2Body
+	void applyRotation (float angularForce);
 };
 
+struct EntityMover {
+	EntityMover (float vx, float vy) : force (vx, vy) {}
+	void operator() (Dynamic & object, sf::Time) const {
+		object.applyForce (force);
+	}
+	sf::Vector2f force;
+};
+
+struct EntityRotate {
+	EntityRotate (float angularForce) : force (angularForce) {}
+	void operator() (Dynamic & object, sf::Time) const {
+		object.applyRotation (force);
+	}
+	float force;
+};

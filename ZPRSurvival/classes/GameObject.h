@@ -21,7 +21,10 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include "../options/GraphicsOptions.h"
 #include "../interface/ResourcesID.h"
+#include "../interface/Command.h"
 #define RAD_TO_DEG 180.0f / b2_pi
+
+class Command;
 
 /**
 	MVC's View for GameObject class. Implements scene graph to draw objects and provides
@@ -58,10 +61,13 @@ public:
 	virtual ~GameObject ();
 
 	// Overloaded sf::Sprite draw method.
-	virtual void draw (sf::RenderWindow& window) const;
+	void draw (sf::RenderWindow& window) const;
 
 	// Draw this object and all children.
 	virtual void drawAll (sf::RenderWindow* window) const;
+
+	// Check is this command considers this object and pass it deeper.
+	virtual void passCommand (Command command, sf::Time dt);
 
 	// Get updated position and rotation from b2Body and apply it to Sprite.
 	void updateFromBody ();
@@ -83,9 +89,10 @@ public:
 	void createB2Body (Prefab prefab);
 	
 protected:	
-	std::vector<Ptr> children;		// All children to draw after this object is drawn.
+	std::vector<Ptr> children;	// All children to draw after this object is drawn.
 	GameObject* parent;			// Pointer ro the parent (one level above).
-	b2Body * boxBody;					// Box2D Dynamic object.
+	b2Body * boxBody;			// Box2D Dynamic object.
+	Entities::ID entityId;		// Id or category for that object.
 };
 
 /**

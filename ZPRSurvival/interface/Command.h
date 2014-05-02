@@ -13,8 +13,6 @@
 #include <functional>
 #include <cassert>
 #include "ResourcesID.h"
-#include "../classes/Dynamic.h"
-
 
 class GameObject;
 
@@ -48,10 +46,3 @@ Command::Action derivedAction (Function fn)
 //	COMMANDS
 // ==========
 
-struct EntityMover {
-	EntityMover (float vx, float vy) : force (vx, vy) {}
-	void operator() (Dynamic & object, sf::Time) const {
-		object.applyForce (force);
-	}
-	sf::Vector2f force;
-};

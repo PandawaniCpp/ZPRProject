@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include "Command.h"
 #include "Game.h"
+#include "../player/Player.h"
 
 /**
 	Non-instantiable class for interpreting particular keys and their combinations. 

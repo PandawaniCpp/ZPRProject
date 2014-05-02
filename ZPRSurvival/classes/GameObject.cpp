@@ -47,15 +47,6 @@ void GameObject::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 }
 
-void GameObject::updateFromBody () {
-	//boxBody->SetLinearVelocity (b2Vec2 (100.0, 100.0));
-	this->setPosition (boxBody->GetPosition ().x * GraphicsOptions::pixelPerMeter,
-					   boxBody->GetPosition ().y * GraphicsOptions::pixelPerMeter);
-
-	//this->setRotation (boxBody->GetAngle () * RAD_TO_DEG);
-	this->setRotation (this->getRotation () + 1);
-}
-
 void GameObject::drawAll (sf::RenderWindow* window) const {
 	// Draw myself.
 	this->draw (*window);
@@ -64,6 +55,22 @@ void GameObject::drawAll (sf::RenderWindow* window) const {
 	for (const Ptr& child : children) {
 		child->drawAll (window);
 	}
+}
+
+void GameObject::passCommand (Command command, sf::Time dt) {
+	if (command.category == this->entityId)
+		command.action (*this, dt);
+	else
+		for (const Ptr& child : children) {
+			child->passCommand (command, dt);
+	}
+}
+
+void GameObject::updateFromBody () {
+	this->setPosition (boxBody->GetPosition ().x * GraphicsOptions::pixelPerMeter,
+					   boxBody->GetPosition ().y * GraphicsOptions::pixelPerMeter);
+
+	this->setRotation (90 - boxBody->GetAngle () * RAD_TO_DEG);
 }
 
 bool GameObject::hasChilds () {
@@ -83,6 +90,7 @@ void GameObject::createB2Body (Prefab prefab) {
 
 	bodyDef.type = prefab.bodyType;		// Dynamic, static or kinetic.
 	boxBody = boxWorld.CreateBody (&bodyDef);	// B2Body creation and assigment.
+	boxBody->SetTransform (boxBody->GetPosition (), 90.0f);
 
 	// Fixture definition.
 	b2FixtureDef fixtureDef;

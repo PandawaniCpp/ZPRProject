@@ -16,6 +16,8 @@ Player::Player () {
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
+	
+	entityId = Entities::PLAYER;
 
 	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
 }
@@ -26,6 +28,8 @@ Player::Player (GameObject::Prefab prefab) {
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
+
+	entityId = Entities::PLAYER;
 
 	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
 }

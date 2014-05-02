@@ -76,7 +76,11 @@ namespace Commands {
 	enum ID {
 		NONE,
 		G_EXIT,
+		CON_TRIGGER,
 		MOVE_FORWARD,
+		MOVE_BACKWARD,
+		TURN_LEFT,
+		TURN_RIGHT,
 		COMMANDS_COUNT
 	};
 }

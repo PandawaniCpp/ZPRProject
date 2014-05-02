@@ -77,6 +77,9 @@ void Game::run () {
 	timeSinceLastUpdate += clock.restart ();
 	PlayerController::deltaTime = timePerFrame;
 
+	// Start the Game
+	state = GameState::PLAYING;
+
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
 		processEvents ();
@@ -206,6 +209,11 @@ void Game::commandInterpret () {
 		if (command.category == Entities::NONE) {
 			if (command.commandType == Commands::G_EXIT)
 				gameWindow->close ();
+			else if (command.commandType == Commands::CON_TRIGGER)
+				Console::visible = !Console::visible;
+		}
+		else {
+			sceneGraph.passCommand (command, PlayerController::deltaTime);
 		}
 	}
 }
@@ -304,11 +312,11 @@ void Game::update () {
 	// Move player
 	/*Vector2f position = player->getPosition ();
 	playerController->move (position, player->getDisplacement ());
-	player->setPosition (position);
+	player->setPosition (position);*/
 
 	// Set the world displacement vector relatively to player.
-	worldView.setCenter (player->getPosition() + player->getOffset ());
-	gameWindow->setView (worldView);*/
+	worldView.setCenter (playerController[0]->getPosition ());// + playerController.getOffset ());
+	gameWindow->setView (worldView);
 
 	// Vector for displacement correction.
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
