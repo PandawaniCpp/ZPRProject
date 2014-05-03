@@ -41,8 +41,3 @@ Command::Action derivedAction (Function fn)
 		fn (dynamic_cast<Object&>(node), dt);
 	};
 }
-
-// ==========
-//	COMMANDS
-// ==========
-
