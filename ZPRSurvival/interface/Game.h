@@ -18,6 +18,7 @@
 #include "../item/ItemController.h"
 #include "Console.h"
 #include "KeyboardInterface.h"
+#include "MouseInterface.h"
 #include "CommandQueue.h"
 
 /**
@@ -27,7 +28,6 @@
 */
 
 using namespace std;
-using namespace sf;
 
 class Game {
 public:
@@ -80,7 +80,7 @@ private:
 
 	// Interprets keys actions depending on state.
 	// \param  key - key pressed/released
-	void keyboardInput (const Event event);
+	void keyboardInput (const sf::Event event);
 
 	// Check mouse position nad clicks.
 	void mouseInput ();
@@ -103,21 +103,24 @@ private:
 
 private:
 	// Main game objects
-	RenderWindow * gameWindow;			// Main window for displaying the game.
+	sf::RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController playerController;	// MVC's controller of the player.
 	ItemController itemController;
-	View worldView;				// Represents part of the world shown to the player.
+	sf::View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
 	CommandQueue commandQueue;
+	GameObject sceneGraph;		// Tree with scene nodes put in render order.
 
 	// Game parameters
-	GameObject sceneGraph;		// Tree with scene nodes put in render order.
 	std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
-	Time timePerFrame;			// Keep the frame duration fixed.
+	sf::Time timePerFrame;			// Keep the frame duration fixed.
 	GameState::ID state;				// Describe, in which state the game is in the moment.
-	FloatRect worldBounds;			// World size (in px).
-	Vector2f mousePosition;			// Mouse position
-	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
+	sf::FloatRect worldBounds;			// World size (in px).
+	//Vector2f mousePosition;			// Mouse position
+	ResourceHolder<sf::Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
+
+	// Additional variables
+	sf::Vector2f worldViewPosition;			// Top-left corner of the sf::View in global coordinates.
 };
 

@@ -46,7 +46,7 @@ public:
 
 	// Draw console on the screen with given params.
 	// \see Console::params
-	virtual void draw (sf::RenderWindow& window) const ;
+	virtual void draw (sf::RenderWindow * window) const ;
 
 private:
 	sf::Font font;		// Default font to draw with.

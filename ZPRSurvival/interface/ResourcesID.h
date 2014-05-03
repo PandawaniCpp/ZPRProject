@@ -22,7 +22,6 @@ namespace GameState {
 	};
 }
 
-
 // List of all textures in the game.
 namespace Textures {
 	enum PLAYER {
@@ -72,15 +71,20 @@ namespace Entities {
 	};
 }
 
+// Command identifiers
 namespace Commands {
 	enum ID {
 		NONE,
 		G_EXIT,
 		CON_TRIGGER,
 		MOVE_FORWARD,
+		STOP_FORWARD,
 		MOVE_BACKWARD,
-		TURN_LEFT,
-		TURN_RIGHT,
+		STOP_BACKWARD,
+		MOVE_LEFT,
+		STOP_LEFT,
+		MOVE_RIGHT,
+		STOP_RIGHT,
 		COMMANDS_COUNT
 	};
 }

@@ -65,6 +65,7 @@ void GameObjectController<Type, Identifier>::updateEntities () {
 		//Type * downEntity = dynamic_cast<Type*>(entity.get());
 		entity->animate (deltaTime);
 		entity->updateFromBody ();
+		entity->update ();
 	}
 }
 

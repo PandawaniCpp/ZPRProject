@@ -42,6 +42,9 @@ void EntityFactory::playerPrefabsInit () {
 	prefab.originY = 0.5;
 	prefab.density = 1.0f;
 	prefab.friction = 0.7f;
+	prefab.maxSpeed = 10.0;
+	prefab.rotationSpeed = 4.f;
+	prefab.acceleration = 1000.f;
 	prefab.bodyType = b2_dynamicBody;
 	prefab.circleShape = nullptr;
 	prefab.polyShape = new b2PolygonShape;

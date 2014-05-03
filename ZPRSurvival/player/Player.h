@@ -33,7 +33,7 @@ public:
 	~Player ();
 
 	// Overloaded sf::Sprite draw() method for Player.
-	virtual void draw (sf::RenderWindow& window) const;
+	virtual void draw (sf::RenderWindow * window) const;
 
 	// Switch texture with new texture from textureHolder
 	void changeTexture ();

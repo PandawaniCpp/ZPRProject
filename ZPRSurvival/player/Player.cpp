@@ -17,6 +17,11 @@ Player::Player () {
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 	
+	// Dynamic body parameters.
+	maxSpeed = 3.f;
+	rotationSpeed = 0.5f;
+	acceleration = 10.f;
+	
 	entityId = Entities::PLAYER;
 
 	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
@@ -29,6 +34,11 @@ Player::Player (GameObject::Prefab prefab) {
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
 
+	// Dynamic body parameters.
+	maxSpeed = prefab.maxSpeed;
+	rotationSpeed = prefab.rotationSpeed;
+	acceleration = prefab.acceleration;
+
 	entityId = Entities::PLAYER;
 
 	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
@@ -37,8 +47,8 @@ Player::Player (GameObject::Prefab prefab) {
 Player::~Player () {
 }
 
-void Player::draw (sf::RenderWindow& window) const {
-	window.draw (*this);
+void Player::draw (sf::RenderWindow * window) const {
+	window->draw (*this);
 }
 
 /*void Player::changeTexture () {

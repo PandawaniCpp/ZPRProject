@@ -15,7 +15,6 @@
 	Non-instantiable class for interpreting particular keys and their combinations. 
 */
 class KeyboardInterface {
-	//friend class Game;
 public:
 	// Special keys flags.
 	enum SpecialKeys {
@@ -30,8 +29,8 @@ public:
 	static void assignActions ();
 
 	// Interprets keys based on game state.
-	static Command pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
-	static Command releasedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
+	static Command * pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
+	static Command * releasedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
 
 private:
 	// Associates action with command to be executed.

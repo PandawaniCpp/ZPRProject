@@ -23,6 +23,7 @@
 #include "../interface/ResourcesID.h"
 #include "../interface/Command.h"
 #define RAD_TO_DEG 180.0f / b2_pi
+#define DEG_TO_RAD b2_pi / 180.0f
 
 class Command;
 
@@ -43,6 +44,9 @@ public:
 		float originY = 0;
 		float density = 0;
 		float friction = 0;
+		float maxSpeed = 0;
+		float rotationSpeed = 0;
+		float acceleration = 0;
 		b2BodyType bodyType = b2_dynamicBody;
 		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
 		b2CircleShape * circleShape = nullptr;		// nullptr at a time.
@@ -61,13 +65,13 @@ public:
 	virtual ~GameObject ();
 
 	// Overloaded sf::Sprite draw method.
-	void draw (sf::RenderWindow& window) const;
+	virtual void draw (sf::RenderWindow * window) const;
 
 	// Draw this object and all children.
 	virtual void drawAll (sf::RenderWindow* window) const;
 
 	// Check is this command considers this object and pass it deeper.
-	virtual void passCommand (Command command, sf::Time dt);
+	virtual void passCommand (Command *command, sf::Time dt);
 
 	// Get updated position and rotation from b2Body and apply it to Sprite.
 	void updateFromBody ();

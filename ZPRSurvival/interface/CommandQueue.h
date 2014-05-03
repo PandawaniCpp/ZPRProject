@@ -15,14 +15,14 @@
 class CommandQueue {
 public:
 	// Push command into the queue.
-	void push (const Command& command);
+	void push (Command * command);
 
 	// Take the first inserted.
-	Command	pop ();
+	Command * pop ();
 
 	// Check whether queue is empty.
 	bool isEmpty () const;
 
 private:
-	std::queue<Command>	queue;		// Queue from which scene graph is taking commands.
+	std::queue<Command*>	queue;		// Queue from which scene graph is taking commands.
 };
