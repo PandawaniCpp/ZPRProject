@@ -85,6 +85,11 @@ namespace Commands {
 		STOP_LEFT,
 		MOVE_RIGHT,
 		STOP_RIGHT,
+		START_RUN,
+		STOP_RUN,
+		RES_UP,
+		RES_DOWN,
+		SET_FULLSCREEN,
 		COMMANDS_COUNT
 	};
 }

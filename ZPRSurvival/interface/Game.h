@@ -78,6 +78,9 @@ private:
 	// Interprets commands and pass them into scene graph if necessary.
 	void commandInterpret ();
 
+	// Execute commands for Game and interface.
+	void gameCommandExecute (Command * command);
+
 	// Interprets keys actions depending on state.
 	// \param  key - key pressed/released
 	void keyboardInput (const sf::Event event);

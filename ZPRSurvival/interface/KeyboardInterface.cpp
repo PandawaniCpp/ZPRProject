@@ -13,18 +13,23 @@ std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> KeyboardInte
 std::map<Commands::ID, Command> KeyboardInterface::actionBindings = std::map<Commands::ID, Command> ();
 
 void KeyboardInterface::assignKeys () {
-	pressedKeyBindings.insert (std::make_pair (std::make_pair(sf::Keyboard::Escape, GameState::PLAYING), Commands::G_EXIT));
-	//pressedKeyBindings.insert (std::make_pair (std::make_pair(sf::Keyboard::Escape, GameState::IN_MENU), Commands::G_EXIT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair(sf::Keyboard::F1, GameState::PLAYING), Commands::CON_TRIGGER));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, GameState::PLAYING), Commands::G_EXIT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, GameState::PLAYING), Commands::CON_TRIGGER));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, GameState::PLAYING), Commands::RES_UP));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, GameState::PLAYING), Commands::RES_DOWN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, GameState::PLAYING), Commands::SET_FULLSCREEN));
+
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, GameState::PLAYING), Commands::MOVE_FORWARD));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::MOVE_BACKWARD));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, GameState::PLAYING), Commands::MOVE_LEFT));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, GameState::PLAYING), Commands::MOVE_RIGHT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, GameState::PLAYING), Commands::START_RUN));
 
 	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, GameState::PLAYING), Commands::STOP_FORWARD));
 	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::STOP_BACKWARD));
 	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, GameState::PLAYING), Commands::STOP_LEFT));
 	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, GameState::PLAYING), Commands::STOP_RIGHT));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, GameState::PLAYING), Commands::STOP_RUN));
 }
 
 void KeyboardInterface::assignActions () {
@@ -34,11 +39,11 @@ void KeyboardInterface::assignActions () {
 		actionBindings[static_cast<Commands::ID>(i)].commandType = static_cast<Commands::ID>(i);
 	}
 
-
 	// Assign specific actions to every command;
-	actionBindings[Commands::G_EXIT].category = Entities::NONE;
+	actionBindings[Commands::RES_UP].specialKeys = SpecialKeys::CONTROL;
+	actionBindings[Commands::RES_DOWN].specialKeys = SpecialKeys::CONTROL;
+	actionBindings[Commands::SET_FULLSCREEN].specialKeys = SpecialKeys::CONTROL;
 
-	actionBindings[Commands::CON_TRIGGER].category = Entities::NONE;
 	actionBindings[Commands::MOVE_FORWARD].action = derivedAction<Dynamic> (UpdateDirection (Dynamic::UP));
 	actionBindings[Commands::MOVE_FORWARD].category = Entities::PLAYER;
 	actionBindings[Commands::MOVE_BACKWARD].action = derivedAction<Dynamic> (UpdateDirection (Dynamic::DOWN));
@@ -47,6 +52,8 @@ void KeyboardInterface::assignActions () {
 	actionBindings[Commands::MOVE_LEFT].category = Entities::PLAYER;
 	actionBindings[Commands::MOVE_RIGHT].action = derivedAction<Dynamic> (UpdateDirection (Dynamic::RIGHT));
 	actionBindings[Commands::MOVE_RIGHT].category = Entities::PLAYER;
+	actionBindings[Commands::START_RUN].action = derivedAction<Dynamic> (SetRunning (true));
+	actionBindings[Commands::START_RUN].category = Entities::PLAYER;
 
 	actionBindings[Commands::STOP_FORWARD].action = derivedAction<Dynamic> (UpdateDirection (-Dynamic::UP));
 	actionBindings[Commands::STOP_FORWARD].category = Entities::PLAYER;
@@ -56,6 +63,8 @@ void KeyboardInterface::assignActions () {
 	actionBindings[Commands::STOP_LEFT].category = Entities::PLAYER;
 	actionBindings[Commands::STOP_RIGHT].action = derivedAction<Dynamic> (UpdateDirection (-Dynamic::RIGHT));
 	actionBindings[Commands::STOP_RIGHT].category = Entities::PLAYER;
+	actionBindings[Commands::STOP_RUN].action = derivedAction<Dynamic> (SetRunning (false));
+	actionBindings[Commands::STOP_RUN].category = Entities::PLAYER;
 }
 
 Command * KeyboardInterface::pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key) {
@@ -73,28 +82,3 @@ Command * KeyboardInterface::releasedKeyHandle (GameState::ID state, sf::Keyboar
 	else
 		return new Command();
 }
-
-/*KeyboardInterface::KeyboardInterface () {
-}
-
-KeyboardInterface::~KeyboardInterface () {
-}*/
-
-/*int KeyboardInterface::inputHandle (Keyboard::Key key, int state) {
-	if (key == Keyboard::Escape)		//exit the game
-		return Game::State::EXIT;			//#TEMP
-
-	switch (state) {						//controls the game state
-		case Game::State::IN_MENU:
-			if (key == Keyboard::Return)		//#TEMP
-				return Game::State::PLAYING;		//pseudo-start of the game
-			break;
-		case Game::State::PLAYING: {						//all events in the actual game
-			game->getPlayerController()->preparePlayerMove (key, Keyboard::isKeyPressed (key));
-			return Game::State::PLAYING;
-		}
-		default: 
-			return -1;
-	}
-	return -1;
-}*/

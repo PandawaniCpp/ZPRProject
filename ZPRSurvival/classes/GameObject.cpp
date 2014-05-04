@@ -31,7 +31,6 @@ void GameObject::detachChild (const GameObject& node)
 	assert (found != children.end ());
 	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
 	result->parent = nullptr;				// Erase parent.
-	//result.reset();
 	children.erase (found);					// Erase child.
 }
 
@@ -91,6 +90,8 @@ void GameObject::createB2Body (Prefab prefab) {
 	bodyDef.type = prefab.bodyType;		// Dynamic, static or kinetic.
 	boxBody = boxWorld.CreateBody (&bodyDef);	// B2Body creation and assigment.
 	boxBody->SetTransform (boxBody->GetPosition (), b2_pi / 2.f);
+	boxBody->SetAngularDamping (prefab.angularDamping);
+	boxBody->SetLinearDamping (prefab.linearDamping);
 
 	// Fixture definition.
 	b2FixtureDef fixtureDef;

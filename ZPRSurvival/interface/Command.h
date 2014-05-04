@@ -21,12 +21,13 @@ struct Command {
 	typedef std::function<void (GameObject&, sf::Time)> Action;
 
 	// Default constructor
-	Command () : action (), category (Entities::NONE), commandType (Commands::NONE) {};
+	Command () : action (), category (Entities::NONE), commandType (Commands::NONE), specialKeys (0) {};
 
 	Action	action;				// Action performed on GameObject. If command considers Game itself, action is 
 								// empty and command is only passing type for further recognition.
 	Entities::ID category;		// Entity type
 	Commands::ID commandType;	// Type of action
+	int specialKeys;
 };
 
 // Specific action with type downcasting

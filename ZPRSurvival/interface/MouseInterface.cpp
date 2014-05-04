@@ -22,7 +22,7 @@ void MouseInterface::calculatePlayerOffset (const sf::Vector2f & playerPosition)
 float MouseInterface::calculateRotation () {
 	if (abs (playerOffset.x) < std::numeric_limits<float>::epsilon ())
 	{
-		if (playerOffset.y >= 0)
+		if (playerOffset.y <= 0)
 			return b2_pi / 2.f;
 		else
 			return b2_pi * 3.f / 2.f;

@@ -43,7 +43,7 @@ Console::Console () {
 	keys.push_back ("avail. resolutions");		// <- Should be the last one
 
 	// Set default param to game title and version.
-	this->insert ("#TITLE v.", "0.7.3");
+	this->insert ("#TITLE v.", "0.8.1");
 }
 
 Console::~Console () {
@@ -117,7 +117,6 @@ void Console::draw (sf::RenderWindow * window) const {
 
 		tempText.setString (it->first);
 		tempText.setPosition (vec.x + 10, vec.y + pos);
-		//tempText.setPosition (this->getPosition());
 		window->draw (tempText);
 
 		if (it->first == "current resolution")

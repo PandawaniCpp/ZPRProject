@@ -18,7 +18,6 @@ Player::Player () {
 	animationRepeat = true;
 	
 	// Dynamic body parameters.
-	maxSpeed = 3.f;
 	rotationSpeed = 0.5f;
 	acceleration = 10.f;
 	
@@ -35,9 +34,9 @@ Player::Player (GameObject::Prefab prefab) {
 	animationRepeat = true;
 
 	// Dynamic body parameters.
-	maxSpeed = prefab.maxSpeed;
 	rotationSpeed = prefab.rotationSpeed;
 	acceleration = prefab.acceleration;
+	runModifier = prefab.runModifier;
 
 	entityId = Entities::PLAYER;
 
@@ -50,7 +49,3 @@ Player::~Player () {
 void Player::draw (sf::RenderWindow * window) const {
 	window->draw (*this);
 }
-
-/*void Player::changeTexture () {
-	this->Dynamic::setTexture (textureHolder.get (currentAnimation));
-}*/

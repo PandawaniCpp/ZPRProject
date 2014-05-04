@@ -212,10 +212,7 @@ void Game::commandInterpret () {
 			continue;
 		}
 		if (command->category == Entities::NONE) {
-			if (command->commandType == Commands::G_EXIT)
-				gameWindow->close ();
-			else if (command->commandType == Commands::CON_TRIGGER)
-				Console::visible = !Console::visible;
+			gameCommandExecute (command);
 		}
 		else {
 			sceneGraph.passCommand (command, PlayerController::deltaTime);
@@ -223,57 +220,39 @@ void Game::commandInterpret () {
 	}
 }
 
-		void Game::keyboardInput (const sf::Event event) {
-			// #TODO
-			//		PASS SPECIFIC KEY FUNCTIONALITY TO KEYBOARD INTERFACE
-			// #TODO
+void Game::gameCommandExecute (Command * command) {
+	// Combination of special keys pressed at that moment.
+	int specialKeys = sf::Keyboard::isKeyPressed (sf::Keyboard::LShift) * KeyboardInterface::SHIFT +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LControl) * KeyboardInterface::CONTROL +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LAlt) * KeyboardInterface::ALT +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LSystem) * KeyboardInterface::SYSTEM;
 
-			// Special keys prepared for later interpretation.
-			/*unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
-
-			// #TODO Check if these conditions can be written with 'else-if'
-			if (event.key.code == Keyboard::Escape)		//exit the game
-				state = GameState::EXIT;						//#TEMP
-
-			if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code)) 
-				Console::visible = !Console::visible;
-
-			// Toggles fullscreen on/off
-			if (Console::visible && keyFlags & KeyboardInterface::CONTROL &&  event.key.code == Keyboard::F && Keyboard::isKeyPressed (event.key.code)) {
-				if (GraphicsOptions::fullscreenModeOn)
-					setFullscreenEnabled (false);
-				else
-					setFullscreenEnabled (true);
-			}
-
-			if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Add && Keyboard::isKeyPressed (event.key.code)) {
-				GraphicsOptions::switchResolution (true);
-				applyOptions ();
-			}
-
-			if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Subtract && Keyboard::isKeyPressed (event.key.code)) {
-				GraphicsOptions::switchResolution (false);
-				applyOptions ();
-			}
-
-			switch (state) {							//controls the game state
-				case GameState::IN_MENU:
-					if (event.key.code == Keyboard::Return)		//#TEMP
-						state = GameState::PLAYING;				//pseudo-start of the game
-					break;
-				case GameState::PLAYING: 						//all events in the actual game
-					//playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
-					state = GameState::PLAYING;
-				default:
-					break;
-			}*/
+	// Check every game command
+	if (command->commandType == Commands::G_EXIT)	// Game termination
+		gameWindow->close ();
+	else if (command->commandType == Commands::CON_TRIGGER)		// Show/Hide Console
+		Console::visible = !Console::visible;
+	else if (command->commandType == Commands::RES_UP) {		// Increase resolution
+		if (Console::visible && command->specialKeys & specialKeys) {
+			GraphicsOptions::switchResolution (true);
+			applyOptions ();
 		}
-
-		void Game::mouseInput () {
-			/*mousePosition = static_cast<Vector2f>(Mouse::getPosition (*gameWindow)) + 
-				worldView.getCenter() -
-				worldView.getSize() / 2.0f;*/
+	}
+	else if (command->commandType == Commands::RES_DOWN) {		// Decrease resolution
+		if (Console::visible && command->specialKeys & specialKeys) {
+			GraphicsOptions::switchResolution (false);
+			applyOptions ();
 		}
+	}
+	else if (command->commandType == Commands::SET_FULLSCREEN) {	// Turn fullscreen on/off
+		if (Console::visible && command->specialKeys & specialKeys) {
+			if (GraphicsOptions::fullscreenModeOn)
+				setFullscreenEnabled (false);
+			else
+				setFullscreenEnabled (true);
+		}
+	}
+}
 
 void Game::update () {
 	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
@@ -281,26 +260,18 @@ void Game::update () {
 
 	worldMap->t += rand()%750/100000.0;
 
+	// Pass target rotation to player.
+	float mouseRotation = MouseInterface::calculateRotation ();
+	playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
+
+	// Process to taking commands from CommandQueue
 	commandInterpret ();
 
+	// Apply physics to b2World
 	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
 
+	// Calculate player-mouse offset.
 	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-	float mouseRotation = MouseInterface::calculateRotation ();
-	playerController[0]->setTargetRotation(mouseRotation);
-
-	// Check if some keys are released (sometimes release event is not triggered somehow...).
-	/*int direction = player->getDirection ();
-	if (direction != 0) {
-		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
-			playerController->preparePlayerMove (Keyboard::W, false);
-		if (!Keyboard::isKeyPressed (Keyboard::S) && direction & Player::DOWN)
-			playerController->preparePlayerMove (Keyboard::S, false);
-		if (!Keyboard::isKeyPressed (Keyboard::A) && direction & Player::LEFT)
-			playerController->preparePlayerMove (Keyboard::A, false);
-		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
-			playerController->preparePlayerMove (Keyboard::D, false);
-	}*/
 	
 	// Update player accordingly to mouse position change.
 	playerController.updateEntities ();	
@@ -341,8 +312,6 @@ void Game::render () {
 }
 
 void Game::draw () {
-	//playerController->prepareView ();
-
 	// Draw all layers in order.
 	sceneGraph.drawAll (gameWindow);
 }

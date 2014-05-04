@@ -11,6 +11,7 @@
 #pragma once
 #include "GameObject.h"
 #define ANGLE_PRECISION 10.0 * DEG_TO_RAD	// Angle precision in radians.
+//#define HYPOTENUSE(a,b) sqrt(a*a + b*b)		// Vector length/value (square root of sum of two squared value)
 
 /**
 	MVC's View for Dynamic class. Represents objects, that can move, rotate and
@@ -41,22 +42,23 @@ public:
 	// Apply direction change
 	void applyDirection (int dir);
 
-	// Apply force to b2Body
-	void applyForce (sf::Vector2f force);
-
 	// Set rotation to which b2Body should rotate.
 	void setTargetRotation (float angle);
 
+	// Whether object should run or not.
+	void setRunning (bool isRunning);
+
 protected:
 	int direction = 0;		// Combination of Dynamic::DIRECTION flags
-	float maxSpeed;			// Object movement parameters.
+	//float maxSpeed;			// Object movement parameters.
 	float acceleration;
 	float rotationSpeed;	// Object rotation parameters.
 	float rotation;
-
-	bool maxSpeedReached = false;	// When triggered, no calculations are performed, the
-									// velocity is kept at max value.
-	bool isRotating = false;			// Is object currently rotating.
+	
+	float runModifier;
+	bool isAccelerating = false;	// Triggered when current speed is less than maxSpeed
+	bool isRotating = false;		// Is object currently rotating.
+	bool isRunning = false;
 };
 
 // --------------------------------------------------------------------
@@ -73,10 +75,20 @@ struct UpdateDirection {
 	int direction;
 };
 
+// Set target rotation to which body should rotate.
 struct UpdateRotation {
 	UpdateRotation (float angle) : rotation (angle) {}
 	void operator() (Dynamic & object, sf::Time) const {
 		object.setTargetRotation (rotation);
 	}
 	float rotation;
+};
+
+// Turn running on/off
+struct SetRunning {
+	SetRunning (bool isRunning) : running (isRunning) {}
+	void operator() (Dynamic & object, sf::Time) const {
+		object.setRunning (running);
+	}
+	bool running;
 };

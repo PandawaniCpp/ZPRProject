@@ -25,7 +25,7 @@
 #define RAD_TO_DEG 180.0f / b2_pi
 #define DEG_TO_RAD b2_pi / 180.0f
 
-class Command;
+//class Command;
 
 /**
 	MVC's View for GameObject class. Implements scene graph to draw objects and provides
@@ -40,13 +40,16 @@ public:
 	typedef struct Prefab {
 		int width = 1;
 		int height = 1;
-		float originX = 0;
-		float originY = 0;
-		float density = 0;
-		float friction = 0;
-		float maxSpeed = 0;
-		float rotationSpeed = 0;
-		float acceleration = 0;
+		float originX = 0.f;
+		float originY = 0.f;
+		float density = 0.f;
+		float friction = 0.f;
+		float maxSpeed = 0.f;
+		float rotationSpeed = 0.f;
+		float acceleration = 0.f;
+		float linearDamping = 1.f;
+		float angularDamping = 1.f;
+		float runModifier = 1.f;
 		b2BodyType bodyType = b2_dynamicBody;
 		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
 		b2CircleShape * circleShape = nullptr;		// nullptr at a time.
