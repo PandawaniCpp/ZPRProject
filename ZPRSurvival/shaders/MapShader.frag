@@ -24,10 +24,6 @@ float lerp(float t, float a, float b){
 	return a + t * (b - a);
 }
 
-vec3 lerpV(float t, vec3 a, vec3 b){
-	return a + t * (b - a);
-}
-
 float grad(int hash, float x, float y, float z){
 	int h = hash & 15;
 	// Convert lower 4 bits of hash inot 12 gradient directions
@@ -36,6 +32,35 @@ float grad(int hash, float x, float y, float z){
 	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }
 
+float noise2d(float x, float y){
+	int X = int(x) & 255;
+	int Y = int(y) & 255;
+
+	// Find relative x, y,z of point in cube
+	x -= int(x);
+	y -= int(y);
+
+	// Compute fade curves for each of x, y, z
+	float u = fade(x);
+	float v = fade(y);
+
+	// Hash coordinates of the 8 cube corners
+	int A  =  int(256 * texture2D(permutationVector, vec2( (X % 16) * 0.0675, X * 0.00390625) ).x) + Y;
+	int AA =  int(256 * texture2D(permutationVector, vec2( (A % 16) * 0.0675, A * 0.00390625) ).x);
+	int AB =  int(256 * texture2D(permutationVector, vec2( ((A+1) % 16) * 0.0675, (A+1) * 0.00390625) ).x);
+	int B  =  int(256 * texture2D(permutationVector, vec2( ((X+1) % 16) * 0.0675, (X+1) * 0.00390625) ).x) + Y;
+	int BA =  int(256 * texture2D(permutationVector, vec2( (B % 16) * 0.0675, B * 0.00390625) ).x);
+	int BB =  int(256 * texture2D(permutationVector, vec2( ((B+1) % 16) * 0.0675, (B+1) * 0.00390625) ).x);
+
+	// Add blended results from 8 corners of cube
+	float res = mix(mix(grad(int(256 * texture2D(permutationVector, vec2( (AA % 16) * 0.0675, AA * 0.00390625)).x), x, y, 0), 
+						grad(int(256 * texture2D(permutationVector, vec2( (BA % 16) * 0.0675, BA * 0.00390625)).x), x - 1, y, 0), 
+						u), 
+						mix(grad(int(256 * texture2D(permutationVector, vec2( (AB % 16) * 0.0675, AB * 0.00390625)).x), x, y - 1, 0), 
+							grad(int(256 * texture2D(permutationVector, vec2( (BB % 16) * 0.0675, BB * 0.00390625)).x), x - 1, y - 1, 0), 
+							u), v);
+	return res;
+}
 
 //Jedna warstwa szumu perlina, zwraca z zakresu -1--0--1
 float noise(float x, float y, float z){
@@ -54,55 +79,55 @@ float noise(float x, float y, float z){
 	float w = fade(z);
 
 	// Hash coordinates of the 8 cube corners
-	int A  =  int(256 * texture2D(permutationVector, vec2( (X % 16) / 16.0, X / 256.0) ).x) + Y;
-	int AA =  int(256 * texture2D(permutationVector, vec2( (A % 16) / 16.0, A / 256.0) ).x) + Z;
-	int AB =  int(256 * texture2D(permutationVector, vec2( ((A+1) % 16) / 16.0, (A+1) / 256.0) ).x) + Z;
-	int B  =  int(256 * texture2D(permutationVector, vec2( ((X+1) % 16) / 16.0, (X+1) / 256.0) ).x) + Y;
-	int BA =  int(256 * texture2D(permutationVector, vec2( (B % 16) / 16.0, B / 256.0) ).x) + Z;
-	int BB =  int(256 * texture2D(permutationVector, vec2( ((B+1) % 16) / 16.0, (B+1) / 256.0) ).x) + Z;
+	int A  =  int(256 * texture2D(permutationVector, vec2( (X % 16) * 0.0675, X * 0.00390625) ).x) + Y;
+	int AA =  int(256 * texture2D(permutationVector, vec2( (A % 16) * 0.0675, A * 0.00390625) ).x) + Z;
+	int AB =  int(256 * texture2D(permutationVector, vec2( ((A+1) % 16) * 0.0675, (A+1) * 0.00390625) ).x) + Z;
+	int B  =  int(256 * texture2D(permutationVector, vec2( ((X+1) % 16) * 0.0675, (X+1) * 0.00390625) ).x) + Y;
+	int BA =  int(256 * texture2D(permutationVector, vec2( (B % 16) * 0.0675, B * 0.00390625) ).x) + Z;
+	int BB =  int(256 * texture2D(permutationVector, vec2( ((B+1) % 16) * 0.0675, (B+1) * 0.00390625) ).x) + Z;
 
 	// Add blended results from 8 corners of cube
 	float res = lerp(w, 
 					lerp(v, 
 						lerp(u, 
-							grad(int(256 * texture2D(permutationVector, vec2( (AA % 16) / 16.0, AA / 256.0)).x), x, y, z), 
-							grad(int(256 * texture2D(permutationVector, vec2( (BA % 16) / 16.0, BA / 256.0)).x), x - 1, y, z)), 
+							grad(int(256 * texture2D(permutationVector, vec2( (AA % 16) * 0.0675, AA * 0.00390625)).x), x, y, z), 
+							grad(int(256 * texture2D(permutationVector, vec2( (BA % 16) * 0.0675, BA * 0.00390625)).x), x - 1, y, z)), 
 							lerp(u, 
-								grad(int(256 * texture2D(permutationVector, vec2( (AB % 16) / 16.0, AB / 256.0)).x), x, y - 1, z), 
-								grad(int(256 * texture2D(permutationVector, vec2( (BB % 16) / 16.0, BB / 256.0)).x), x - 1, y - 1, z))), 
+								grad(int(256 * texture2D(permutationVector, vec2( (AB % 16) * 0.0675, AB * 0.00390625)).x), x, y - 1, z), 
+								grad(int(256 * texture2D(permutationVector, vec2( (BB % 16) * 0.0675, BB * 0.00390625)).x), x - 1, y - 1, z))), 
 									lerp(v, 
 									lerp(u, 
-										grad(int(256 * texture2D(permutationVector, vec2( ( (AA + 1) % 16) / 16.0, (AA + 1) / 256.0)).x), x, y, z - 1), 
-										grad(int(256 * texture2D(permutationVector, vec2( ( (BA + 1) % 16) / 16.0, (BA + 1) / 256.0)).x), x - 1, y, z - 1)), 
+										grad(int(256 * texture2D(permutationVector, vec2( ( (AA + 1) % 16) * 0.0675, (AA + 1) * 0.00390625)).x), x, y, z - 1), 
+										grad(int(256 * texture2D(permutationVector, vec2( ( (BA + 1) % 16) * 0.0675, (BA + 1) * 0.00390625)).x), x - 1, y, z - 1)), 
 										lerp(u, 
-											grad(int(256 * texture2D(permutationVector, vec2( ( (AB + 1) % 16) / 16.0, (AB + 1) / 256.0)).x), x, y - 1, z - 1), 
-											grad(int(256 * texture2D(permutationVector, vec2( ( (BB + 1) % 16) / 16.0, (BB + 1) / 256.0)).x), x - 1, y - 1, z - 1))));
+											grad(int(256 * texture2D(permutationVector, vec2( ( (AB + 1) % 16) * 0.0675, (AB + 1) * 0.00390625)).x), x, y - 1, z - 1), 
+											grad(int(256 * texture2D(permutationVector, vec2( ( (BB + 1) % 16) * 0.0675, (BB + 1) * 0.00390625)).x), x - 1, y - 1, z - 1))));
 	return res;
 }
 
 //suma fraktalna szumów
 float sum1(float x, float y, float z){
-	float t = 0.5;
+	float t = 1.0;
 	float amplitude = 1.0;
 	float frequency = 1;
 	
 	if (x > 0.6*width) {
-		t -= 1.3*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
 	}
 	else if (x < 0.4f*width) {
-		t -= 1.3*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
 	}
 	if (y > 0.6*height) {
-		t -= 1.3*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
 	}
 	else if (y < 0.4*height) {
-		t -= 1.3*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
 	}
 
 	for (int i = 0; i < octaves; i++) {
-		t += noise( ((x*frequency) / zoom), ((y*frequency) / zoom), 0)*amplitude;
-		amplitude *= pow(persistence, 3);
-		frequency *= pow(2, 4);
+		t += noise2d( ((x*frequency) / zoom), ((y*frequency) / zoom))*amplitude;
+		amplitude *= persistence;
+		frequency *= 2.5;
 	}
 	
 	if (t < -1.0) {
@@ -113,6 +138,9 @@ float sum1(float x, float y, float z){
 		t = 1.0;
 	}
 
+	if (t > 1.0) {
+		t = 1.0;
+	}
 
 	return (t+1)/2.0;
 }
@@ -148,15 +176,15 @@ void main() {
 	float offset22 = offset2 - wave;
 	float offset3 = 0.015;
 	float offset4 = 0.020;
-	float k = sum1(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, 0);
-	float c = inverse(sum2(gl_FragCoord.x + offsetX , gl_FragCoord.y - offsetY, time)/3);
-	float a = (1+noise((gl_FragCoord.x + offsetX) / 100, (gl_FragCoord.y - offsetY) / 100, 0))/2.0;
+	float k = sum1(gl_FragCoord.x + offsetX , (resolutionY - gl_FragCoord.y) + offsetY, 0);
+	float c = inverse(sum2(gl_FragCoord.x + offsetX , (resolutionY - gl_FragCoord.y) + offsetY, time)/3);
+	float a = (noise((gl_FragCoord.x + offsetX) * 0.01, ((resolutionY - gl_FragCoord.y) + offsetY) * 0.01, 0))*0.5 + 1;
 	vec3 pixel;
 	vec3 deepCol = vec3(0, 0.05, 0.25) * c;
 	
 	vec3 shallowCol = vec3(0, 0.07, 0.3) * c;
-	vec3 sandCol = texture2D(sandTexture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), (gl_FragCoord.y - offsetY)/(resolutionX/3.0))).xyz; // = vec3(1.0, 0.8, 0.4) * k;
-	vec3 grassCol = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), (gl_FragCoord.y - offsetY)/(resolutionX/3.0))).xyz; // = vec3(0.2, 0.6, 0.1) * k;
+	vec3 sandCol = texture2D(sandTexture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), ((resolutionY - gl_FragCoord.y) + offsetY)/(resolutionX/3.0))).xyz; // = vec3(1.0, 0.8, 0.4) * k;
+	vec3 grassCol = texture2D(texture, vec2((gl_FragCoord.x + offsetX)/(resolutionX/3.0), ((resolutionY - gl_FragCoord.y) + offsetY)/(resolutionX/3.0))).xyz; // = vec3(0.2, 0.6, 0.1) * k;
 	vec3 kk = vec3(k);
 	float t;
 	float shallowWaterWaves = shallowWater + wave;
@@ -166,18 +194,18 @@ void main() {
 	}
 	else if(k < deepWater){
 		t = fade((k + offset3 - deepWater)/offset3);
-		pixel = lerpV(t, deepCol, shallowCol); 
+		pixel = mix(deepCol, shallowCol, t); 
 	}
 	else if (k < shallowWater - offset22){
 		pixel = shallowCol;
 	}
 	else if (k < shallowWaterWaves){
 		t = fade((k - shallowWater + offset22)/(shallowWaterWaves - shallowWater + offset22));
-		pixel = lerpV(t, shallowCol, (sandCol + 1.4*shallowCol)/2);
+		pixel = mix(shallowCol, (sandCol + 1.4*shallowCol)/2, t);
 	}
 	else if (k < shallowWaterWaves + offset00){
 		t = fade((k - shallowWaterWaves)/(offset00));
-		pixel = lerpV(t, (sandCol + 1.4*shallowCol)/2, (2*sandCol+2*shallowCol)/2);
+		pixel = mix((1.4*shallowCol + sandCol) * 0.5, (2*sandCol+2*shallowCol) * 0.5, t);
 	}
 	else if(k < sand - offset1){
 		pixel = sandCol;
@@ -187,7 +215,7 @@ void main() {
 		t = pow(t, a*2);
 		//t -=t*a;
 		//t +=t*a;
-		pixel = lerpV(t, sandCol, grassCol); 	
+		pixel = mix(sandCol, grassCol, t); 	
 
 	}
 	else{

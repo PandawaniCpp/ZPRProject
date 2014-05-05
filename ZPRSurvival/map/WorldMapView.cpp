@@ -18,7 +18,7 @@ void WorldMapView::initialize() {
 
 	int width = mapa->getWidth();
 	int height = mapa->getHeight();
-
+	getMapImage().saveToFile("./takamapa.png");
 	waterImage = new sf::Image();
 	sandImage = new sf::Image();
 	grassImage = new sf::Image();
@@ -126,11 +126,11 @@ WorldMapView::~WorldMapView() {
 sf::Image WorldMapView::getMapImage() {
 
 	sf::Image img;
-	img.create(mapa->getWidth(), mapa->getHeight(), sf::Color::Black);
+	img.create(mapa->getWidth()/10, mapa->getHeight()/10, sf::Color::Black);
 
 	for (int x = 0; x < img.getSize().x; x++) {
 		for (int y = 0; y < img.getSize().y; y++) {
-			int mapHeight = mapa->getMap(x, y, 0);
+			int mapHeight = mapa->getMap(x*10, y*10, 0);
 			sf::Color mapColor;
 
 			if (mapHeight < 124) {
@@ -142,10 +142,10 @@ sf::Image WorldMapView::getMapImage() {
 			else if (mapHeight < 132) {
 				mapColor = sf::Color(255 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
 			}
-			else if (mapHeight < 180) {
-				mapColor = sf::Color(178 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
-			}
-			else {
+			else{// if (mapHeight < 180) {
+			//	mapColor = sf::Color(178 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
+			//}
+			//else {
 				mapColor = sf::Color(0 * mapHeight / 255.0, 102 * mapHeight / 255.0, 0 * mapHeight / 255.0);
 
 			}

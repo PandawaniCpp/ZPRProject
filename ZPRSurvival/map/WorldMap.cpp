@@ -52,31 +52,35 @@ WorldMap::~WorldMap() {
 }
 
 double WorldMap::getMap(int x, int y, int z) {
-	double t = 0.5;
+	double t = 1.0;
 	double amplitude = 1.0;
 	double frequency = 1;
 	
 	if (x > 0.6*width) {
-		t -= 1.3*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((x - width*0.6), 2) / pow(width, 2);
 	}
 	else if (x < 0.4f*width) {
-		t -= 1.3*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((width*0.4 - x), 2) / pow(width, 2);
 	}
 	if (y > 0.6*height) {
-		t -= 1.3*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((y - height*0.6), 2) / pow(height, 2);
 	}
 	else if (y < 0.4*height) {
-		t -= 1.3*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
+		t -= 2.0*(25.0 / 4.0) * pow((height*0.4 - y), 2) / pow(height, 2);
 	}
 
 	for (int i = 0; i < octaves; i++) {
-		t += perlinNoise->noise(x*frequency / zoom, y*frequency / zoom, z/1000.0)*amplitude;
-		amplitude *= pow(persistence, 3);
-		frequency *= pow(2, 4);
+		t += perlinNoise->noise(x*frequency / zoom, y*frequency / zoom, z / 1000.0)*amplitude;
+		amplitude *= persistence;
+		frequency *= 2.5;
 	}
 
 	if (t < -1.0) {
 		t = -1.0;
+	}
+
+	if (t >= 2.0) {
+		t = 2.0;
 	}
 
 	return 127.5*(t+1);

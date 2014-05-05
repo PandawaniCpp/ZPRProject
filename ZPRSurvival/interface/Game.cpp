@@ -17,7 +17,7 @@ Game::Game () {
 	// All we need to play.
 	gameWindow = new sf::RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView (0, 0.3, 8000.0, 3, 20000, 20000);
+	worldMap = new WorldMapView (time(NULL), 0.25, 4750.0, 4, 20000, 20000);
 
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
@@ -282,8 +282,8 @@ void Game::update () {
 	console->update ("direction", (float)playerController[0]->direction);
 	console->update ("rotation", playerController[0]->boxBody->GetAngle () * RAD_TO_DEG);
 	console->update ("mouse rotation", mouseRotation * RAD_TO_DEG);
-	console->update ("force x", playerController[0]->boxBody->GetForce ().x);
-	console->update ("force y", playerController[0]->boxBody->GetForce ().y);
+	console->update ("force x", playerController[0]->boxBody->GetForce().x);
+	console->update ("force y", playerController[0]->boxBody->GetForce().y);
 	console->update ("velocity x", playerController[0]->boxBody->GetLinearVelocity ().x);
 	console->update ("velocity y", playerController[0]->boxBody->GetLinearVelocity ().y);
 	console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
@@ -300,7 +300,7 @@ void Game::update () {
 
 	// Correct map displacement.
 	worldMap->setPosition (vec);
-	vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
+	//vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
 	worldMap->setViewPosition (vec);	
 	worldMap->update();
 }
