@@ -1,5 +1,5 @@
 #pragma once
-#include "../animated/AnimatedObjectController.h"
+#include "../classes/AnimatedObjectController.h"
 #include "Creature.h"
 #include "CreatureView.h"
 class CreatureController:
