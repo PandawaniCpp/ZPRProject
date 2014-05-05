@@ -4,19 +4,20 @@
 # 
 # Każdy nowy plik z rozszerzeniem .cpp trzeba dołączyć do zmiennej OBJECTS z rozszerzeniem .o
 
-OBJECTS=animated/AnimatedObjectView.o \
-animated/AnimatedObjectController.o \
-animated/AnimatedObject.o \
-creature/CreatureView.o \
-creature/CreatureController.o \
+OBJECTS=classes/Animated.o \
+classes/Dynamic.o \
+classes/Effectable.o \
+classes/GameObject.o \
+classes/Effect.o \
 creature/Creature.o \
 interface/KeyboardInterface.o \
-interface/Interface.o \
 interface/MouseInterface.o \
+interface/EntityFactory.o \
 interface/Game.o \
 interface/Logger.o \
 interface/Console.o \
-item/ItemView.o \
+interface/CommandQueue.o \
+item/Item.o \
 item/ItemController.o \
 map/Chunk.o \
 map/ChunkView.o \
@@ -27,10 +28,6 @@ map/WorldMapView.o \
 options/GraphicsOptions.o \
 player/Player.o \
 player/PlayerController.o \
-player/PlayerView.o \
-survival/SurvivalObjectView.o \
-survival/SurvivalObject.o \
-survival/SurvivalObjectController.o \
 MapTile.o \
 MapGenerator.o \
 MapController.o \
