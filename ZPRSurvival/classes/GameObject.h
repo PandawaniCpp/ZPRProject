@@ -53,7 +53,7 @@ public:
 		b2BodyType bodyType = b2_dynamicBody;
 		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
 		b2CircleShape * circleShape = nullptr;		// nullptr at a time.
-	};
+	} Prefab;
 
 	// Used to create scene nodes.
 	typedef std::shared_ptr<GameObject> Ptr;
@@ -81,7 +81,7 @@ public:
 
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.
-	void attachChild (Ptr & child);
+	void attachChild (Ptr child);
 
 	// Removes node from vector.
 	void detachChild (const GameObject& node);	//remove child from vector

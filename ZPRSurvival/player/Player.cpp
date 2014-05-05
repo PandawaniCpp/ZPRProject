@@ -37,7 +37,7 @@ Player::Player (GameObject::Prefab prefab) {
 	rotationSpeed = prefab.rotationSpeed;
 	acceleration = prefab.acceleration;
 	runModifier = prefab.runModifier;
-
+	anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
 	entityId = Entities::PLAYER;
 
 	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);

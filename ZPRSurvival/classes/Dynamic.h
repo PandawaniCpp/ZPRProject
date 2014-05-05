@@ -10,7 +10,7 @@
 
 #pragma once
 #include "GameObject.h"
-#define ANGLE_PRECISION 10.0 * DEG_TO_RAD	// Angle precision in radians.
+//#define ANGLE_PRECISION 5.0 * DEG_TO_RAD	// Angle precision in radians.
 //#define HYPOTENUSE(a,b) sqrt(a*a + b*b)		// Vector length/value (square root of sum of two squared value)
 
 /**
@@ -56,6 +56,7 @@ protected:
 	float rotation;
 	
 	float runModifier;
+	float anglePrecision;
 	bool isAccelerating = false;	// Triggered when current speed is less than maxSpeed
 	bool isRotating = false;		// Is object currently rotating.
 	bool isRunning = false;

@@ -18,7 +18,7 @@ GameObject::~GameObject () {
 	detachAllChilds ();
 }
 
-void GameObject::attachChild (Ptr & child)
+void GameObject::attachChild (Ptr child)
 {
 	child->parent = this;		// Caller is parent for attached child.
 	children.push_back (std::move (child));		// Insert new child.

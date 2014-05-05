@@ -40,6 +40,7 @@ Console::Console () {
 	keys.push_back ("velocity y");
 	keys.push_back ("current resolution");
 	keys.push_back ("b2Body counter");
+	keys.push_back ("b2_epsilon");
 	keys.push_back ("avail. resolutions");		// <- Should be the last one
 
 	// Set default param to game title and version.

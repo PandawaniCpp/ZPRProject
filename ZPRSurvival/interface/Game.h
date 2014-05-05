@@ -12,6 +12,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "../classes/GameObject.h"
 #include "../player/PlayerController.h"
 #include "../map/WorldMapView.h"
 #include "../options/GraphicsOptions.h"

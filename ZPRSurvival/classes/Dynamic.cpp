@@ -53,25 +53,24 @@ void Dynamic::update () {
 		boxBody->SetTransform (boxBody->GetPosition (), boxBody->GetAngle () + 2.f * b2_pi);
 
 	// Calculating difference between current rotation and target rotation
-	float deltaAngle = abs (boxBody->GetAngle ()) / (2.0 * b2_pi);
-	deltaAngle = abs (boxBody->GetAngle ()) - 2.f*b2_pi* (int)deltaAngle - rotation;
+	float currentRotation = boxBody->GetAngle ();
+
+	while (currentRotation < 0)
+		currentRotation += 2.f * b2_pi;
+
+	float deltaAngle = currentRotation / (2.f * b2_pi);
+	deltaAngle = currentRotation - (2.f *b2_pi * (int)deltaAngle) - rotation;
 	
 	// Rotating object
-	isRotating = true;
-	if (abs (deltaAngle) < ANGLE_PRECISION) {		// If object is heading (almost) when the cursor is...
-		if (abs (deltaAngle) < b2_epsilon)
-			isRotating = false;
-		else
-			boxBody->SetTransform (boxBody->GetPosition (), rotation);		//... set target rotation immediately
-	}
+	if (std::abs (deltaAngle) < anglePrecision)
+		boxBody->SetTransform (boxBody->GetPosition (), rotation);
 	else if (deltaAngle >= b2_pi || (deltaAngle <= 0 && deltaAngle >= -b2_pi)) {
 		boxBody->SetAngularVelocity (rotationSpeed);	// Rotate counter clockwise
 	}
 	else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
-		boxBody->SetAngularVelocity (-rotationSpeed);		// Rptate clockwise
+		boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
 	}
 	
-
 	// Get movement params.
 	/*b2Vec2 currentVelocity = boxBody->GetLinearVelocity ();
 	float currentSpeed = HYPOTENUSE (currentVelocity.x, currentVelocity.y);

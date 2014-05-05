@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "../classes/GameObjectModel.h"
+#include "../classes/GameObject.h"
 #include "PerlinNoise.h"
 #include "./../options/GraphicsOptions.h"
 
@@ -12,7 +12,7 @@
 #define ZOOM 800
 #define OCTAVES 2
 
-class WorldMap : public GameObjectModel {
+class WorldMap : public GameObject {
 public:
 	//Construct&Destruct
 	WorldMap();

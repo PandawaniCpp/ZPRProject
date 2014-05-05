@@ -141,6 +141,7 @@ void Game::objectsInit () {
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
 	console->insert ("b2Body counter", 0);
+	console->insert ("b2_epsilon", b2_epsilon);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 

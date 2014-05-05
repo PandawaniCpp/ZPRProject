@@ -1,9 +1,9 @@
 #pragma once
-#include "../classes/GameObjectModel.h"
+#include "../classes/GameObject.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 class Chunk:
-	public GameObjectModel {
+	public GameObject {
 public:
 	Chunk();
 	virtual ~Chunk();
