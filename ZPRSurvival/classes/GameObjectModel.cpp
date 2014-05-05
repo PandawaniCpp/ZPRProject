@@ -8,22 +8,22 @@
 	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
-#include "SurvivalObject.h"
+#include "GameObjectModel.h"
 
-SurvivalObject::SurvivalObject () {
+GameObjectModel::GameObjectModel () {
 }
 
-SurvivalObject::~SurvivalObject (){
+GameObjectModel::~GameObjectModel (){
 }
 
 // Getters
 
-sf::Vector2<float> SurvivalObject::getPosition () {
+sf::Vector2<float> GameObjectModel::getPosition () {
 	return position;
 }
 
 // Setters
 
-void SurvivalObject::setPosition (sf::Vector2<float> position) {
+void GameObjectModel::setPosition (sf::Vector2<float> position) {
 	this->position = position;
 }

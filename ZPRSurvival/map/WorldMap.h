@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "./../survival/SurvivalObject.h"
+#include "../classes/GameObjectModel.h"
 #include "PerlinNoise.h"
 #include "./../options/GraphicsOptions.h"
 
@@ -12,7 +12,7 @@
 #define ZOOM 800
 #define OCTAVES 2
 
-class WorldMap : public SurvivalObject {
+class WorldMap : public GameObjectModel {
 public:
 	//Construct&Destruct
 	WorldMap();

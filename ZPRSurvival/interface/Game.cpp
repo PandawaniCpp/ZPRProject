@@ -10,45 +10,55 @@
 
 #include "Game.h"
 
+// #TITLE
 std::string Game::TITLE = "#TITLE";
 
 Game::Game () {
 	// All we need to play.
-	gameWindow = new RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
-	playerController = new PlayerController ();
-	itemController = new ItemController ();
+	gameWindow = new sf::RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView(0.0, 0.3, 8000, 3, 20000, 20000);
-	//worldMap->getMapImage().saveToFile("./perlinMapstopro.png");
+	worldMap = new WorldMapView (0, 0.3, 8000.0, 3, 20000, 20000);
 
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
+	worldView.setCenter (5000.f, 5000.f);		// #SETSPAWN
 	gameWindow->setView (worldView);
-	
-	state = Game::State::INIT;		// Proper first state
+	worldViewPosition = sf::Vector2f (worldView.getCenter().x - worldView.getSize().x / 2.f,
+									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
 
-	console->insert ("object body x", worldView.getCenter ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("object body y", worldView.getCenter ().y / GraphicsOptions::pixelPerMeter);
+	state = GameState::INIT;		// Proper first state
 }
 
 Game::~Game () {
 	delete gameWindow;
-	
+
 	// Scene graph's destructor deallocates all graph's objects (all views).
 }
 
 void Game::initialize () {
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
+
+	// Initialize factory with prefabs and keyboard interface with key mappings.
+	EntityFactory::prefabInit ();
+	KeyboardInterface::assignKeys ();
+	KeyboardInterface::assignActions ();
 	
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
+
 	// World information 
+	// #TODO Delete this crap?
 	worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
 	worldBounds.height = 10000;					// World size
 	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
-	worldView.setCenter (worldMap->getSpawnPoint());
 
+	// Center the sf::View to player position.
+	worldView.setCenter (worldMap->getSpawnPoint());	
+
+	// Initialize entities
+	entitiesInit ();
+	
 	// Initialize main layers.
 	layersInit ();
 
@@ -59,15 +69,18 @@ void Game::initialize () {
 	applyOptions ();
 
 	// If everything's fine, move on to the next state.
-	this->state = Game::State::IN_MENU;
+	this->state = GameState::IN_MENU;
 }
 
 void Game::run () {
 	// Calculates time difference between frames and corrects occasional lags (if occured).
-	Clock clock;
-	Time timeSinceLastUpdate = Time::Zero;
+	sf::Clock clock;
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	timeSinceLastUpdate += clock.restart ();
-	SurvivalObjectController::deltaTime = timePerFrame;
+	PlayerController::deltaTime = timePerFrame;
+
+	// Start the Game
+	state = GameState::PLAYING;
 
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
@@ -78,7 +91,7 @@ void Game::run () {
 			timeSinceLastUpdate -= timePerFrame;
 			processEvents ();
 
-			if (state == Game::State::EXIT)
+			if (state == GameState::EXIT)
 				gameWindow->close ();
 
 			update ();										//...game from lags' consequences. 
@@ -91,53 +104,48 @@ void Game::terminate () {
 
 }
 
-PlayerController * Game::getPlayerController () {
-	return playerController;
+		/*PlayerController * Game::getPlayerController () {
+			return playerController;
+		}*/
+
+void Game::entitiesInit () {
+	playerController.createEntity (Entities::PLAYER, sf::Vector2f (5000.f, 5000.f));		// #SETSPAWN
 }
 
 void Game::layersInit () {
 	// Initialize game scene graph
 	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
-		SurvivalObjectView::Ptr layer (new SurvivalObjectView ());
+		GameObject::Ptr layer (new GameObject ());
 		sceneLayers[i] = layer.get ();
 		sceneGraph.attachChild (layer);
 	}
 
-	// Attach map view to map layer
-	SurvivalObjectView::Ptr mapLayer (worldMap);
-	sceneLayers[Game::MAP]->attachChild (mapLayer);
+	// Attach map, console and player to game layers
+	sceneLayers[Game::CONSOLE]->attachChild (GameObject::Ptr (console));
+	sceneLayers[Game::MAP]->attachChild (GameObject::Ptr (worldMap));
+	sceneLayers[Game::PLAYER]->attachChild (GameObject::Ptr (playerController[0]));
 
-	// Attach console object to console layer
-	SurvivalObjectView::Ptr consoleLayer (console);
-	sceneLayers[Game::CONSOLE]->attachChild(consoleLayer);
-
-	// Attach player view to player layer
-	SurvivalObjectView::Ptr playerLayer (playerController->getPlayerView());
-	sceneLayers[Game::PLAYER]->attachChild (playerLayer);
 }
 
 void Game::objectsInit () {
 	// Prepares player for the game.
-	playerController->setPlayer ();	
+	//playerController->setPlayer ();	
 
 	// Set player position to the spawn point defined in World Map.
-	playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
+	//playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
 
 	// Set default console's parameters
 	console->insert ("x", 0);
 	console->insert ("y", 0);
-	console->insert ("dx", 0);
-	console->insert ("dy", 0);
 	console->insert ("direction", 0);
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
-	console->insert ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->insert ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
+	console->insert ("b2Body counter", 0);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 
 	// Items init.		#TEMP !!!!!
-	std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
+	/*std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
 	for (auto & pos1 : positions) {
 		for (auto & pos2 : pos1) {
 			for (auto & pos : pos2) {
@@ -152,39 +160,42 @@ void Game::objectsInit () {
 				sceneLayers[Game::ITEMS]->attachChild(itemEntity);
 			}
 		}
-	}
+	}*/
 }
 
 void Game::applyOptions () {
-	timePerFrame = seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
+	timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 
-	if (state != Game::INIT)
+	if (state != GameState::INIT)
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(playerController->getPlayer()->getPosition());
+	worldView.setCenter(5000, 5000);
 	gameWindow->setView (worldView);
+	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
+									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
+
 }
 
 void Game::processEvents () {
 	// Handle mouse position and clicks.
-	mouseInput ();
+	MouseInterface::capturePosition (*gameWindow);
 
 	// Handle keyboard input.
-	Event event;
+	sf::Event event;
 	
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
-			case Event::KeyPressed:			// Pass it forward to keyboardInput().
-				keyboardInput (event);
+			case sf::Event::KeyPressed:
+				commandQueue.push (KeyboardInterface::pressedKeyHandle (state, event.key.code));
 				break;
-			case Event::KeyReleased:
-				keyboardInput (event);
+			case sf::Event::KeyReleased:
+				commandQueue.push (KeyboardInterface::releasedKeyHandle (state, event.key.code));
 				break;
-			case Event::Closed:
+			case sf::Event::Closed:
 				gameWindow->close ();
 				break;
 			default:
@@ -193,109 +204,99 @@ void Game::processEvents () {
 	}
 }
 
-void Game::keyboardInput (const Event event) {
-	// #TODO
-	//		PASS SPECIFIC KEY FUNCTIONALITY TO KEYBOARD INTERFACE
-	// #TODO
-
-	// Special keys prepared for later interpretation.
-	unsigned keyFlags = event.key.control * 1 | event.key.shift * 2 | event.key.alt * 4 | event.key.system * 8;
-
-	// #TODO Check if these conditions can be written with 'else-if'
-	if (event.key.code == Keyboard::Escape)		//exit the game
-		state = Game::EXIT;						//#TEMP
-
-	if (event.key.code == Keyboard::F1 && Keyboard::isKeyPressed (event.key.code)) 
-		Console::visible = !Console::visible;
-
-	// Toggles fullscreen on/off
-	if (Console::visible && keyFlags & KeyboardInterface::CONTROL &&  event.key.code == Keyboard::F && Keyboard::isKeyPressed (event.key.code)) {
-		if (GraphicsOptions::fullscreenModeOn)
-			setFullscreenEnabled (false);
-		else
-			setFullscreenEnabled (true);
-	}
-
-	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Add && Keyboard::isKeyPressed (event.key.code)) {
-		GraphicsOptions::switchResolution (true);
-		applyOptions ();
-	}
-
-	if (Console::visible && keyFlags & KeyboardInterface::CONTROL && event.key.code == Keyboard::Subtract && Keyboard::isKeyPressed (event.key.code)) {
-		GraphicsOptions::switchResolution (false);
-		applyOptions ();
-	}
-
-	switch (state) {							//controls the game state
-		case Game::State::IN_MENU:
-			if (event.key.code == Keyboard::Return)		//#TEMP
-				state = Game::PLAYING;				//pseudo-start of the game
-			break;
-		case Game::State::PLAYING: 						//all events in the actual game
-			playerController->preparePlayerMove (event.key.code, Keyboard::isKeyPressed (event.key.code));
-			state = Game::PLAYING;
-		default:
-			break;
+void Game::commandInterpret () {
+	while (!commandQueue.isEmpty ()) {
+		Command * command = commandQueue.pop ();
+		if (command->commandType == Commands::NONE) {
+			delete command;
+			continue;
+		}
+		if (command->category == Entities::NONE) {
+			gameCommandExecute (command);
+		}
+		else {
+			sceneGraph.passCommand (command, PlayerController::deltaTime);
+		}
 	}
 }
 
-void Game::mouseInput () {
-	mousePosition = static_cast<Vector2f>(Mouse::getPosition (*gameWindow)) + 
-		worldView.getCenter() -
-		worldView.getSize() / 2.0f;
+void Game::gameCommandExecute (Command * command) {
+	// Combination of special keys pressed at that moment.
+	int specialKeys = sf::Keyboard::isKeyPressed (sf::Keyboard::LShift) * KeyboardInterface::SHIFT +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LControl) * KeyboardInterface::CONTROL +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LAlt) * KeyboardInterface::ALT +
+					sf::Keyboard::isKeyPressed (sf::Keyboard::LSystem) * KeyboardInterface::SYSTEM;
+
+	// Check every game command
+	if (command->commandType == Commands::G_EXIT)	// Game termination
+		gameWindow->close ();
+	else if (command->commandType == Commands::CON_TRIGGER)		// Show/Hide Console
+		Console::visible = !Console::visible;
+	else if (command->commandType == Commands::RES_UP) {		// Increase resolution
+		if (Console::visible && command->specialKeys & specialKeys) {
+			GraphicsOptions::switchResolution (true);
+			applyOptions ();
+		}
+	}
+	else if (command->commandType == Commands::RES_DOWN) {		// Decrease resolution
+		if (Console::visible && command->specialKeys & specialKeys) {
+			GraphicsOptions::switchResolution (false);
+			applyOptions ();
+		}
+	}
+	else if (command->commandType == Commands::SET_FULLSCREEN) {	// Turn fullscreen on/off
+		if (Console::visible && command->specialKeys & specialKeys) {
+			if (GraphicsOptions::fullscreenModeOn)
+				setFullscreenEnabled (false);
+			else
+				setFullscreenEnabled (true);
+		}
+	}
 }
 
 void Game::update () {
-	Player * player = playerController->getPlayer ();
+	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
+									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
 
 	worldMap->t += rand()%750/100000.0;
 
-	SurvivalObjectView::boxWorld.Step (1 / GraphicsOptions::fps, 8, 3);
-	for (b2Body* BodyIterator = SurvivalObjectView::boxWorld.GetBodyList (); BodyIterator != 0; BodyIterator = BodyIterator->GetNext ()) {
+	// Pass target rotation to player.
+	float mouseRotation = MouseInterface::calculateRotation ();
+	playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
 
-	}
+	// Process to taking commands from CommandQueue
+	commandInterpret ();
 
-	// Check if some keys are released (sometimes release event is not triggered somehow...).
-	int direction = player->getDirection ();
-	if (direction != 0) {
-		if (!Keyboard::isKeyPressed (Keyboard::W) && direction & Player::UP)
-			playerController->preparePlayerMove (Keyboard::W, false);
-		if (!Keyboard::isKeyPressed (Keyboard::S) && direction & Player::DOWN)
-			playerController->preparePlayerMove (Keyboard::S, false);
-		if (!Keyboard::isKeyPressed (Keyboard::A) && direction & Player::LEFT)
-			playerController->preparePlayerMove (Keyboard::A, false);
-		if (!Keyboard::isKeyPressed (Keyboard::D) && direction & Player::RIGHT)
-			playerController->preparePlayerMove (Keyboard::D, false);
-	}
+	// Apply physics to b2World
+	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
+
+	// Calculate player-mouse offset.
+	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
 	
 	// Update player accordingly to mouse position change.
-	playerController->update (mousePosition);	
+	playerController.updateEntities ();	
 
 	// Update console ouput.
-	console->update ("x", player->getPosition ().x);
-	console->update ("y", player->getPosition ().y);
-	console->update ("dx", player->getDisplacement ().x);
-	console->update ("dy", player->getDisplacement ().y);
-	console->update ("direction", (float)player->getDirection ());
-	console->update ("rotation", player->getRotation ());
-	console->update ("player body x", playerController->getPlayerView ()->getPosition ().x / GraphicsOptions::pixelPerMeter);
-	console->update ("player body y", playerController->getPlayerView ()->getPosition ().y / GraphicsOptions::pixelPerMeter);
-
-
-	// Move player
-	Vector2f position = player->getPosition ();
-	playerController->move (position, player->getDisplacement ());
-	player->setPosition (position);
+	console->update ("x", playerController[0]->getPosition ().x);
+	console->update ("y", playerController[0]->getPosition ().y);
+	console->update ("direction", (float)playerController[0]->direction);
+	console->update ("rotation", playerController[0]->boxBody->GetAngle () * RAD_TO_DEG);
+	console->update ("mouse rotation", mouseRotation * RAD_TO_DEG);
+	console->update ("force x", playerController[0]->boxBody->GetForce ().x);
+	console->update ("force y", playerController[0]->boxBody->GetForce ().y);
+	console->update ("velocity x", playerController[0]->boxBody->GetLinearVelocity ().x);
+	console->update ("velocity y", playerController[0]->boxBody->GetLinearVelocity ().y);
+	console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
 
 	// Set the world displacement vector relatively to player.
-	worldView.setCenter (player->getPosition() + player->getOffset ());
+	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
 	gameWindow->setView (worldView);
 
 	// Vector for displacement correction.
 	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
 
 	// Correct console displacement (always in top-left corner).
-	console->setPosition (vec);
+	console->setPosition (worldViewPosition);
 
 	// Correct map displacement.
 	worldMap->setPosition (vec);
@@ -311,10 +312,13 @@ void Game::render () {
 }
 
 void Game::draw () {
-	playerController->prepareView ();
-
 	// Draw all layers in order.
 	sceneGraph.drawAll (gameWindow);
+}
+
+void Game::attachChild (GameObject::Ptr * shPtr, Game::Layer layer) {
+	GameObject::Ptr ptrLayer (*shPtr);
+	sceneLayers[layer]->attachChild (ptrLayer);
 }
 
 void Game::setFullscreenEnabled (bool enable) {

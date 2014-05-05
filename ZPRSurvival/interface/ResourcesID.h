@@ -10,17 +10,37 @@
 
 #pragma once
 
+// Represents phase of the game.
+namespace GameState {
+	enum ID {
+		INIT = 1,
+		INTRO = 1 << 1, 
+		IN_MENU = 1 << 3,
+		PLAYING = 1 << 4, 
+		PAUSE = 1 << 5, 
+		EXIT = 1 << 6,
+	};
+}
+
 // List of all textures in the game.
 namespace Textures {
-	enum ID {
-		P_INIT = 0,
-		P_IDLE,		//P_xxx - player textures
+	enum PLAYER {
+		P_INIT,
+		P_IDLE,		
 		P_WALK,
-		P_END,
-		I_STONE, // = 100	//I_xxx - item textures
-		//C_xxx - creature textures
-		//M_xxx - map elements textures
-		TEXTURE_COUNT
+		P_END
+	};
+
+	enum CREATURES {
+		C_INIT,
+		C_WOLF,
+		C_END
+	};
+
+	enum ITEMS {
+		I_INIT,
+		I_STONE,
+		I_END
 	};
 }
 
@@ -29,6 +49,47 @@ namespace Fonts {
 	enum ID {
 		F_MENU,
 		F_CONSOLE,
-		FONT_COUNT
+		FONTS_COUNT
+	};
+}
+
+// List of all shader effects in the game.
+namespace Effects {
+	enum ID {
+		TORCH_LIGHT,
+		EFFECTS_COUNT
+	};
+}
+
+// Identifiers for all game entities.
+namespace Entities {
+	enum ID {
+		NONE,
+		PLAYER,
+		STONE,
+		ENTITIES_COUNT
+	};
+}
+
+// Command identifiers
+namespace Commands {
+	enum ID {
+		NONE,
+		G_EXIT,
+		CON_TRIGGER,
+		MOVE_FORWARD,
+		STOP_FORWARD,
+		MOVE_BACKWARD,
+		STOP_BACKWARD,
+		MOVE_LEFT,
+		STOP_LEFT,
+		MOVE_RIGHT,
+		STOP_RIGHT,
+		START_RUN,
+		STOP_RUN,
+		RES_UP,
+		RES_DOWN,
+		SET_FULLSCREEN,
+		COMMANDS_COUNT
 	};
 }

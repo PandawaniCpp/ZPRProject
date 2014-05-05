@@ -11,12 +11,12 @@
 #pragma once
 #include <unordered_map>
 #include <sstream>
-#include "../survival/SurvivalObjectView.h"
+#include "../classes/GameObject.h"
 
 /** 
 	Basically shows transparent layer on top with detailed information about the game.
 */
-class Console : public SurvivalObjectView {
+class Console : public GameObject {
 public:
 	// If visible.
 	static bool visible;
@@ -46,7 +46,7 @@ public:
 
 	// Draw console on the screen with given params.
 	// \see Console::params
-	virtual void draw (sf::RenderWindow& window) const ;
+	virtual void draw (sf::RenderWindow * window) const ;
 
 private:
 	sf::Font font;		// Default font to draw with.

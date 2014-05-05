@@ -9,9 +9,9 @@
 */
 
 #pragma once
-#include "../animated/AnimatedObjectController.h"
+#include "../classes/GameObjectController.h"
 #include "Player.h"
-#include "PlayerView.h"
+#include "PlayerModel.h"
 #include <SFML/System.hpp>
 
 /**
@@ -20,7 +20,7 @@
 
 	\base class: AnimatedObjectController
 */
-class PlayerController: public AnimatedObjectController {
+class PlayerController: public GameObjectController<Player, Textures::PLAYER> {
 public:
 	// Default constructor.
 	PlayerController ();
@@ -28,6 +28,13 @@ public:
 	// Default destructor.
 	virtual ~PlayerController ();
 
+	// Creates entity with EntityFactory
+	void createEntity (Entities::ID entityID, sf::Vector2f position);
+	
+	// Update
+	//void update ();
+
+	/*
 	// Sets default players parameters (origin etc.)
 	void setPlayer ();
 
@@ -59,7 +66,7 @@ public:
 
 private:
 	Player * player;			// Pointers to Model and View.
-	PlayerView * playerView;	// Both controlled by Controller (yeah...)
+	PlayerView * playerView;	// Both controlled by Controller (yeah...)*/
 };
 
 /**

@@ -31,19 +31,19 @@ Console::Console () {
 	keys.push_back ("#TITLE v.");
 	keys.push_back ("x");
 	keys.push_back ("y");
-	keys.push_back ("dx");
-	keys.push_back ("dy");
 	keys.push_back ("direction");
 	keys.push_back ("rotation");
+	keys.push_back ("mouse rotation");
+	keys.push_back ("force x");
+	keys.push_back ("force y");
+	keys.push_back ("velocity x");
+	keys.push_back ("velocity y");
 	keys.push_back ("current resolution");
-	keys.push_back ("player body x");
-	keys.push_back ("player body y");
-	keys.push_back ("object body x");
-	keys.push_back ("object body y");
+	keys.push_back ("b2Body counter");
 	keys.push_back ("avail. resolutions");		// <- Should be the last one
 
 	// Set default param to game title and version.
-	this->insert ("#TITLE v.", "0.5.1");
+	this->insert ("#TITLE v.", "0.8.1");
 }
 
 Console::~Console () {
@@ -51,54 +51,59 @@ Console::~Console () {
 }
 
 void Console::insert (const std::string & name, const float & value) {
-	for (auto & x : keys) {
-		if (name == x) {
-			std::stringstream ss;
+	for (auto & x : keys) {			// Check for existing key.
+		if (name == x) {			// If key is available, insert new key-value pair.
+			std::stringstream ss;			// float-> std::string conversion
 			ss << value;
 			auto inserted = params.insert (std::make_pair (name, ss.str ()));
-			assert (inserted.second);
+			assert (inserted.second);		// Check if insertion was succesful.
 			break;
 		}
 	}
 }
 
 void Console::insert (const std::string & name, const std::string & value) {
-	for (auto & x : keys) {
-		if (name == x) {
+	for (auto & x : keys) {			// Check for existing key.
+		if (name == x) {			// If key is available, insert new key-value pair.
 			auto inserted = params.insert (std::make_pair (name, value));
-			assert (inserted.second);
+			assert (inserted.second);		// Check if insertion was succesful.
 			break;
 		}
 	}
 }
 
 void Console::update (const std::string & name, const float & value) {
-	auto found = params.find (name);		//find resource by id
-	assert (found != params.end ());		//break if given resource doesn't exist
-	std::stringstream ss;
-	ss << value;
-	found->second = ss.str();
+	auto found = params.find (name);		// Find resourxe by ID.
+	if (found == params.end ()) 			// Try to insert if not found.
+		insert (name, value);
+	else {
+		std::stringstream ss;
+		ss << value;
+		found->second = ss.str ();
+	}
 }
 
 void Console::update (const std::string & name, const std::string & value) {
-	auto found = params.find (name);		//find resource by id
-	assert (found != params.end ());		//break if given resource doesn't exist
-	found->second = value;
+	auto found = params.find (name);		// Find resourxe by ID.
+	if (found == params.end ()) 			// Try to insert if not found.
+		insert (name, value);
+	else
+		found->second = value;
 }
 
 void Console::setFont (const sf::Font & font) {
 	this->font = font;
 }
 
-void Console::draw (sf::RenderWindow& window) const {
-	if (!visible)
+void Console::draw (sf::RenderWindow * window) const {
+	if (!Console::visible)
 		return;
 	
 	// Draw background.
-	window.draw (*this);
+	window->draw (*this);
 
 	// Get sf::View from gameWindow to correct console displacement.
-	sf::View view = window.getView ();
+	sf::View view = window->getView ();
 	sf::Vector2<float> vec (view.getCenter () - view.getSize () / 2.0f);
 	
 	sf::Text tempText = text;
@@ -112,13 +117,13 @@ void Console::draw (sf::RenderWindow& window) const {
 
 		tempText.setString (it->first);
 		tempText.setPosition (vec.x + 10, vec.y + pos);
-		window.draw (tempText);
+		window->draw (tempText);
 
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::Yellow);
 		tempText.setString (it->second);
 		tempText.setPosition (vec.x + 150, vec.y + pos);	// #TODO Set scaling to window accordingly
-		window.draw (tempText);
+		window->draw (tempText);
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::White);
 

@@ -1,5 +1,7 @@
 #pragma once
-#include "../animated/AnimatedObject.h"
+#include "../classes/Animated.h"
+#include "../classes/Dynamic.h"
+#include "../classes/Effectable.h"
 
 
 /*
@@ -9,8 +11,8 @@
 	mutate with another creature and others. And they move. And rotate. And are animated ofc.
 */
 
-class Creature : public AnimatedObject {
-	public:
+class Creature : public Animated<Textures::CREATURES>, public Dynamic, public Effectable {
+public:
 	Creature ();
 	virtual ~Creature ();
 

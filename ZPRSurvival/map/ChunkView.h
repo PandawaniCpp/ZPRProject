@@ -1,9 +1,9 @@
 #pragma once
-#include "./../survival/SurvivalObjectView.h"
+#include "../classes/GameObject.h"
 #include "Chunk.h"
 #include "./../interface/Logger.h"
 class ChunkView:
-	public SurvivalObjectView {
+	public GameObject {
 public:
 	ChunkView();
 	virtual ~ChunkView();

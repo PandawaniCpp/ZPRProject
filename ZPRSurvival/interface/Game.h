@@ -12,12 +12,14 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "./../player/PlayerController.h"
-#include "./../map/WorldMapView.h"
-#include "Console.h"
-#include "KeyboardInterface.h"
+#include "../player/PlayerController.h"
+#include "../map/WorldMapView.h"
 #include "../options/GraphicsOptions.h"
 #include "../item/ItemController.h"
+#include "Console.h"
+#include "KeyboardInterface.h"
+#include "MouseInterface.h"
+#include "CommandQueue.h"
 
 /**
 	Main game class. Responsible for rendering graphics, events handling,
@@ -26,17 +28,11 @@
 */
 
 using namespace std;
-using namespace sf;
 
 class Game {
 public:
 	// Game title.
 	static std::string TITLE;
-
-	// Represents phase of the game.
-	enum State {
-		UNKNOWN = 0, INIT, IN_MENU, PLAYING, PAUSE, EXIT, STATE_COUNT
-	};
 
 	// Game layers defining drawing order.
 	enum Layer {
@@ -61,9 +57,12 @@ public:
 	// Objects deallocation, saving data etc.
 	void terminate ();
 
-	PlayerController * getPlayerController ();
+			//PlayerController * getPlayerController ();
 
 private:
+	// Initialize controller with entities from factory.
+	void entitiesInit ();
+
 	// Initialize layers with default objects.
 	void layersInit ();
 
@@ -76,9 +75,15 @@ private:
 	// Called in run (). Catch all user generated events and pass them forward.
 	void processEvents ();
 
+	// Interprets commands and pass them into scene graph if necessary.
+	void commandInterpret ();
+
+	// Execute commands for Game and interface.
+	void gameCommandExecute (Command * command);
+
 	// Interprets keys actions depending on state.
 	// \param  key - key pressed/released
-	void keyboardInput (const Event event);
+	void keyboardInput (const sf::Event event);
 
 	// Check mouse position nad clicks.
 	void mouseInput ();
@@ -93,25 +98,32 @@ private:
 	// #TEMP
 	void draw ();
 
+	// Attach new GameObject to given layer.
+	void attachChild (GameObject::Ptr * shPtr, Game::Layer layer);
+
 	// Graphics options triggers.
 	void setFullscreenEnabled (bool enabled);		// Fullscreen on/off
 
 private:
 	// Main game objects
-	RenderWindow * gameWindow;			// Main window for displaying the game.
-	PlayerController * playerController;	// MVC's controller of the player.
-	ItemController * itemController;
-	View worldView;				// Represents part of the world shown to the player.
+	sf::RenderWindow * gameWindow;			// Main window for displaying the game.
+	PlayerController playerController;	// MVC's controller of the player.
+	ItemController itemController;
+	sf::View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
+	CommandQueue commandQueue;
+	GameObject sceneGraph;		// Tree with scene nodes put in render order.
 
 	// Game parameters
-	Time timePerFrame;			// Keep the frame duration fixed.
-	Game::State state;				// Describe, in which state the game is in the moment.
-	FloatRect worldBounds;			// World size (in px).
-	SurvivalObjectView sceneGraph;		// Tree with scene nodes put in render order.
-	std::array<SurvivalObjectView*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
-	Vector2f mousePosition;			// Mouse position
-	ResourceHolder<Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
+	std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
+	sf::Time timePerFrame;			// Keep the frame duration fixed.
+	GameState::ID state;				// Describe, in which state the game is in the moment.
+	sf::FloatRect worldBounds;			// World size (in px).
+	//Vector2f mousePosition;			// Mouse position
+	ResourceHolder<sf::Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
+
+	// Additional variables
+	sf::Vector2f worldViewPosition;			// Top-left corner of the sf::View in global coordinates.
 };
 

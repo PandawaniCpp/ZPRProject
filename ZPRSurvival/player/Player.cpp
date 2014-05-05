@@ -10,31 +10,42 @@
 
 #include "Player.h"
 
-Player::Player (){
-	displacement.x = 0;
-	displacement.y = 0;
-	size.x = 50;
-	size.y = 50;
-	speed = 2000;
-	rotation = 0;
-	direction = 0;
+Player::Player () {
+	// Current animation parameters
+	frameNumber = 0;
+	frameDuration = sf::seconds (0.5f);
+	currentAnimation = Textures::P_IDLE;
+	animationRepeat = true;
+	
+	// Dynamic body parameters.
+	rotationSpeed = 0.5f;
+	acceleration = 10.f;
+	
+	entityId = Entities::PLAYER;
+
+	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
+}
+
+Player::Player (GameObject::Prefab prefab) {
+	// Current animation parameters
+	frameNumber = 0;
+	frameDuration = sf::seconds (0.5f);
+	currentAnimation = Textures::P_IDLE;
+	animationRepeat = true;
+
+	// Dynamic body parameters.
+	rotationSpeed = prefab.rotationSpeed;
+	acceleration = prefab.acceleration;
+	runModifier = prefab.runModifier;
+
+	entityId = Entities::PLAYER;
+
+	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
 }
 
 Player::~Player () {
 }
 
-Player::State Player::getState () {
-	return state;
-}
-
-sf::Vector2<float> Player::getOffset () {
-	return offset;
-}
-
-void Player::setState (Player::State state) {
-	this->state = state;
-}
-
-void Player::setOffset (sf::Vector2<float> offset) {
-	this->offset = offset;
+void Player::draw (sf::RenderWindow * window) const {
+	window->draw (*this);
 }

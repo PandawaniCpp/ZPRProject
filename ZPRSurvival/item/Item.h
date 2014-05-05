@@ -9,24 +9,26 @@
 */
 
 #pragma once
-#include "./../survival/SurvivalObjectView.h"
+#include "../classes/Animated.h"
+#include "../classes/Dynamic.h"
+#include "../classes/Effectable.h"
 
 /**
 	MVC's View for all non-animated (not alive) object in the world.
 
-	\base class: SurvivalObjectView
+	\base class: Game
 */
-class ItemView : public SurvivalObjectView {
+class Item : public Animated<Textures::ITEMS>, public Dynamic, public Effectable {
 public:
 	// Default constructor.
-	ItemView ();
+	Item ();
 
-	// Constructs ItemView with given texture.
+	// Constructs Item with given texture.
 	// Does not set Item::texture attribute.
-	ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f position);
+	Item (sf::Texture & texture, b2BodyType type, sf::Vector2f position);
 
 	// Default destructor.
-	virtual ~ItemView ();
+	virtual ~Item ();
 
 	// Overloaded sf::Sprite draw() method for Item.
 	virtual void draw (sf::RenderWindow& window) const;

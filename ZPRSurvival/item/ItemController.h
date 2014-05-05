@@ -9,8 +9,8 @@
 */
 
 #pragma once
-#include "../survival/SurvivalObjectController.h"
-#include "ItemView.h"
+#include "../classes/GameObjectController.h"
+#include "Item.h"
 #include "../interface/ResourceHolder.h"
 
 /**
@@ -18,7 +18,7 @@
 
 	\base class: SurvivalObjectController
 */
-class ItemController : public SurvivalObjectController {
+class ItemController : public GameObjectController<Item, Textures::ITEMS> {
 public:
 	// Default constructor.
 	ItemController ();
@@ -27,9 +27,6 @@ public:
 	virtual ~ItemController ();
 
 	// Creates new item and return pointer to it. If failed, return nullptr.
-	ItemView * createItem (Textures::ID textureID, sf::Vector2f position);
-
-	// All items textures.
-	ResourceHolder<sf::Texture, Textures::ID> itemTextureHolder;
+	Item * createItem (Textures::ITEMS textureID, sf::Vector2f position);
 };
 

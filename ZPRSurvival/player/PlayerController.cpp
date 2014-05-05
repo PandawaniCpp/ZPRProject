@@ -11,13 +11,32 @@
 #include "PlayerController.h"
 
 PlayerController::PlayerController () {
-	player = new Player;
-	playerView = new PlayerView ();
+	// Set sizes for every animation of the player.
+	Player::insertAnimationData (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10));
+	Player::insertAnimationData (Textures::P_WALK, sf::Vector3<int> (50, 50, 10));
+	
+	// Load player textures.
+	for (unsigned int i = Textures::P_INIT + 1; i < Textures::P_END; ++i) {
+		textureHolder.load (static_cast<Textures::PLAYER>(i), "resources/textures/player.png", sf::IntRect (
+			0,
+			Player::frameData[static_cast<Textures::PLAYER>(i)].y*(i - Textures::P_INIT - 1),
+			Player::frameData[static_cast<Textures::PLAYER>(i)].x*Player::frameData[static_cast<Textures::PLAYER> (i)].z,
+			Player::frameData[static_cast<Textures::PLAYER>(i)].y));
+	}
 }
 
 PlayerController::~PlayerController () {
+
 }
 
+void PlayerController::createEntity (Entities::ID entityID, sf::Vector2f position) {
+	entityHolder.push_back (EntityFactory::createPlayer (entityID,
+						textureHolder.get (Textures::P_IDLE),
+						position));
+	entityHolder[0]->animate (deltaTime);
+}
+
+/*
 void PlayerController::update (sf::Vector2<float> mousePosition) {
 	// Rotation update.
 	calculatePlayerRotation (mousePosition);
@@ -66,13 +85,13 @@ void PlayerController::preparePlayerMove (sf::Keyboard::Key key, bool isPressed)
 	int directionChange = 0;					
 	
 	if (key == sf::Keyboard::W)						// Player keys for moving.
-		directionChange = AnimatedObject::UP;		// #TODO Use key bindings (changed in options)
+		directionChange = Dynamic::UP;		// #TODO Use key bindings (changed in options)
 	else if (key == sf::Keyboard::S)
-		directionChange = AnimatedObject::DOWN;
+		directionChange = Dynamic::DOWN;
 	else if (key == sf::Keyboard::A)
-		directionChange = AnimatedObject::LEFT;
+		directionChange = Dynamic::LEFT;
 	else if (key == sf::Keyboard::D)
-		directionChange = AnimatedObject::RIGHT;	//...
+		directionChange = Dynamic::RIGHT;	//...
 
 	if (isPressed)		// Add or remove new directions.
 		direction = direction | directionChange;
@@ -116,4 +135,4 @@ Player * PlayerController::getPlayer () {
 
 PlayerView * PlayerController::getPlayerView () {
 	return playerView;
-}
+}*/

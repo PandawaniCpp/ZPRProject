@@ -9,46 +9,30 @@
 */
 
 #pragma once
-#include "../animated/AnimatedObject.h"
+#include "../classes/Animated.h"
+#include "../classes/Dynamic.h"
+#include "../classes/Effectable.h"
+#include "../interface/ResourceHolder.h"
+#include "../interface/ResourcesID.h"
 
 /**
-	MVC's Model for Player class. Represents the state of the player.
-	\see Player::State
+	MVC's View for Player class. Responsible for drawing player.
 
-	\base class: AnimatedObject
+	\base class: Animated, Dynamic, Effectable
 */
-class Player : public AnimatedObject {
+class Player : public Animated<Textures::PLAYER>, public Dynamic, public Effectable {
+	friend class Game;
 public:
-	// Current player's state options.
-	enum State {
-		IDLE = 0, MOVING, USING_ITEM, CRAFTING,
-	};
-
 	// Default constructor.
 	Player ();
 
+	// Prefab constructor.
+	Player (GameObject::Prefab prefab);
+
 	// Default destructor.
-	virtual ~Player ();
+	~Player ();
 
-	// Getters
-
-	Player::State getState ();
-	sf::Vector2<float> getOffset ();
-		
-	// Setters
-
-	void setState (Player::State state);
-	void setOffset (sf::Vector2<float> offset);
-
-private:
-	Player::State state = Player::IDLE;		// Holds current state.
-	sf::Vector2<float> offset;		// Additional displacement when moving mouse away from the player.
+	// Overloaded sf::Sprite draw() method for Player.
+	virtual void draw (sf::RenderWindow * window) const;
 };
 
-/**
-	The one and only Player class. When Player needs something, it is instantaneously done.
-	His faithful squire, named gravely PlayerController, constantly calculate Player's new
-	position, rotation, texture and keep track of his inventory, skills, atributes and carry
-	his shiny sword. And shield. If he had one.... Maybe his older brother AnimatedObject
-	knows something about it. Worth a shot.
-*/

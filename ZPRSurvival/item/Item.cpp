@@ -8,15 +8,15 @@
 	In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
-#include "ItemView.h"
+#include "Item.h"
 
-ItemView::ItemView () {
+Item::Item () {
 }
 
-ItemView::ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f position) {
+Item::Item (sf::Texture & texture, b2BodyType type, sf::Vector2f position) {
 	this->setTexture (texture);
 	this->setPosition (position);
-	this->setOrigin (this->getLocalBounds ().width, this->getLocalBounds ().height);
+	this->setOrigin (this->getLocalBounds ().width/2, this->getLocalBounds ().height/2);
 	b2BodyDef bodyDef;
 	bodyDef.position = b2Vec2 (position.x / GraphicsOptions::pixelPerMeter,
 							   position.y / GraphicsOptions::pixelPerMeter);
@@ -32,9 +32,9 @@ ItemView::ItemView (sf::Texture & texture, b2BodyType type, sf::Vector2f positio
 	boxBody->CreateFixture (&fixtureDef);
 }
 
-ItemView::~ItemView () {
+Item::~Item () {
 }
 
-void ItemView::draw (sf::RenderWindow& window) const {
+void Item::draw (sf::RenderWindow& window) const {
 	window.draw (*this);
 }
