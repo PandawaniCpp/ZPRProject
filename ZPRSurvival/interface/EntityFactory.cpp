@@ -42,8 +42,7 @@ void EntityFactory::playerPrefabsInit () {
 	prefab.originY = 0.5;
 	prefab.density = 1.0f;
 	prefab.friction = 0.7f;
-	//prefab.maxSpeed = 10.0;
-	prefab.rotationSpeed = 10.f;
+	prefab.rotationSpeed = 3.f;
 	prefab.acceleration = 15.f;
 	prefab.linearDamping = 10.f;
 	prefab.angularDamping = 2.f;

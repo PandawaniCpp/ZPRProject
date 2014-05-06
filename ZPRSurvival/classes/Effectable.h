@@ -19,10 +19,10 @@
 class Effectable : virtual public GameObject {
 public:
 	// Used to store effects and manage them.
-	typedef std::unique_ptr<Effect> EffectrPtr;
+	typedef std::shared_ptr<Effect> EffectPtr;
 
 	// Hold all available effects in the game.
-	static std::map <Effects::ID, EffectrPtr> effectsHolder;
+	static std::map <Effects::ID, EffectPtr> effectsHolder;
 
 	// Default constructor.
 	Effectable ();

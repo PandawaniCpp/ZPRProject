@@ -115,15 +115,15 @@ void Game::entitiesInit () {
 void Game::layersInit () {
 	// Initialize game scene graph
 	for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
-		GameObject::Ptr layer (new GameObject ());
+		GameObject::ObjectPtr layer (new GameObject ());
 		sceneLayers[i] = layer.get ();
 		sceneGraph.attachChild (layer);
 	}
 
 	// Attach map, console and player to game layers
-	sceneLayers[Game::CONSOLE]->attachChild (GameObject::Ptr (console));
-	sceneLayers[Game::MAP]->attachChild (GameObject::Ptr (worldMap));
-	sceneLayers[Game::PLAYER]->attachChild (GameObject::Ptr (playerController[0]));
+	sceneLayers[Game::CONSOLE]->attachChild (GameObject::ObjectPtr (console));
+	sceneLayers[Game::MAP]->attachChild (GameObject::ObjectPtr (worldMap));
+	sceneLayers[Game::PLAYER]->attachChild (GameObject::ObjectPtr (playerController[0]));
 
 }
 
@@ -317,8 +317,8 @@ void Game::draw () {
 	sceneGraph.drawAll (gameWindow);
 }
 
-void Game::attachChild (GameObject::Ptr * shPtr, Game::Layer layer) {
-	GameObject::Ptr ptrLayer (*shPtr);
+void Game::attachChild (GameObject::ObjectPtr * shPtr, Game::Layer layer) {
+	GameObject::ObjectPtr ptrLayer (*shPtr);
 	sceneLayers[layer]->attachChild (ptrLayer);
 }
 

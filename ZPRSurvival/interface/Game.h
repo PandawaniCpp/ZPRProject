@@ -100,7 +100,7 @@ private:
 	void draw ();
 
 	// Attach new GameObject to given layer.
-	void attachChild (GameObject::Ptr * shPtr, Game::Layer layer);
+	void attachChild (GameObject::ObjectPtr * shPtr, Game::Layer layer);
 
 	// Graphics options triggers.
 	void setFullscreenEnabled (bool enabled);		// Fullscreen on/off

@@ -70,21 +70,9 @@ void Dynamic::update () {
 	else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
 		boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
 	}
-	
-	// Get movement params.
-	/*b2Vec2 currentVelocity = boxBody->GetLinearVelocity ();
-	float currentSpeed = HYPOTENUSE (currentVelocity.x, currentVelocity.y);
-	b2Vec2 currentForce = boxBody->GetForce ();	
-	float currentForceValue = HYPOTENUSE (currentForce.x, currentForce.y);*/
 
-	// Check if any key is pressed
-	if (direction) 
-		isAccelerating = true;
-	else
-		isAccelerating = false; 
-
-	// If so, apply force in proper direction.
-	if (isAccelerating) {
+	// If any key is pressed, apply force in proper direction.
+	if (direction) {
 		// Perhaps multiply force if object is running.
 		float accel = this->acceleration;
 		if (isRunning)
@@ -98,22 +86,22 @@ void Dynamic::update () {
 }
 
 void Dynamic::applyDirection (int dir) {
-	if (dir == 0)
+	if (dir == 0)		// Command with dir == 0 reset object's direction parameter.
 		direction = 0;
-	else if (dir < 0) {
+	else if (dir < 0) {			// Negative dir removes this flag from direction.
 		if (direction & (-dir)) {
 			direction += dir;
 		}
 	}
-	else if (dir > 0) {
+	else if (dir > 0) {			// Positive dir adds flag from direction.
 		if (~direction & dir) {
 			direction += dir;
 		}
 	}
 }
 
-void Dynamic::setTargetRotation (float angle) {
-	rotation = angle;
+void Dynamic::setTargetRotation (float rotation) {
+	this->rotation = rotation;
 }
 
 void Dynamic::setRunning (bool isRunning) {

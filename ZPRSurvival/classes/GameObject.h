@@ -56,7 +56,7 @@ public:
 	} Prefab;
 
 	// Used to create scene nodes.
-	typedef std::shared_ptr<GameObject> Ptr;
+	typedef std::shared_ptr<GameObject> ObjectPtr;
 
 	// Box2D World
 	static b2World boxWorld;
@@ -81,7 +81,7 @@ public:
 
 	// Adds child to vector 'children'.
 	// Added child has 'parent' set to calling object.
-	void attachChild (Ptr child);
+	void attachChild (ObjectPtr child);
 
 	// Removes node from vector.
 	void detachChild (const GameObject& node);	//remove child from vector
@@ -96,7 +96,7 @@ public:
 	void createB2Body (Prefab prefab);
 	
 protected:	
-	std::vector<Ptr> children;	// All children to draw after this object is drawn.
+	std::vector<ObjectPtr> children;	// All children to draw after this object is drawn.
 	GameObject* parent;			// Pointer ro the parent (one level above).
 	b2Body * boxBody;			// Box2D Dynamic object.
 	Entities::ID entityId;		// Id or category for that object.

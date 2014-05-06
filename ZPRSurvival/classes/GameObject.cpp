@@ -18,7 +18,7 @@ GameObject::~GameObject () {
 	detachAllChilds ();
 }
 
-void GameObject::attachChild (Ptr child)
+void GameObject::attachChild (ObjectPtr child)
 {
 	child->parent = this;		// Caller is parent for attached child.
 	children.push_back (std::move (child));		// Insert new child.
@@ -27,9 +27,9 @@ void GameObject::attachChild (Ptr child)
 void GameObject::detachChild (const GameObject& node)
 {
 	// Lambda-expression search for child; return true if found.
-	auto found = std::find_if (children.begin (), children.end (), [&] (Ptr& p) -> bool { return p.get () == &node; });
+	auto found = std::find_if (children.begin (), children.end (), [&] (ObjectPtr& p) -> bool { return p.get () == &node; });
 	assert (found != children.end ());
-	Ptr result = std::move (*found);		// Assign child pointer to 'result'.
+	ObjectPtr result = std::move (*found);		// Assign child pointer to 'result'.
 	result->parent = nullptr;				// Erase parent.
 	children.erase (found);					// Erase child.
 }
@@ -51,7 +51,7 @@ void GameObject::drawAll (sf::RenderWindow* window) const {
 	this->draw (window);
 
 	// Draw all children.
-	for (const Ptr& child : children) {
+	for (const ObjectPtr& child : children) {
 		child->drawAll (window);
 	}
 }
@@ -60,7 +60,7 @@ void GameObject::passCommand (Command * command, sf::Time dt) {
 	if (command->category == this->entityId)
 		command->action (*this, dt);
 	else
-		for (const Ptr& child : children) {
+		for (const ObjectPtr& child : children) {
 			child->passCommand (command, dt);
 	}
 }

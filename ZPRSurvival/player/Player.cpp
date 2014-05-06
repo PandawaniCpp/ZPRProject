@@ -12,7 +12,6 @@
 
 Player::Player () {
 	// Current animation parameters
-	frameNumber = 0;
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
@@ -20,15 +19,18 @@ Player::Player () {
 	// Dynamic body parameters.
 	rotationSpeed = 0.5f;
 	acceleration = 10.f;
+	runModifier = 2.f;
+	anglePrecision = 10.f * DEG_TO_RAD;
 	
+	// Set ID
 	entityId = Entities::PLAYER;
 
 	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
+	this->resetAnimation ();
 }
 
 Player::Player (GameObject::Prefab prefab) {
 	// Current animation parameters
-	frameNumber = 0;
 	frameDuration = sf::seconds (0.5f);
 	currentAnimation = Textures::P_IDLE;
 	animationRepeat = true;
@@ -38,9 +40,12 @@ Player::Player (GameObject::Prefab prefab) {
 	acceleration = prefab.acceleration;
 	runModifier = prefab.runModifier;
 	anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
+
+	// Set ID
 	entityId = Entities::PLAYER;
 
 	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
+	this->resetAnimation ();
 }
 
 Player::~Player () {

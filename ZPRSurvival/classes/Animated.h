@@ -51,16 +51,16 @@ public:
 protected:
 	Identifier currentAnimation;		// Animation state.
 	sf::Time frameDuration;				// Time per frame (duration / frame count)
-	sf::Time elapsedTime;				// Time passed (controls when to switch frame)
+	sf::Time availableTime;				// Time passed (controls when to switch frame)
 	int frameNumber;					// Number of frame actually written.
 	bool animationRepeat;				// Animation is repeatable.
 	//bool animationActive;				// #TODO Check if neccessary
 };
 
-template <class Identifier>
+template <class Identifier>			// Initialize frame data
 std::map<Identifier, sf::Vector3<int>> Animated<Identifier>::frameData = std::map<Identifier, sf::Vector3<int>> ();
 
-template <class Identifier>
+template <class Identifier>			// Static method for inserting information about animation frames.
 void Animated<Identifier>::insertAnimationData (Identifier textureID, sf::Vector3<int> frameInfo) {
 	frameData.insert (std::make_pair (textureID, frameInfo));
 }
@@ -75,19 +75,23 @@ Animated<Identifier>::~Animated () {
 
 template <class Identifier>
 void Animated<Identifier>::animate (sf::Time dt) {
-	// #TODO COMMENTS!!!!!!!!!!!
+	// Initial calculations (how much time per frame, which rectangle cut from spritesheet)
 	sf::Time timePerFrame = frameDuration / static_cast<float>(frameData[currentAnimation].z);
-	elapsedTime += dt;
 	sf::Vector2i textureBounds (this->getTexture ()->getSize ());
 	sf::IntRect textureRect = this->getTextureRect ();
 
+	// Aqcuire new time quantum for animation
+	availableTime += dt;		
+
+	// First frame => get top-left rectangle
 	if (frameNumber == 0)
 		textureRect = sf::IntRect (0, 0, frameData[currentAnimation].x, frameData[currentAnimation].y);
-	while (elapsedTime >= timePerFrame && (frameNumber <= frameData[currentAnimation].z || animationRepeat)) {
-		textureRect.left += textureRect.width;
-		if (textureRect.left + textureRect.width > textureBounds.x)
-			textureRect.left = 0;
-		elapsedTime -= timePerFrame;
+
+	while (availableTime >= timePerFrame && (frameNumber <= frameData[currentAnimation].z || animationRepeat)) {
+		textureRect.left += textureRect.width;		// Move right to next frame.
+		if (textureRect.left + textureRect.width > textureBounds.x)		// If this was last frame...
+			textureRect.left = 0;										// ...get to the first one.
+		availableTime -= timePerFrame;	// Frame changed => subtract used time.
 		if (animationRepeat) {
 			frameNumber = (frameNumber + 1) % frameData[currentAnimation].z;
 			if (frameNumber == 0)
@@ -107,7 +111,7 @@ void Animated<Identifier>::changeAnimation (Identifier textID) {
 
 template <class Identifier>
 void Animated<Identifier>::resetAnimation () {
-	elapsedTime = sf::Time::Zero;
+	availableTime = sf::Time::Zero;
 	frameNumber = 0;
 }
 

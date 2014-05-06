@@ -10,8 +10,6 @@
 
 #pragma once
 #include "GameObject.h"
-//#define ANGLE_PRECISION 5.0 * DEG_TO_RAD	// Angle precision in radians.
-//#define HYPOTENUSE(a,b) sqrt(a*a + b*b)		// Vector length/value (square root of sum of two squared value)
 
 /**
 	MVC's View for Dynamic class. Represents objects, that can move, rotate and
@@ -43,7 +41,7 @@ public:
 	void applyDirection (int dir);
 
 	// Set rotation to which b2Body should rotate.
-	void setTargetRotation (float angle);
+	void setTargetRotation (float rotation);
 
 	// Whether object should run or not.
 	void setRunning (bool isRunning);

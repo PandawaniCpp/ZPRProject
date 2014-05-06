@@ -15,8 +15,6 @@
 #include "../interface/ResourcesID.h"
 #include "../interface/ResourceHolder.h"
 #include "../interface/EntityFactory.h"
-//#include "GameObject.h"
-//#define PI 3.14159265		//converting degrees <-> radians
 
 template <class Type, class Identifier>
 /** 
@@ -24,9 +22,6 @@ template <class Type, class Identifier>
 */
 class GameObjectController {
 public:
-	//friend class Game
-	//typedef Type* entityPtr;
-
 	// Time for one tick. Initialized in Game::run()
 	static sf::Time deltaTime;
 
@@ -62,7 +57,6 @@ GameObjectController<Type, Identifier>::~GameObjectController () {
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {
 	for (auto & entity : entityHolder) {
-		//Type * downEntity = dynamic_cast<Type*>(entity.get());
 		entity->animate (deltaTime);
 		entity->updateFromBody ();
 		entity->update ();
