@@ -42,9 +42,9 @@ void EntityFactory::playerPrefabsInit () {
 	prefab.originY = 0.5;
 	prefab.density = 1.0f;
 	prefab.friction = 0.7f;
-	prefab.rotationSpeed = 3.f;
-	prefab.acceleration = 15.f;
-	prefab.linearDamping = 10.f;
+	prefab.rotationSpeed = 10.f;
+	prefab.acceleration = 25.f;
+	prefab.linearDamping = 20.f;
 	prefab.angularDamping = 2.f;
 	prefab.runModifier = 2.f;
 	prefab.bodyType = b2_dynamicBody;

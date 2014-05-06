@@ -14,6 +14,7 @@ PlayerController::PlayerController () {
 	// Set sizes for every animation of the player.
 	Player::insertAnimationData (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10));
 	Player::insertAnimationData (Textures::P_WALK, sf::Vector3<int> (50, 50, 10));
+	Player::insertAnimationData (Textures::P_RUN, sf::Vector3<int> (50, 50, 10));
 	
 	// Load player textures.
 	for (unsigned int i = Textures::P_INIT + 1; i < Textures::P_END; ++i) {
@@ -36,103 +37,34 @@ void PlayerController::createEntity (Entities::ID entityID, sf::Vector2f positio
 	entityHolder[0]->animate (deltaTime);
 }
 
-/*
-void PlayerController::update (sf::Vector2<float> mousePosition) {
-	// Rotation update.
-	calculatePlayerRotation (mousePosition);
+void PlayerController::update () {
+	controlStates ();
+	//controlAnimations ();
+	controlEffects ();
+	updateEntities ();
+}
 
-	// Displacement update.
-	if ((player->getSpeed() != 0) || (player->getDirection() != 0))
-		calculatePlayerMove ();
-
-	// Position update.
-	sf::Vector2<float> position = player->getPosition ();
-	playerView->setPosition (position.x, position.y);
-
-	// Animation update.
-	playerView->animate (deltaTime);
-
-	// #TEMP Put animation change in different method.
-	Textures::ID playerTexture = playerView->getCurrentAnimation ();
-
-	switch (playerTexture) {
-		case Textures::P_IDLE: 
-			if (player->getDirection () != 0) {
-				playerView->resetAnimation ();
-				playerView->changeAnimation (Textures::P_WALK);
-			}
-			break;
-		case Textures::P_WALK: 
-			if (player->getDirection () == 0) {
-				playerView->resetAnimation ();
-				playerView->changeAnimation (Textures::P_IDLE);
-			}
-			break;
-		default: break;
+void PlayerController::controlStates () {
+	Textures::PLAYER textureOld = entityHolder[0]->getCurrentAnimation ();
+	Textures::PLAYER textureNew;
+	if (entityHolder[0]->getDirection() == 0) {
+		textureNew = Textures::P_IDLE;
+	}
+	else if (entityHolder[0]->getIsRunning ()) {
+		textureNew = Textures::P_RUN;
+	}
+	else {
+		textureNew = Textures::P_WALK;
 	}
 
-	playerView->changeTexture ();
+	if (textureNew != textureOld)
+		entityHolder[0]->changeAnimation (&textureHolder.get (textureNew), textureNew);
 }
 
-void PlayerController::prepareView () {
-	playerView->setRotation (player->getRotation());
-	playerView->setPosition (player->getPosition());
+//void PlayerController::controlAnimations () {
+//
+//}
+
+void PlayerController::controlEffects () {
+
 }
-
-
-void PlayerController::preparePlayerMove (sf::Keyboard::Key key, bool isPressed) {
-	int direction = player->getDirection ();
-	int directionChange = 0;					
-	
-	if (key == sf::Keyboard::W)						// Player keys for moving.
-		directionChange = Dynamic::UP;		// #TODO Use key bindings (changed in options)
-	else if (key == sf::Keyboard::S)
-		directionChange = Dynamic::DOWN;
-	else if (key == sf::Keyboard::A)
-		directionChange = Dynamic::LEFT;
-	else if (key == sf::Keyboard::D)
-		directionChange = Dynamic::RIGHT;	//...
-
-	if (isPressed)		// Add or remove new directions.
-		direction = direction | directionChange;
-	else
-		direction = direction ^ directionChange;
-
-	player->setDirection (direction);
-}
-
-void PlayerController::calculatePlayerMove () {
-	calculateMove (player);
-}
-
-void PlayerController::setPosition (sf::Vector2<float> position) {
-	player->setPosition (position);
-}
-
-void PlayerController::calculatePlayerRotation (sf::Vector2<float> mousePosition) {
-	// Difference between mouse and player position.
-	float deltaX = mousePosition.x - player->getPosition ().x;
-	float deltaY = mousePosition.y - player->getPosition ().y;
-	sf::Vector2<float> rotationVector (deltaX, deltaY);
-	float rotation = 0;
-
-	calculateRotation (rotation, rotationVector);
-
-	player->setRotation (rotation);
-
-	// Set additional displacement because of mouse movement.
-	player->setOffset (sf::Vector2<float> (deltaX / 8.0f, deltaY / 8.0f));
-}
-
-void PlayerController::setPlayer () {
-	// Rotate relatively to the player's center.
-	playerView->setOrigin (player->getSize ().x / 2, player->getSize ().y / 2);	
-}
-
-Player * PlayerController::getPlayer () {
-	return player;
-}
-
-PlayerView * PlayerController::getPlayerView () {
-	return playerView;
-}*/

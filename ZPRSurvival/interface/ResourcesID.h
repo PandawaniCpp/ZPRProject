@@ -28,6 +28,7 @@ namespace Textures {
 		P_INIT,
 		P_IDLE,		
 		P_WALK,
+		P_RUN,
 		P_END
 	};
 
@@ -77,6 +78,11 @@ namespace Commands {
 		NONE,
 		G_EXIT,
 		CON_TRIGGER,
+		RES_UP,
+		RES_DOWN,
+		SET_FULLSCREEN,
+		SAVE_MAP_TO_IMG,
+
 		MOVE_FORWARD,
 		STOP_FORWARD,
 		MOVE_BACKWARD,
@@ -87,9 +93,7 @@ namespace Commands {
 		STOP_RIGHT,
 		START_RUN,
 		STOP_RUN,
-		RES_UP,
-		RES_DOWN,
-		SET_FULLSCREEN,
+
 		COMMANDS_COUNT
 	};
 }

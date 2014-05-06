@@ -107,3 +107,11 @@ void Dynamic::setTargetRotation (float rotation) {
 void Dynamic::setRunning (bool isRunning) {
 	this->isRunning = isRunning;
 }
+
+bool Dynamic::getIsRunning () {
+	return isRunning;
+}
+
+int Dynamic::getDirection () {
+	return direction;
+}

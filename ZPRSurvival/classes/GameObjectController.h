@@ -31,11 +31,17 @@ public:
 	// Default destructor.
 	virtual ~GameObjectController ();
 
+	// Cotrol states, update animations, manage effects
+	//virtual void update ();
+
 	// Update all data about enitites
 	void updateEntities ();
 	
 	// Overloaded access operator for getting entities.
 	Type* operator[](std::size_t index);
+
+	// Cotrol states, update animations, manage effects
+	//virtual void update ();
 
 protected:
 	ResourceHolder<sf::Texture, Identifier> textureHolder;		// Template for all different texture holders
@@ -53,6 +59,10 @@ template <class Type, class Identifier>
 GameObjectController<Type, Identifier>::~GameObjectController () {
 	
 }
+
+/*template <class Type, class Identifier>
+void GameObjectController<Type, Identifier>::update () {
+}*/
 
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {

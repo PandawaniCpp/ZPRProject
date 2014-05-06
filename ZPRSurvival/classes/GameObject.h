@@ -94,6 +94,9 @@ public:
 
 	// Create b2Body 
 	void createB2Body (Prefab prefab);
+
+	// Get b2Body of that object
+	b2Body * getBody ();
 	
 protected:	
 	std::vector<ObjectPtr> children;	// All children to draw after this object is drawn.

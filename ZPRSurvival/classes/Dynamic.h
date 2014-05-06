@@ -46,6 +46,11 @@ public:
 	// Whether object should run or not.
 	void setRunning (bool isRunning);
 
+	// Getters
+
+	bool getIsRunning ();
+	int getDirection ();
+
 protected:
 	int direction = 0;		// Combination of Dynamic::DIRECTION flags
 	//float maxSpeed;			// Object movement parameters.

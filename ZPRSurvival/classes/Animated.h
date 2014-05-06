@@ -39,8 +39,8 @@ public:
 	// Animation handling.
 	void animate (sf::Time dt);
 
-	// Change animation to draw.
-	void changeAnimation (Identifier textureID);
+	// Change texture and therefore animation
+	void changeAnimation (sf::Texture * texture, Identifier textureID);
 
 	// Reset frames and times for next animation.
 	void resetAnimation ();
@@ -75,6 +75,8 @@ Animated<Identifier>::~Animated () {
 
 template <class Identifier>
 void Animated<Identifier>::animate (sf::Time dt) {
+	assert (frameData[currentAnimation].x);
+
 	// Initial calculations (how much time per frame, which rectangle cut from spritesheet)
 	sf::Time timePerFrame = frameDuration / static_cast<float>(frameData[currentAnimation].z);
 	sf::Vector2i textureBounds (this->getTexture ()->getSize ());
@@ -105,8 +107,10 @@ void Animated<Identifier>::animate (sf::Time dt) {
 }
 
 template <class Identifier>
-void Animated<Identifier>::changeAnimation (Identifier textID) {
-	currentAnimation = textID;
+void Animated<Identifier>::changeAnimation (sf::Texture * texture, Identifier textureID) {
+	currentAnimation = textureID;
+	this->setTexture (*texture, true);
+	this->resetAnimation ();
 }
 
 template <class Identifier>

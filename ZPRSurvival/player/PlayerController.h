@@ -31,42 +31,12 @@ public:
 	// Creates entity with EntityFactory
 	void createEntity (Entities::ID entityID, sf::Vector2f position);
 	
-	// Update
-	//void update ();
+	// Update player state, animation and effects
+	void update ();
 
-	/*
-	// Sets default players parameters (origin etc.)
-	void setPlayer ();
-
-	// Calls other updates methods (rotation update, movement update...)
-	// \param mousePosition - (x,y) of mouse cursor location => rotation update.
-	void update (sf::Vector2<float> mousePosition);
-
-	// Gets data from Model and updates View (and Sprite ofc).
-	void prepareView ();
-	
-	// With given key information updated Player::direction by mixing AnimatedObject::Direction flags.
-	// \param key - key pressed/released. Only called in Game::Playing state.
-	void preparePlayerMove (const sf::Keyboard::Key key, const bool isPressed); 	
-
-	// Pass own pointer to AnimatedObjectController::move method.
-	void calculatePlayerMove ();
-
-	// With given mousePosition calls AnimatedObjectController::calculateRotation.
-	// Also updated Model's rotation.
-	void calculatePlayerRotation (sf::Vector2<float> mousePosition);
-
-	// Updated Model's position.
-	void setPosition (sf::Vector2<float> position);	
-	
-	// Getters
-
-	Player * getPlayer ();
-	PlayerView * getPlayerView ();
-
-private:
-	Player * player;			// Pointers to Model and View.
-	PlayerView * playerView;	// Both controlled by Controller (yeah...)*/
+	// Managers for different player's features.
+	void controlStates ();
+	void controlEffects ();
 };
 
 /**

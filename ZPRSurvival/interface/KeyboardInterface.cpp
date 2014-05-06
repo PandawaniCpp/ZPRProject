@@ -18,6 +18,7 @@ void KeyboardInterface::assignKeys () {
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, GameState::PLAYING), Commands::RES_UP));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, GameState::PLAYING), Commands::RES_DOWN));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, GameState::PLAYING), Commands::SET_FULLSCREEN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::SAVE_MAP_TO_IMG));
 
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, GameState::PLAYING), Commands::MOVE_FORWARD));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::MOVE_BACKWARD));
@@ -43,6 +44,7 @@ void KeyboardInterface::assignActions () {
 	actionBindings[Commands::RES_UP].specialKeys = SpecialKeys::CONTROL;
 	actionBindings[Commands::RES_DOWN].specialKeys = SpecialKeys::CONTROL;
 	actionBindings[Commands::SET_FULLSCREEN].specialKeys = SpecialKeys::CONTROL;
+	actionBindings[Commands::SAVE_MAP_TO_IMG].specialKeys = SpecialKeys::CONTROL + SpecialKeys::SHIFT;
 
 	actionBindings[Commands::MOVE_FORWARD].action = derivedAction<Dynamic> (UpdateDirection (Dynamic::UP));
 	actionBindings[Commands::MOVE_FORWARD].category = Entities::PLAYER;

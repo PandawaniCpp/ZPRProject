@@ -21,7 +21,7 @@ void WorldMapView::initialize() {
 	int height = mapa->getHeight();
 	Logger::getInstance() << "start saving";
 	Logger::getInstance() << std::endl;
-	getMapImage().saveToFile("./takamapa.png");
+	//getMapImage().saveToFile("./takamapa.png");
 	Logger::getInstance() << "end saving";
 	Logger::getInstance() << std::endl;
 	waterImage = new sf::Image();

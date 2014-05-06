@@ -106,3 +106,7 @@ void GameObject::createB2Body (Prefab prefab) {
 	// Fixture creation
 	boxBody->CreateFixture (&fixtureDef);
 }
+
+b2Body * GameObject::getBody () {
+	return boxBody;
+}

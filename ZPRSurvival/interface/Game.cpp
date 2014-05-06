@@ -234,24 +234,28 @@ void Game::gameCommandExecute (Command * command) {
 	else if (command->commandType == Commands::CON_TRIGGER)		// Show/Hide Console
 		Console::visible = !Console::visible;
 	else if (command->commandType == Commands::RES_UP) {		// Increase resolution
-		if (Console::visible && command->specialKeys & specialKeys) {
+		if (Console::visible && command->specialKeys == specialKeys) {
 			GraphicsOptions::switchResolution (true);
 			applyOptions ();
 		}
 	}
 	else if (command->commandType == Commands::RES_DOWN) {		// Decrease resolution
-		if (Console::visible && command->specialKeys & specialKeys) {
+		if (Console::visible && command->specialKeys == specialKeys) {
 			GraphicsOptions::switchResolution (false);
 			applyOptions ();
 		}
 	}
 	else if (command->commandType == Commands::SET_FULLSCREEN) {	// Turn fullscreen on/off
-		if (Console::visible && command->specialKeys & specialKeys) {
+		if (Console::visible && command->specialKeys == specialKeys) {
 			if (GraphicsOptions::fullscreenModeOn)
 				setFullscreenEnabled (false);
 			else
 				setFullscreenEnabled (true);
 		}
+	}
+	else if (command->commandType == Commands::SAVE_MAP_TO_IMG) {	// Save map to png file.
+		if (Console::visible && command->specialKeys == specialKeys)
+			worldMap->getMapImage ().saveToFile ("./resources/zrzut_mapy.png");
 	}
 }
 
@@ -274,8 +278,9 @@ void Game::update () {
 	// Calculate player-mouse offset.
 	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
 	
-	// Update player accordingly to mouse position change.
-	playerController.updateEntities ();	
+	// Update player.
+	playerController.update ();
+	//playerController.updateEntities ();	
 
 	// Update console ouput.
 	console->update ("x", playerController[0]->getPosition ().x);
