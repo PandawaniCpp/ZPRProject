@@ -69,9 +69,8 @@ void GameObject::updateFromBody () {
 	this->setPosition (boxBody->GetPosition ().x * GraphicsOptions::pixelPerMeter,
 					   boxBody->GetPosition ().y * GraphicsOptions::pixelPerMeter);
 
-	this->setRotation (90 - boxBody->GetAngle () * RAD_TO_DEG);
+	this->setRotation (90.0 - boxBody->GetAngle () * RAD_TO_DEG);
 }
-
 bool GameObject::hasChilds () {
 	if (children.size () == 0)
 		return false;
@@ -89,7 +88,7 @@ void GameObject::createB2Body (Prefab prefab) {
 
 	bodyDef.type = prefab.bodyType;		// Dynamic, static or kinetic.
 	boxBody = boxWorld.CreateBody (&bodyDef);	// B2Body creation and assigment.
-	boxBody->SetTransform (boxBody->GetPosition (), b2_pi / 2.f);
+	boxBody->SetTransform (boxBody->GetPosition (), prefab.rotation);
 	boxBody->SetAngularDamping (prefab.angularDamping);
 	boxBody->SetLinearDamping (prefab.linearDamping);
 

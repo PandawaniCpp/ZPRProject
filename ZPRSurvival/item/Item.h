@@ -23,14 +23,13 @@ public:
 	// Default constructor.
 	Item ();
 
-	// Constructs Item with given texture.
-	// Does not set Item::texture attribute.
-	Item (sf::Texture & texture, b2BodyType type, sf::Vector2f position);
+	// Prefab constructor.
+	Item (GameObject::Prefab * prefab);
 
 	// Default destructor.
 	virtual ~Item ();
 
 	// Overloaded sf::Sprite draw() method for Item.
-	virtual void draw (sf::RenderWindow& window) const;
+	virtual void draw (sf::RenderWindow * window) const;
 };
 

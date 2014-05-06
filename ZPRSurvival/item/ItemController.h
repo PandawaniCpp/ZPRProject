@@ -26,7 +26,7 @@ public:
 	// Default destructor.
 	virtual ~ItemController ();
 
-	// Creates new item and return pointer to it. If failed, return nullptr.
-	Item * createItem (Textures::ITEMS textureID, sf::Vector2f position);
+	// Creates entity with EntityFactory
+	void createEntity (Entities::ID entityID, Textures::ITEMS itemTexture, sf::Vector2f position);
 };
 

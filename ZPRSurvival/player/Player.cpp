@@ -29,22 +29,22 @@ Player::Player () {
 	this->resetAnimation ();
 }
 
-Player::Player (GameObject::Prefab prefab) {
+Player::Player (GameObject::Prefab * prefab) {
 	// Current animation parameters
 	frameDuration = sf::seconds (0.5f);
-	currentAnimation = Textures::P_IDLE;
+	currentAnimation = prefab->texture.playerTexture;
 	animationRepeat = true;
 
 	// Dynamic body parameters.
-	rotationSpeed = prefab.rotationSpeed;
-	acceleration = prefab.acceleration;
-	runModifier = prefab.runModifier;
+	rotationSpeed = prefab->rotationSpeed;
+	acceleration = prefab->acceleration;
+	runModifier = prefab->runModifier;
 	anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
 
 	// Set ID
-	entityId = Entities::PLAYER;
+	entityId = Entities::PLAYER;	// #TODO NAPRAW !!!!!
 
-	this->setOrigin (prefab.width * prefab.originX, prefab.height * prefab.originY);
+	this->setOrigin (prefab->width * prefab->originX, prefab->height * prefab->originY);
 	this->resetAnimation ();
 }
 

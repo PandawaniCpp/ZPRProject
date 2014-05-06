@@ -40,7 +40,7 @@ namespace Textures {
 
 	enum ITEMS {
 		I_INIT,
-		I_STONE,
+		I_WALL,
 		I_END
 	};
 }
@@ -67,7 +67,7 @@ namespace Entities {
 	enum ID {
 		NONE,
 		PLAYER,
-		STONE,
+		WALL,
 		ENTITIES_COUNT
 	};
 }

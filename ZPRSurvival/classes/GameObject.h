@@ -45,14 +45,21 @@ public:
 		float density = 0.f;
 		float friction = 0.f;
 		float maxSpeed = 0.f;
+		float rotation = 0.f;
 		float rotationSpeed = 0.f;
 		float acceleration = 0.f;
 		float linearDamping = 1.f;
 		float angularDamping = 1.f;
 		float runModifier = 1.f;
+		bool isTextureRepeatable = false;
 		b2BodyType bodyType = b2_dynamicBody;
 		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
-		b2CircleShape * circleShape = nullptr;		// nullptr at a time.
+		b2CircleShape * circleShape = nullptr;		// nullptr at creation time.
+		union texture {
+			Textures::PLAYER playerTexture;
+			Textures::ITEMS itemTexture;
+			Textures::CREATURES creatureTexture;
+		} texture;
 	} Prefab;
 
 	// Used to create scene nodes.

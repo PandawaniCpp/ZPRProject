@@ -110,6 +110,7 @@ void Game::terminate () {
 
 void Game::entitiesInit () {
 	playerController.createEntity (Entities::PLAYER, sf::Vector2f (5000.f, 5000.f));		// #SETSPAWN
+	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f));
 }
 
 void Game::layersInit () {
@@ -124,6 +125,7 @@ void Game::layersInit () {
 	sceneLayers[Game::CONSOLE]->attachChild (GameObject::ObjectPtr (console));
 	sceneLayers[Game::MAP]->attachChild (GameObject::ObjectPtr (worldMap));
 	sceneLayers[Game::PLAYER]->attachChild (GameObject::ObjectPtr (playerController[0]));
+	sceneLayers[Game::ITEMS]->attachChild (GameObject::ObjectPtr (itemController[0]));
 
 }
 
@@ -280,6 +282,7 @@ void Game::update () {
 	
 	// Update player.
 	playerController.update ();
+	itemController.updateEntities ();
 	//playerController.updateEntities ();	
 
 	// Update console ouput.
@@ -296,6 +299,7 @@ void Game::update () {
 
 	// Set the world displacement vector relatively to player.
 	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
+	//worldView.setRotation (45.f);
 	gameWindow->setView (worldView);
 
 	// Vector for displacement correction.

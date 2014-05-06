@@ -13,28 +13,28 @@
 Item::Item () {
 }
 
-Item::Item (sf::Texture & texture, b2BodyType type, sf::Vector2f position) {
-	this->setTexture (texture);
-	this->setPosition (position);
-	this->setOrigin (this->getLocalBounds ().width/2, this->getLocalBounds ().height/2);
-	b2BodyDef bodyDef;
-	bodyDef.position = b2Vec2 (position.x / GraphicsOptions::pixelPerMeter,
-							   position.y / GraphicsOptions::pixelPerMeter);
-	bodyDef.type = type;
-	boxBody = boxWorld.CreateBody (&bodyDef);
-	b2PolygonShape shape;
-	shape.SetAsBox (
-		this->getGlobalBounds ().width / 2 / GraphicsOptions::pixelPerMeter,
-		this->getGlobalBounds ().height / 2 / GraphicsOptions::pixelPerMeter);
-	b2FixtureDef fixtureDef;
-	fixtureDef.density = 1.0f;
-	fixtureDef.shape = &shape;
-	boxBody->CreateFixture (&fixtureDef);
+Item::Item (GameObject::Prefab * prefab) {
+	// Current animation parameters
+	frameDuration = sf::seconds (0.5f);
+	currentAnimation = prefab->texture.itemTexture;
+	animationRepeat = true;
+
+	// Dynamic body parameters.
+	rotationSpeed = prefab->rotationSpeed;
+	acceleration = prefab->acceleration;
+	runModifier = prefab->runModifier;
+	anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
+
+	// Set ID
+	entityId = Entities::WALL;		// #TODO NAPRAW !!!!!
+
+	this->setOrigin (prefab->width * prefab->originX, prefab->height * prefab->originY);
+	this->resetAnimation ();
 }
 
 Item::~Item () {
 }
 
-void Item::draw (sf::RenderWindow& window) const {
-	window.draw (*this);
+void Item::draw (sf::RenderWindow * window) const {
+	window->draw (*this);
 }

@@ -27,7 +27,7 @@ public:
 	Player ();
 
 	// Prefab constructor.
-	Player (GameObject::Prefab prefab);
+	Player (GameObject::Prefab * prefab);
 
 	// Default destructor.
 	~Player ();

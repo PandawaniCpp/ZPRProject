@@ -31,8 +31,8 @@ public:
 	static void prefabInit ();
 
 	// Creation method for differetn game object types.
-	static Creature* createCreature (Entities::ID entityId);
-	static Item* createItem (Entities::ID entityId);
+	static Creature* createCreature (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
+	static Item* createItem (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
 	static Player* createPlayer (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
 
 private:
