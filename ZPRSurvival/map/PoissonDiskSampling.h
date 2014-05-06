@@ -25,18 +25,18 @@ public:
 	-position y
 	-size of drawen object
 	*/
-	typedef std::vector<std::vector<std::vector<sf::Vector2f>>> Positions;
+	typedef std::vector<std::vector<std::vector<sf::Vector2f*>>> Positions;
 	typedef std::vector <std::vector<bool>> Grid;
 	void objectsPosition(WorldMap* map);
-	sf::Vector2f randPoint();
-	sf::Vector2i getGrid(const sf::Vector2f & point, const float & size);
-	sf::Vector2f randomActive(std::vector<sf::Vector2f> & activeVector);
+	sf::Vector2f* randPoint();
+	sf::Vector2i getGrid(const sf::Vector2f* point, const float & size);
+	//sf::Vector2f randomActive(std::vector<sf::Vector2f> & activeVector);
 	//int checkOccupiedNeighbours(const sf::Vector2i & Grid, const std::vector<sf::Vector2i> & gridVector);
-	sf::Vector2f randNeighbour(const sf::Vector2f & basePoint, const float & distance);
-	bool checkNeighbour(const sf::Vector2f & candidate, const float & minRange, const Grid& gridVector, const Positions& positions);
-	void deleteBasePoint(std::vector<sf::Vector2f> & activeVector, const sf::Vector2f & point);
-	void drawlog();
-	std::vector<std::vector<std::vector<sf::Vector2f>>>& getPositions();
+	sf::Vector2f* randNeighbour(const sf::Vector2f* basePoint, const float & distance);
+	bool checkNeighbour(const sf::Vector2f* candidate, const float & minRange, const Grid& gridVector, const Positions& positions);
+	//void deleteBasePoint(std::vector<sf::Vector2f> & activeVector, const sf::Vector2f & point);
+	//void drawlog();
+	std::vector<std::vector<std::vector<sf::Vector2f*>>>& getPositions();
 
 private:
 	int ilosc;

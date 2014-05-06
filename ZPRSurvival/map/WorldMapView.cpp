@@ -15,10 +15,15 @@ WorldMapView::WorldMapView(int seed, double persistence, double zoom, int octave
 }
 
 void WorldMapView::initialize() {
-
+	Logger::getInstance() << "poczatek";
+	Logger::getInstance() << std::endl;
 	int width = mapa->getWidth();
 	int height = mapa->getHeight();
+	Logger::getInstance() << "start saving";
+	Logger::getInstance() << std::endl;
 	getMapImage().saveToFile("./takamapa.png");
+	Logger::getInstance() << "end saving";
+	Logger::getInstance() << std::endl;
 	waterImage = new sf::Image();
 	sandImage = new sf::Image();
 	grassImage = new sf::Image();
@@ -45,7 +50,8 @@ void WorldMapView::initialize() {
 	int chunksInX = mapa->getWidth() / 500;
 	int chunksInY = mapa->getHeight() / 500;
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
-	
+	Logger::getInstance() << "koniec";
+	Logger::getInstance() << std::endl;
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -130,7 +136,7 @@ sf::Image WorldMapView::getMapImage() {
 
 	for (int x = 0; x < img.getSize().x; x++) {
 		for (int y = 0; y < img.getSize().y; y++) {
-			int mapHeight = mapa->getMap(x*10, y*10, 0);
+			int mapHeight = mapa->getMap(x * 10, y * 10, 0);
 			sf::Color mapColor;
 
 			if (mapHeight < 124) {
@@ -142,10 +148,10 @@ sf::Image WorldMapView::getMapImage() {
 			else if (mapHeight < 132) {
 				mapColor = sf::Color(255 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
 			}
-			else{// if (mapHeight < 180) {
-			//	mapColor = sf::Color(178 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
-			//}
-			//else {
+			else {// if (mapHeight < 180) {
+				//	mapColor = sf::Color(178 * mapHeight / 255.0, 255 * mapHeight / 255.0, 102 * mapHeight / 255.0);
+				//}
+				//else {
 				mapColor = sf::Color(0 * mapHeight / 255.0, 102 * mapHeight / 255.0, 0 * mapHeight / 255.0);
 
 			}
@@ -204,14 +210,14 @@ void WorldMapView::update() {
 
 		for (int x = posX - 1; x <= posX + 1; ++x) {
 			for (int y = posY - 1; y <= posY + 1; ++y) {
-				// if isn't outside the map
+				// if isn't outside the ma	
 				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
 					// if it's not created yet
 					if (!chunkArray[x][y]) {
-						//create
+						//create				
 						chunkArray[x][y] = new ChunkView();
 						chunkArray[x][y]->setObiectArray(poisson->getPositions()[x][y]);
-											}
+					}
 				}
 
 			}
@@ -219,11 +225,13 @@ void WorldMapView::update() {
 
 		for (int x = posX - 2; x <= posX + 2; ++x) {
 			for (int y = posY - 2; y <= posY + 2; ++y) {
-				if ((abs(x - posX) == 2 || abs(y - posY) == 2)) {
-					if (chunkArray[x][y] != nullptr) {
-						delete chunkArray[x][y];						
-						chunkArray[x][y] = nullptr;
-						//assert(chunkArray[x][y] != nullptr);
+				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
+					if ((abs(x - posX) == 2 || abs(y - posY) == 2)) {
+						if (chunkArray[x][y] != nullptr) {
+							delete chunkArray[x][y];
+							chunkArray[x][y] = nullptr;
+							//assert(chunkArray[x][y] != nullptr);
+						}
 					}
 				}
 			}

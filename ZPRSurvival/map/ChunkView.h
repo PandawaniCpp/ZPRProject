@@ -8,7 +8,7 @@ public:
 	ChunkView();
 	virtual ~ChunkView();
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-	void setObiectArray(const std::vector<sf::Vector2f> & vect);
+	void setObiectArray(const std::vector<sf::Vector2f*> & vect);
 private:
 		Chunk* chunk;
 };
