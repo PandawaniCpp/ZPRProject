@@ -12,9 +12,9 @@
 
 PlayerController::PlayerController () {
 	// Set sizes for every animation of the player.
-	Player::insertAnimationData (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10));
-	Player::insertAnimationData (Textures::P_WALK, sf::Vector3<int> (50, 50, 10));
-	Player::insertAnimationData (Textures::P_RUN, sf::Vector3<int> (50, 50, 10));
+	Player::insertFrameData (Textures::P_IDLE, sf::Vector3<int> (50, 50, 10));
+	Player::insertFrameData (Textures::P_WALK, sf::Vector3<int> (50, 50, 10));
+	Player::insertFrameData (Textures::P_RUN, sf::Vector3<int> (50, 50, 10));
 	
 	// Load player textures.
 	for (unsigned int i = Textures::P_INIT + 1; i < Textures::P_END; ++i) {
@@ -28,13 +28,6 @@ PlayerController::PlayerController () {
 
 PlayerController::~PlayerController () {
 
-}
-
-void PlayerController::createEntity (Entities::ID entityID, sf::Vector2f position) {
-	entityHolder.push_back (EntityFactory::createPlayer (entityID,
-						textureHolder.get (Textures::P_IDLE),
-						position));
-	entityHolder[0]->animate (deltaTime);
 }
 
 void PlayerController::update () {

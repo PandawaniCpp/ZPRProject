@@ -13,6 +13,7 @@
 // Represents phase of the game.
 namespace GameState {
 	enum ID {
+		NONE = 0,
 		INIT = 1,
 		INTRO = 1 << 1, 
 		IN_MENU = 1 << 3,

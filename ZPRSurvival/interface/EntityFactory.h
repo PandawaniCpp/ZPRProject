@@ -30,10 +30,8 @@ public:
 	// #TODO make this to load prefab from binary file/-s.
 	static void prefabInit ();
 
-	// Creation method for differetn game object types.
-	static Creature* createCreature (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
-	static Item* createItem (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
-	static Player* createPlayer (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position);
+	template <class Type>	// Creates entity matching template parameter and arguments.
+	static Type * createEntity (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position, sf::Vector2i size);
 
 private:
 	// Special initializaions for prefabs.
@@ -41,4 +39,16 @@ private:
 	static void creaturePrefabsInit ();
 	static void itemPrefabsInit ();
 };
+
+template <class Type>
+Type * EntityFactory::createEntity (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position, sf::Vector2i size) {
+	// TEKSTURY ANIMOWANE ZOSTAW PAN W SPOKOJU!!!
+	Type * entity = new Type (&prefabs[entityId]);
+	texture.setRepeated (prefabs[entityId].isTextureRepeatable);
+	entity->setTexture (texture);
+	//entity->setTextureRect (sf::IntRect (0, 0, prefabs[entityId].width, prefabs[entityId].height));
+	entity->setPosition (position);
+	entity->createB2Body (prefabs[entityId]);
+	return entity;
+}
 

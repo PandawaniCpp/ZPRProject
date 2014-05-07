@@ -28,7 +28,7 @@ public:
 
 	// Inserts new animation data for texture: frame size,
 	// frame count (which row, how many in a row) and texture id.
-	static void insertAnimationData (Identifier textureID, sf::Vector3<int> frameInfo);
+	static void insertFrameData (Identifier textureID, sf::Vector3<int> frameInfo);
 
 	// Default constructor.
 	Animated ();
@@ -61,7 +61,7 @@ template <class Identifier>			// Initialize frame data
 std::map<Identifier, sf::Vector3<int>> Animated<Identifier>::frameData = std::map<Identifier, sf::Vector3<int>> ();
 
 template <class Identifier>			// Static method for inserting information about animation frames.
-void Animated<Identifier>::insertAnimationData (Identifier textureID, sf::Vector3<int> frameInfo) {
+void Animated<Identifier>::insertFrameData (Identifier textureID, sf::Vector3<int> frameInfo) {
 	frameData.insert (std::make_pair (textureID, frameInfo));
 }
 

@@ -27,6 +27,6 @@ public:
 	virtual ~ItemController ();
 
 	// Creates entity with EntityFactory
-	void createEntity (Entities::ID entityID, Textures::ITEMS itemTexture, sf::Vector2f position);
+	//void createEntity (Entities::ID entityID, Textures::ITEMS itemTexture, sf::Vector2f position);
 };
 

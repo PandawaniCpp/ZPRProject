@@ -29,7 +29,7 @@ public:
 	virtual ~PlayerController ();
 
 	// Creates entity with EntityFactory
-	void createEntity (Entities::ID entityID, sf::Vector2f position);
+	//void createEntity (Entities::ID entityID, sf::Vector2f position);
 	
 	// Update player state, animation and effects
 	void update ();

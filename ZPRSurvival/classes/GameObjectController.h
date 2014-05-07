@@ -31,8 +31,8 @@ public:
 	// Default destructor.
 	virtual ~GameObjectController ();
 
-	// Cotrol states, update animations, manage effects
-	//virtual void update ();
+	// Creates entity of given Type
+	void createEntity (Entities::ID entityID, Identifier itemTexture, sf::Vector2f position, sf::Vector2i size);
 
 	// Update all data about enitites
 	void updateEntities ();
@@ -59,10 +59,14 @@ template <class Type, class Identifier>
 GameObjectController<Type, Identifier>::~GameObjectController () {
 	
 }
-
-/*template <class Type, class Identifier>
-void GameObjectController<Type, Identifier>::update () {
-}*/
+template <class Type, class Identifier>
+void GameObjectController<Type, Identifier>::createEntity (Entities::ID entityID, Identifier texture, sf::Vector2f position, sf::Vector2i size) {
+	entityHolder.push_back (EntityFactory::createEntity<Type> (entityID,
+											textureHolder.get (texture),
+											position,
+											size));
+	//entityHolder[entityHolder.size ()-1]
+}
 
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {

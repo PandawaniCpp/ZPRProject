@@ -69,7 +69,7 @@ void GameObject::updateFromBody () {
 	this->setPosition (boxBody->GetPosition ().x * GraphicsOptions::pixelPerMeter,
 					   boxBody->GetPosition ().y * GraphicsOptions::pixelPerMeter);
 
-	this->setRotation (90.0 - boxBody->GetAngle () * RAD_TO_DEG);
+	this->setRotation (360.f - boxBody->GetAngle () * RAD_TO_DEG);
 }
 bool GameObject::hasChilds () {
 	if (children.size () == 0)

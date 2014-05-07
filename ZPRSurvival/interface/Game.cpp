@@ -104,13 +104,10 @@ void Game::terminate () {
 
 }
 
-		/*PlayerController * Game::getPlayerController () {
-			return playerController;
-		}*/
 
 void Game::entitiesInit () {
-	playerController.createEntity (Entities::PLAYER, sf::Vector2f (5000.f, 5000.f));		// #SETSPAWN
-	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f));
+	playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50,50));		// #SETSPAWN
+	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i(450, 100));
 }
 
 void Game::layersInit () {

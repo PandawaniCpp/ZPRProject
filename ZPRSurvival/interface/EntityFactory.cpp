@@ -17,28 +17,6 @@ void EntityFactory::prefabInit () {
 	itemPrefabsInit ();
 }
 
-/*Creature * EntityFactory::createCreature (Entities::ID) {
-
-}
-*/
-Item * EntityFactory::createItem (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position) {
-	Item * item = new Item (&prefabs [entityId]);
-	texture.setRepeated (prefabs[entityId].isTextureRepeatable);
-	item->setTexture (texture);
-	item->setTextureRect (sf::IntRect (0, 0, prefabs[entityId].width, prefabs[entityId].height));
-	item->setPosition (position);
-	item->createB2Body (prefabs[entityId]);
-	return item;
-}
-
-Player * EntityFactory::createPlayer (Entities::ID entityId, sf::Texture & texture, sf::Vector2f position) {
-	Player * player = new Player (&prefabs[entityId]);
-	player->setTexture (texture);
-	player->setPosition (position);
-	player->createB2Body (prefabs[entityId]);
-	return player;
-}
-
 void EntityFactory::playerPrefabsInit () {
 	GameObject::Prefab prefab;
 	
@@ -80,11 +58,11 @@ void EntityFactory::itemPrefabsInit () {
 	prefab.originY = 0.5;
 	prefab.density = 1.0f;
 	prefab.friction = 0.7f;
-	prefab.rotation = 0;
-	prefab.rotationSpeed = 0.f;
-	prefab.acceleration = 0.f;
+	prefab.rotation = 0.f;
+	prefab.rotationSpeed = 1.f;
+	prefab.acceleration = 1.f;
 	prefab.linearDamping = 1.f;
-	prefab.angularDamping = 0.f;
+	prefab.angularDamping = 1.f;
 	prefab.runModifier = 0.f;
 	prefab.bodyType = b2_staticBody;
 	prefab.circleShape = nullptr;
