@@ -41,7 +41,10 @@ void PlayerController::controlStates () {
 	Textures::PLAYER textureOld = entityHolder[0]->getCurrentAnimation ();
 	Textures::PLAYER textureNew;
 	if (entityHolder[0]->getDirection() == 0) {
-		textureNew = Textures::P_IDLE;
+		if (HYPOTEN_VEC (entityHolder[0]->getBody ()->GetLinearVelocity ()) > 0.1f)	// #TODO CHANGE THIS TO SOME CONSTANT
+			textureNew = Textures::P_WALK;
+		else
+			textureNew = Textures::P_IDLE;
 	}
 	else if (entityHolder[0]->getIsRunning ()) {
 		textureNew = Textures::P_RUN;

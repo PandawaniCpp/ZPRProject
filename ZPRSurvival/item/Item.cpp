@@ -28,7 +28,6 @@ Item::Item (GameObject::Prefab * prefab) {
 	// Set ID
 	entityId = Entities::WALL;		// #TODO NAPRAW !!!!!
 
-	this->setOrigin (prefab->width * prefab->originX, prefab->height * prefab->originY);
 	this->resetAnimation ();
 }
 

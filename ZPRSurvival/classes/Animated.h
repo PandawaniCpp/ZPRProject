@@ -103,7 +103,7 @@ void Animated<Identifier>::animate (sf::Time dt) {
 			frameNumber++;
 		}
 	}
-	this->setTextureRect (textureRect);
+	//this->setTextureRect (textureRect);
 }
 
 template <class Identifier>

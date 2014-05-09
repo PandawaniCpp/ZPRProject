@@ -107,7 +107,7 @@ void Game::terminate () {
 
 void Game::entitiesInit () {
 	playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50,50));		// #SETSPAWN
-	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i(450, 100));
+	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i(450, 300));
 }
 
 void Game::layersInit () {
@@ -127,9 +127,6 @@ void Game::layersInit () {
 }
 
 void Game::objectsInit () {
-	// Prepares player for the game.
-	//playerController->setPlayer ();	
-
 	// Set player position to the spawn point defined in World Map.
 	//playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
 
@@ -143,24 +140,6 @@ void Game::objectsInit () {
 	console->insert ("b2_epsilon", b2_epsilon);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
-
-	// Items init.		#TEMP !!!!!
-	/*std::vector<std::vector<std::vector<sf::Vector2f> > >positions = worldMap->getPoisson()->getPositions();
-	for (auto & pos1 : positions) {
-		for (auto & pos2 : pos1) {
-			for (auto & pos : pos2) {
-				//ItemView * item = new ItemView (itemTextureHolder.get (Textures::I_STONE));
-				//item->setPosition (pos.x, pos.y);
-				//item->setScale (0.5f, 0.5f);
-				SurvivalObjectView::Ptr itemEntity;
-				sf::Vector2f position(pos.x, pos.y);
-				ItemView * item = itemController->createItem(Textures::I_STONE, position);
-				if (item != nullptr)
-					itemEntity.reset(item);
-				sceneLayers[Game::ITEMS]->attachChild(itemEntity);
-			}
-		}
-	}*/
 }
 
 void Game::applyOptions () {

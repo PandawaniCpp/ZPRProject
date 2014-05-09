@@ -15,6 +15,8 @@
 #include "../interface/ResourcesID.h"
 #include "../interface/ResourceHolder.h"
 #include "../interface/EntityFactory.h"
+#define HYPOTEN(a, b) sqrt(a*a + b*b)
+#define HYPOTEN_VEC(vec) sqrt(vec.x*vec.x + vec.y*vec.y)
 
 template <class Type, class Identifier>
 /** 
@@ -71,7 +73,7 @@ void GameObjectController<Type, Identifier>::createEntity (Entities::ID entityID
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {
 	for (auto & entity : entityHolder) {
-		entity->animate (deltaTime);
+		//entity->animate (deltaTime);
 		entity->updateFromBody ();
 		entity->update ();
 	}
