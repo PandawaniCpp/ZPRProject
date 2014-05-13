@@ -20,6 +20,27 @@ VideoMode GraphicsOptions::testVideoMode = VideoMode (1280, 720, 32);
 VideoMode GraphicsOptions::videoMode = GraphicsOptions::testVideoMode;
 int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
 float GraphicsOptions::pixelPerMeter = 100.0f;
+GraphicsOptions::AspectRatio GraphicsOptions::currentAspectRatio = GraphicsOptions::getAspectRatio (&GraphicsOptions::videoMode);
+
+void GraphicsOptions::init () {
+	if (!videoMode.isValid ()) {
+		videoMode = videoModesAvailable[0];
+		currentAspectRatio = getAspectRatio (&videoMode);
+	}
+}
+
+GraphicsOptions::AspectRatio GraphicsOptions::getAspectRatio (VideoMode * videoMode) {
+	float ratio = (float)videoMode->width / (float)videoMode->height;
+
+	if (std::abs(ratio - 4.f / 3.f) < RES_PRECISION)
+		return X_4x3;
+	else if (std::abs(ratio - 16.f / 9.f) < RES_PRECISION)
+		return X_16x9;
+	else if (std::abs(ratio - 16.f / 10.f) < RES_PRECISION)
+		return X_16x10;
+	else
+		return X_OTHER;
+}
 
 std::string GraphicsOptions::getResolutionsAvailable () {
 	std::string resolutions = "";
@@ -27,7 +48,15 @@ std::string GraphicsOptions::getResolutionsAvailable () {
 
 	for (VideoMode & vm : videoModesAvailable) {		// Iterate through all available Video Modes.
 		// Conversion unsigned int-> string and concatenation.
-		ss << vm.width << " x " << vm.height << " (" << vm.bitsPerPixel << ")\n";
+		ss << vm.width << " x " << vm.height << " (" << vm.bitsPerPixel << " bits, ";
+		
+		switch (getAspectRatio(&vm)) {
+			case X_4x3: ss << "4x3)\n"; break;
+			case X_16x9: ss << "16x9)\n"; break;
+			case X_16x10: ss << "16x10)\n"; break;
+			default: ss << "other ratio)\n";
+		}
+
 		resolutions += ss.str ();
 		ss.str ("");
 	}
@@ -40,7 +69,15 @@ std::string GraphicsOptions::getCurrentResolution () {
 	std::stringstream ss;
 
 	// Conversion unsigned int-> string and concatenation.
-	ss << videoMode.width << " x " << videoMode.height << " (" << videoMode.bitsPerPixel << ")\n";
+	ss << videoMode.width << " x " << videoMode.height << " (" << videoMode.bitsPerPixel << " bits, ";
+	
+	switch (currentAspectRatio) {
+		case X_4x3: ss << "4x3)\n"; break;
+		case X_16x9: ss << "16x9)\n"; break;
+		case X_16x10: ss << "16x10)\n"; break;
+		default: ss << "other ratio)\n";
+	}
+
 	resolution += ss.str ();
 	ss.str ("");
 

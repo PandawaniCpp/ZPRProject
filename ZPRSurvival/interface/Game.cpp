@@ -15,7 +15,8 @@ std::string Game::TITLE = "#TITLE";
 
 Game::Game () {
 	// All we need to play.
-	gameWindow = new sf::RenderWindow (GraphicsOptions::testVideoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
+	GraphicsOptions::init ();
+	gameWindow = new sf::RenderWindow (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
 	worldMap = new WorldMapView (time(NULL), 0.25, 4750.0, 4, 20000, 20000);
 
