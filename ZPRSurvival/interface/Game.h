@@ -109,7 +109,7 @@ private:
 	// Main game objects
 	sf::RenderWindow * gameWindow;			// Main window for displaying the game.
 	PlayerController playerController;	// MVC's controller of the player.
-	ItemController itemController;
+	ItemController itemController;		// MVC's controller for non static items
 	sf::View worldView;				// Represents part of the world shown to the player.
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
@@ -119,6 +119,7 @@ private:
 	// Game parameters
 	std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
 	sf::Time timePerFrame;			// Keep the frame duration fixed.
+	float currentFPS = 0;				// Keeps current (actual) fps value
 	GameState::ID state;				// Describe, in which state the game is in the moment.
 	sf::FloatRect worldBounds;			// World size (in px).
 	//Vector2f mousePosition;			// Mouse position

@@ -62,14 +62,14 @@ void Dynamic::update () {
 	deltaAngle = currentRotation - (2.f * b2_pi * (int)deltaAngle) - rotation;
 	
 	// Rotating object
-	if (std::abs (deltaAngle) < anglePrecision)
+	//if (std::abs (deltaAngle) < anglePrecision)
 		boxBody->SetTransform (boxBody->GetPosition (), rotation);
-	else if (deltaAngle >= b2_pi || (deltaAngle <= 0 && deltaAngle >= -b2_pi)) {
-		boxBody->SetAngularVelocity (rotationSpeed);	// Rotate counter clockwise
-	}
-	else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
-		boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
-	}
+	//else if (deltaAngle >= b2_pi || (deltaAngle <= 0 && deltaAngle >= -b2_pi)) {
+	//	boxBody->SetAngularVelocity (rotationSpeed);	// Rotate counter clockwise
+	//}
+	//else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
+	//	boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
+	//}
 
 	// If any key is pressed, apply force in proper direction.
 	if (direction) {

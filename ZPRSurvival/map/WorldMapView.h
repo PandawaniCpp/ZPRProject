@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "../classes/GameObject.h"
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"

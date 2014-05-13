@@ -18,7 +18,7 @@ Game::Game () {
 	GraphicsOptions::init ();
 	gameWindow = new sf::RenderWindow (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView (time(NULL), 0.65, 5000.0, 8, 20000, 20000);
+	worldMap = new WorldMapView (time(NULL), 0.65, 5000.0, 8, 5000, 5000);
 
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
@@ -34,6 +34,7 @@ Game::~Game () {
 	delete gameWindow;
 
 	// Scene graph's destructor deallocates all graph's objects (all views).
+	// #TODO CHECK THIS
 }
 
 void Game::initialize () {
@@ -82,7 +83,7 @@ void Game::run () {
 
 	// Start the Game
 	state = GameState::PLAYING;
-
+	
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
 		processEvents ();
@@ -98,6 +99,11 @@ void Game::run () {
 			update ();										//...game from lags' consequences. 
 		}
 		render ();
+
+		// Calculate and show the fps value of the previous frame
+		currentFPS = 1000.f / clock.getElapsedTime ().asMilliseconds();
+		console->update ("fps", std::max(currentFPS, (float)GraphicsOptions::fps));
+		console->draw (gameWindow);
 	}
 }
 
@@ -129,6 +135,7 @@ void Game::layersInit () {
 
 void Game::objectsInit () {
 	// Set default console's parameters
+	console->insert ("fps", currentFPS);
 	console->insert ("x", 0);
 	console->insert ("y", 0);
 	console->insert ("direction", 0);
@@ -163,14 +170,13 @@ void Game::applyOptions () {
 }
 
 void Game::processEvents () {
-	// Handle mouse position and clicks.
+	// Capture and process mouse position
 	MouseInterface::capturePosition (*gameWindow);
 	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
+	playerController[0]->setTargetRotation (MouseInterface::calculateRotation());		// We know it's player, no need to set up a rotation command.
+	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
+	gameWindow->draw (*playerController[0]);
 
-	// Pass target rotation to player.
-	float mouseRotation = MouseInterface::calculateRotation ();
-	console->update ("mouse rotation", mouseRotation);
-	console->draw (gameWindow);
 	// Handle keyboard input.
 	sf::Event event;
 	
@@ -252,19 +258,19 @@ void Game::update () {
 
 	worldMap->t += rand()%750/100000.0;
 
-	// Calculate player-mouse offset.
+	// Calculate player-mouse offset.		#TODO REMOVE?
 	//MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
 
 	//// Pass target rotation to player.
-	float mouseRotation = MouseInterface::calculateRotation ();
-	playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
+	//float mouseRotation = MouseInterface::calculateRotation ();
+	//playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
 
 	// Process to taking commands from CommandQueue
 	commandInterpret ();
 
 	// Update player.
-	/*playerController.update ();
-	itemController.updateEntities ();*/
+	playerController.update ();
+	itemController.updateEntities ();
 
 	// Apply physics to b2World
 	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
@@ -274,7 +280,7 @@ void Game::update () {
 	console->update ("y", playerController[0]->getPosition ().y);
 	console->update ("direction", (float)playerController[0]->direction);
 	console->update ("rotation", playerController[0]->boxBody->GetAngle () * RAD_TO_DEG);
-	console->update ("mouse rotation", mouseRotation * RAD_TO_DEG);
+	console->update ("mouse rotation", MouseInterface::calculateRotation () * RAD_TO_DEG);
 	console->update ("force x", playerController[0]->boxBody->GetForce().x);
 	console->update ("force y", playerController[0]->boxBody->GetForce().y);
 	console->update ("velocity x", playerController[0]->boxBody->GetLinearVelocity ().x);
@@ -282,7 +288,7 @@ void Game::update () {
 	console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
 
 	// Set the world displacement vector relatively to player.
-	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
+	//worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
 	//worldView.setRotation (45.f);
 	gameWindow->setView (worldView);
 
