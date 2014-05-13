@@ -128,9 +128,6 @@ void Game::layersInit () {
 }
 
 void Game::objectsInit () {
-	// Set player position to the spawn point defined in World Map.
-	//playerController->getPlayer ()->setPosition (worldMap->getSpawnPoint());
-
 	// Set default console's parameters
 	console->insert ("x", 0);
 	console->insert ("y", 0);
@@ -151,13 +148,19 @@ void Game::applyOptions () {
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 
+	// Set scaling for new resolution ratio
+	//
+
+	// #TODO Do we need this?
+	// If needed, set black stripes at the top and bottom of the screen
+	//
+
 	// Update sf::View
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter(5000, 5000);
+	worldView.setCenter (playerController[0]->getPosition ());
 	gameWindow->setView (worldView);
 	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
 									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
-
 }
 
 void Game::processEvents () {

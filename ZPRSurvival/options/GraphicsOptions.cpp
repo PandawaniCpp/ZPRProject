@@ -16,11 +16,13 @@ std::vector<VideoMode> GraphicsOptions::videoModesAvailable = VideoMode::getFull
 bool GraphicsOptions::fullscreenModeOn = false;
 bool GraphicsOptions::vSyncOn = true;
 int GraphicsOptions::fps = 120;
+int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
+VideoMode GraphicsOptions::baseVideoMode = VideoMode (1920, 1080, 32);
 VideoMode GraphicsOptions::testVideoMode = VideoMode (1280, 720, 32);
 VideoMode GraphicsOptions::videoMode = GraphicsOptions::testVideoMode;
-int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
-float GraphicsOptions::pixelPerMeter = 100.0f;
 GraphicsOptions::AspectRatio GraphicsOptions::currentAspectRatio = GraphicsOptions::getAspectRatio (&GraphicsOptions::videoMode);
+
+float GraphicsOptions::pixelPerMeter = 100.0f;
 
 void GraphicsOptions::init () {
 	if (!videoMode.isValid ()) {
