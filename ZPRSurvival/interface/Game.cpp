@@ -18,7 +18,7 @@ Game::Game () {
 	GraphicsOptions::init ();
 	gameWindow = new sf::RenderWindow (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView (time(NULL), 0.25, 4750.0, 4, 20000, 20000);
+	worldMap = new WorldMapView (time(NULL), 0.65, 5000.0, 8, 20000, 20000);
 
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
@@ -135,7 +135,6 @@ void Game::objectsInit () {
 	console->insert ("rotation", 0);
 	console->insert ("current resolution", GraphicsOptions::getCurrentResolution ());
 	console->insert ("b2Body counter", 0);
-	console->insert ("b2_epsilon", b2_epsilon);
 	console->insert ("avail. resolutions", GraphicsOptions::getResolutionsAvailable ());
 	console->setFont (fontHolder.get (Fonts::F_CONSOLE));
 }
@@ -166,10 +165,16 @@ void Game::applyOptions () {
 void Game::processEvents () {
 	// Handle mouse position and clicks.
 	MouseInterface::capturePosition (*gameWindow);
+	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
 
+	// Pass target rotation to player.
+	float mouseRotation = MouseInterface::calculateRotation ();
+	console->update ("mouse rotation", mouseRotation);
+	console->draw (gameWindow);
 	// Handle keyboard input.
 	sf::Event event;
 	
+	// Catch event.
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
 			case sf::Event::KeyPressed:
@@ -247,23 +252,22 @@ void Game::update () {
 
 	worldMap->t += rand()%750/100000.0;
 
-	// Pass target rotation to player.
+	// Calculate player-mouse offset.
+	//MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
+
+	//// Pass target rotation to player.
 	float mouseRotation = MouseInterface::calculateRotation ();
 	playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
 
 	// Process to taking commands from CommandQueue
 	commandInterpret ();
 
+	// Update player.
+	/*playerController.update ();
+	itemController.updateEntities ();*/
+
 	// Apply physics to b2World
 	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
-
-	// Calculate player-mouse offset.
-	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-	
-	// Update player.
-	playerController.update ();
-	itemController.updateEntities ();
-	//playerController.updateEntities ();	
 
 	// Update console ouput.
 	console->update ("x", playerController[0]->getPosition ().x);

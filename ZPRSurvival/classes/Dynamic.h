@@ -53,7 +53,6 @@ public:
 
 protected:
 	int direction = 0;		// Combination of Dynamic::DIRECTION flags
-	//float maxSpeed;			// Object movement parameters.
 	float acceleration;
 	float rotationSpeed;	// Object rotation parameters.
 	float rotation;

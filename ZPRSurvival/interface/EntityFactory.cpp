@@ -28,10 +28,10 @@ void EntityFactory::playerPrefabsInit () {
 	prefab.density = 1.0f;
 	prefab.friction = 0.7f;
 	prefab.rotation = b2_pi / 2.f;
-	prefab.rotationSpeed = 10.f;
+	prefab.rotationSpeed = 100.f;
 	prefab.acceleration = 25.f;
 	prefab.linearDamping = 20.f;
-	prefab.angularDamping = 10.f;
+	prefab.angularDamping = 30.f;
 	prefab.runModifier = 2.f;
 	prefab.bodyType = b2_dynamicBody;
 	prefab.circleShape = nullptr;

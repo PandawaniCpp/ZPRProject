@@ -127,7 +127,7 @@ float sum1(float x, float y, float z){
 	for (int i = 0; i < octaves; i++) {
 		t += noise2d( ((x*frequency) / zoom), ((y*frequency) / zoom))*amplitude;
 		amplitude *= persistence;
-		frequency *= 2.5;
+		frequency *= 2;
 	}
 	
 	if (t < -1.0) {
