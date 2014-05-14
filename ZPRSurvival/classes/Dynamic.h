@@ -34,8 +34,14 @@ public:
 	// Default destructor.
 	virtual ~Dynamic ();
 
-	// Update velocity based on direction.
-	void update ();
+	// Take b2Body transform and change its rotation instantly.
+	void rotateInstantly ();
+
+	// Continously rotate entity until desired rotation is reached.
+	void rotateEntity ();
+
+	// Set force vector to the center of the mass (based on direction and rotation)
+	void applyForce ();
 
 	// Apply direction change
 	void applyDirection (int dir);

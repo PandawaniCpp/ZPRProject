@@ -32,7 +32,6 @@ PlayerController::~PlayerController () {
 
 void PlayerController::update () {
 	controlStates ();
-	//controlAnimations ();
 	controlEffects ();
 	updateEntities ();
 }
@@ -56,10 +55,6 @@ void PlayerController::controlStates () {
 	if (textureNew != textureOld)
 		entityHolder[0]->changeAnimation (&textureHolder.get (textureNew), textureNew);
 }
-
-//void PlayerController::controlAnimations () {
-//
-//}
 
 void PlayerController::controlEffects () {
 
