@@ -13,7 +13,7 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <Box2D/Dynamics/b2World.h>
 #include <sstream>
-#define RES_PRECISION 0.001f
+#define RES_PRECISION 0.01f
 
 using sf::VideoMode;
 
@@ -25,9 +25,9 @@ class GraphicsOptions {
 public:
 	// Screen aspect ratios
 	enum AspectRatio {
-		X_16x9,
 		X_4x3,
 		X_16x10,
+		X_16x9,			
 		X_OTHER
 	};
 
@@ -35,13 +35,14 @@ public:
 	static std::vector<VideoMode> videoModesAvailable;
 
 	// Customizable graphics parameters.
-	static bool fullscreenModeOn;		// Toggles fullscreen on/off.
-	static bool vSyncOn;				// Vertical synch. on/off.
-	static int fps;						// Frames per second rate.
-	static VideoMode videoMode;			// Current active Video Mode.
-	static VideoMode testVideoMode;		// For testing.
-	static int videoStyle;
-	static AspectRatio currentAspectRatio;
+	static bool fullscreenModeOn;			// Toggles fullscreen on/off.
+	static bool vSyncOn;					// Vertical synch. on/off.
+	static int fps;							// Frames per second rate.
+	static int videoStyle;					// How the window is shown
+	static VideoMode videoMode;				// Current active Video Mode.
+	static VideoMode baseVideoMode;			// Scaling will be performed accordingly to this VideoMode 
+	static VideoMode testVideoMode;			// For testing.
+	static AspectRatio currentAspectRatio;	// Current resolution aspect ratio (width x height)
 
 	// Metric definition (for Box2D)
 	static float pixelPerMeter;

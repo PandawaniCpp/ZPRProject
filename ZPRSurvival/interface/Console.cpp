@@ -15,7 +15,8 @@ Console::Console () {
 	// Set background texture.
 	assert (texture.loadFromFile ("resources/console_back.png"));
 	texture.setRepeated (true);
-	this->setScale (sf::Vector2f (15, 15));		// #TODO Set scaling accordingly to window size.
+	this->setScale (sf::Vector2f ((float)GraphicsOptions::videoMode.width / texture.getSize().x, 
+									(float)GraphicsOptions::videoMode.height / texture.getSize ().y));	
 	this->setTexture (texture);
 
 	// Set font specifications.
@@ -29,6 +30,7 @@ Console::Console () {
 
 	// Set available keys.
 	keys.push_back ("#TITLE v.");
+	keys.push_back ("fps");
 	keys.push_back ("x");
 	keys.push_back ("y");
 	keys.push_back ("direction");
@@ -94,6 +96,11 @@ void Console::update (const std::string & name, const std::string & value) {
 
 void Console::setFont (const sf::Font & font) {
 	this->font = font;
+}
+
+void Console::refresh () {
+	this->setScale (sf::Vector2f ((float)GraphicsOptions::videoMode.width / texture.getSize ().x,
+									(float)GraphicsOptions::videoMode.height / texture.getSize ().y));
 }
 
 void Console::draw (sf::RenderWindow * window) const {

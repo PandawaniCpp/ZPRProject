@@ -20,7 +20,6 @@ Player::Player () {
 	rotationSpeed = 0.5f;
 	acceleration = 10.f;
 	runModifier = 2.f;
-	anglePrecision = 10.f * DEG_TO_RAD;
 	
 	// Set ID
 	entityId = Entities::PLAYER;
@@ -39,7 +38,7 @@ Player::Player (GameObject::Prefab * prefab) {
 	rotationSpeed = prefab->rotationSpeed;
 	acceleration = prefab->acceleration;
 	runModifier = prefab->runModifier;
-	anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
+	anglePrecision = prefab->rotationSpeed * DEG_TO_RAD;
 
 	// Set ID
 	entityId = Entities::PLAYER;	// #TODO NAPRAW !!!!!

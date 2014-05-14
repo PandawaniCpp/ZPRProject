@@ -67,15 +67,14 @@ void GameObjectController<Type, Identifier>::createEntity (Entities::ID entityID
 											textureHolder.get (texture),
 											position,
 											size));
-	//entityHolder[entityHolder.size ()-1]
 }
 
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {
 	for (auto & entity : entityHolder) {
 		//entity->animate (deltaTime);
-		entity->updateFromBody ();
 		entity->update ();
+		entity->updateFromBody ();
 	}
 }
 

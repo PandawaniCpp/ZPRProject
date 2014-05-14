@@ -49,8 +49,8 @@ void Dynamic::update () {
 		finalOffset = std::max (yAxisOffset, xAxisOffset);
 
 	// Wanna always keep rotation value positive
-	if (boxBody->GetAngle () < 0.f)
-		boxBody->SetTransform (boxBody->GetPosition (), boxBody->GetAngle () + 2.f * b2_pi);
+	// if (boxBody->GetAngle () < 0.f)
+	//	boxBody->SetTransform (boxBody->GetPosition (), boxBody->GetAngle () + 2.f * b2_pi);
 
 	// Calculating difference between current rotation and target rotation
 	float currentRotation = boxBody->GetAngle ();
@@ -59,18 +59,17 @@ void Dynamic::update () {
 		currentRotation += 2.f * b2_pi;
 
 	float deltaAngle = currentRotation / (2.f * b2_pi);
-	deltaAngle = currentRotation - (2.f *b2_pi * (int)deltaAngle) - rotation;
+	deltaAngle = currentRotation - (2.f * b2_pi * (int)deltaAngle) - rotation;
 	
-	// Rotating object		#TODO REPAIR THIS !!!!
-	//						APPLY ANGULAR FORCE INSTEAD OF VELOCITY !!!
-	if (std::abs (deltaAngle) < anglePrecision)
+	// Rotating object
+	//if (std::abs (deltaAngle) < anglePrecision)
 		boxBody->SetTransform (boxBody->GetPosition (), rotation);
-	else if (deltaAngle >= b2_pi || (deltaAngle <= 0 && deltaAngle >= -b2_pi)) {
-		boxBody->SetAngularVelocity (rotationSpeed);	// Rotate counter clockwise
-	}
-	else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
-		boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
-	}
+	//else if (deltaAngle >= b2_pi || (deltaAngle <= 0 && deltaAngle >= -b2_pi)) {
+	//	boxBody->SetAngularVelocity (rotationSpeed);	// Rotate counter clockwise
+	//}
+	//else if (deltaAngle <= -b2_pi || (deltaAngle >= 0 && deltaAngle <= b2_pi)) {
+	//	boxBody->SetAngularVelocity (-rotationSpeed);		// Rotate clockwise
+	//}
 
 	// If any key is pressed, apply force in proper direction.
 	if (direction) {

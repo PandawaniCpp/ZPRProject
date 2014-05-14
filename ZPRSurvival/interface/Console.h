@@ -44,6 +44,9 @@ public:
 	// Set console's default font from Game::fonts
 	void setFont (const sf::Font & font);
 
+	// Set new transparent background accordingly to the current VideoMode size.
+	void Console::refresh ();
+
 	// Draw console on the screen with given params.
 	// \see Console::params
 	virtual void draw (sf::RenderWindow * window) const ;
