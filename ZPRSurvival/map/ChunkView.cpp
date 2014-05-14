@@ -17,7 +17,6 @@ void ChunkView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	std::vector<sf::CircleShape*> obj = chunk->getObjects();
 	for (auto& iterator : obj) {
 		target.draw(*iterator);
-
 	}
 
 

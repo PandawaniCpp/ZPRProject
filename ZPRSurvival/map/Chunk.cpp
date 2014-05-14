@@ -30,6 +30,7 @@ void Chunk::setObjcets(const sf::Vector2f* wsp) {
 	circle->setPosition(wsp->x, wsp->y);
 	circle->setFillColor(sf::Color::Red);
 	circle->setRadius(20);
+	sf::Vector2f dajpos = circle->getPosition();
 	objects.push_back(circle);
 }
 

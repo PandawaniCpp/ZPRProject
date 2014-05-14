@@ -47,8 +47,8 @@ void WorldMapView::initialize() {
 	grassSprite = new Sprite(*grassTexture, sf::IntRect(0, 0, width, height));
 	poisson = new PoissonDiskSampling(mapa->getWidth(), mapa->getHeight(),mapa);
 
-	int chunksInX = mapa->getWidth() / 500;
-	int chunksInY = mapa->getHeight() / 500;
+	int chunksInX = mapa->getWidth() / (CHUNK_SIZE/SQRT2);
+	int chunksInY = mapa->getHeight() / (CHUNK_SIZE / SQRT2);
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
 	Logger::getInstance() << "koniec";
 	Logger::getInstance() << std::endl;
@@ -57,9 +57,9 @@ void WorldMapView::initialize() {
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	mapa->getShader().setParameter("offsetX", mapa->getViewPosition().x);
 	mapa->getShader().setParameter("offsetY", mapa->getViewPosition().y);
-	mapa->getShader().setParameter("deepWater", 125/255.0);
-	mapa->getShader().setParameter("shallowWater", 127/255.0);
-	mapa->getShader().setParameter("sand", 132/255.0);
+	mapa->getShader().setParameter("deepWater", 125 / 255.0);
+	mapa->getShader().setParameter("shallowWater", 127 / 255.0);
+	mapa->getShader().setParameter("sand", 132 / 255.0);
 	mapa->getShader().setParameter("time", t);
 
 	//target.draw(*grass);
@@ -71,49 +71,32 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	//target.draw(*sandSprite, &mapa->getShader());
 	//mapa->getShader().setParameter("minValue", 0.55);
 	target.draw(*grassSprite, &mapa->getShader());
-	/*
-	sf::Vector2f midScreen = mapa->getViewPosition();
+
+//	sf::Vector2f midScreen = mapa->getViewPosition();
 	//calculate chunk position
-	int posX = static_cast<int>(midScreen.x/100);
-	int posY = static_cast<int>(midScreen.y/100);
-	//creating chunks
-	for (int x = posX - 5; x <= posX + 5; ++x) {
-		for (int y = posY - 5; y < posY + 5; ++y) {
-			// if isn't outside the map
-			if (x>0 && x < static_cast<int> (mapa->getWidth() / 100) && y>0 && y < static_cast<int> (mapa->getHeight() / 100)) {
-				// if it's not created yet
-				if (!chunkArray[x][y]) {
-					//create
-					chunkArray[x][y] = new ChunkView();
-					chunkArray[x][y]->setObiectArray(chunkObjectsArray[x][y]);
-				}
-			}	
-
-		}
-
-	}
-	*/
-	/*for (int x = posX - 3; x <= posX + 3; ++x) {
-		for (int y = posY - 3; y < posY + 3; ++y) {
-		
-			chunkArray[x][y]->draw();
-		
-		}
-	}*/
+	
+	
 	sf::Vector2f midScreen = getPosition();
-
-	/*midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
+	midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
 	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
-	int posX = static_cast<int>(midScreen.x / 500);
-	int posY = static_cast<int>(midScreen.y / 500);
-	for (int x = posX; x <= posX + 1; ++x) {
-		for (int y = posY; y <= posY + 1; ++y) {
-			if (chunkArray[x][y] != nullptr) {
-				chunkArray[x][y]->draw(target, states);
+
+	//calculate chunk position
+	int posX = static_cast<int>(midScreen.x / (CHUNK_SIZE / SQRT2));
+	int posY = static_cast<int>(midScreen.y / (CHUNK_SIZE / SQRT2));
+	int maxX = static_cast<int> (mapa->getWidth() / (CHUNK_SIZE / SQRT2));
+	int maxY = static_cast<int> (mapa->getHeight() / (CHUNK_SIZE / SQRT2));
+
+	for (int x = posX-4; x <= posX + 4; ++x) {
+		for (int y = posY-4; y <= posY + 4; ++y) {
+			if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
+				if (chunkArray[x][y] != nullptr) {
+					chunkArray[x][y]->draw(target, states);
+				}
 			}
 		}
-	}*/
+	}
 
+	
 }
 
 WorldMapView::~WorldMapView() {
@@ -190,16 +173,10 @@ void WorldMapView::update() {
 	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
 
 	//calculate chunk position
-	int posX = static_cast<int>(midScreen.x / 500);
-	int posY = static_cast<int>(midScreen.y / 500);
-	int maxX = static_cast<int> (mapa->getWidth() / 500);
-	int maxY = static_cast<int> (mapa->getHeight() / 500);
-
-	//log << "position - x:";
-	//log << posX;
-	//log << " y:";
-	//log << posY;
-	//log << std::endl;
+	int posX = static_cast<int>(midScreen.x / (CHUNK_SIZE / SQRT2));
+	int posY = static_cast<int>(midScreen.y / (CHUNK_SIZE / SQRT2));
+	int maxX = static_cast<int> (mapa->getWidth() / (CHUNK_SIZE / SQRT2));
+	int maxY = static_cast<int> (mapa->getHeight() / (CHUNK_SIZE / SQRT2));
 
 	//creating chunks
 	if (last.x != posX || last.y != posY) {
@@ -208,8 +185,8 @@ void WorldMapView::update() {
 
 
 
-		for (int x = posX - 1; x <= posX + 1; ++x) {
-			for (int y = posY - 1; y <= posY + 1; ++y) {
+		for (int x = posX - 5; x <= posX + 5; ++x) {
+			for (int y = posY - 5; y <= posY + 5; ++y) {
 				// if isn't outside the ma	
 				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
 					// if it's not created yet
@@ -223,10 +200,10 @@ void WorldMapView::update() {
 			}
 		}
 
-		for (int x = posX - 2; x <= posX + 2; ++x) {
-			for (int y = posY - 2; y <= posY + 2; ++y) {
+		for (int x = posX - 6; x <= posX + 6; ++x) {
+			for (int y = posY - 6; y <= posY + 6; ++y) {
 				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
-					if ((abs(x - posX) == 2 || abs(y - posY) == 2)) {
+					if ((abs(x - posX) == 6 || abs(y - posY) == 6)) {
 						if (chunkArray[x][y] != nullptr) {
 							delete chunkArray[x][y];
 							chunkArray[x][y] = nullptr;

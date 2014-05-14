@@ -2,6 +2,7 @@
 #include "../classes/GameObject.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include "./../interface/Logger.h"
 class Chunk:
 	public GameObject {
 public:

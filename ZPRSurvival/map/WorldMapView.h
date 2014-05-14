@@ -1,11 +1,14 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "../classes/GameObject.h"
 #include "./../options/GraphicsOptions.h"
 #include "WorldMap.h"
 #include "ChunkView.h"
 #include "./PoissonDiskSampling.h"
+
+#define CHUNK_SIZE 100
+#define SQRT2 1.414213
 
 class WorldMapView :
 	public GameObject {
@@ -22,7 +25,7 @@ public:
 	sf::Vector2f getViewPosition();
 	sf::Vector2f getWorldBounds();
 	PoissonDiskSampling * getPoisson ();
-
+	
 private:
 	void initialize();
 
@@ -35,7 +38,6 @@ private:
 	sf::Image* grassImage;
 	sf::Texture* grassTexture;
 	sf::Sprite * grassSprite;
-
 	WorldMap* mapa;
 	typedef std::vector < std::vector<ChunkView*>> ChunkArray;
 	//typedef std::vector <std::vector<std::vector<sf::Vector2f>>> ChunkObjectsArray;
