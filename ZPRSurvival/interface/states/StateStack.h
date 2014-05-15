@@ -16,10 +16,12 @@
 #include <map>
 #include <utility>
 #include <functional>
+#include <cassert>
 #include "State.h"
 #include "../ResourcesID.h"
 
 class State;
+//class GameState;
 
 /**
 	Class container for holding and managing states in the game.
@@ -64,16 +66,16 @@ private:
 	State::Ptr createState (States::ID stateID);
 
 	// Wait for right moment to apply any changes.
-	// Prevents the game from switching any state in the middle of executing some commands.
+	// Prevents the game from switching a state in the middle of executing some commands.
 	void applyPendingChanges ();
 
 	// Package used to change state.
 	struct PendingChange {
-		// # TODO FILL
-			Action action;
+		explicit PendingChange (Action action, States::ID stateID = States::NONE);
+		Action action;
 		States::ID stateID;
 	};
-private:
+
 	// std::vector representing state stack itself.
 	std::vector<State::Ptr> stateStack;
 
@@ -86,4 +88,12 @@ private:
 	// Maps state IDs to factory functions.
 	std::map<States::ID, std::function<State::Ptr ()> > factories;
 };
+
+template <typename T>
+void StateStack::registerState (States::ID stateID)
+{
+	factories[stateID] = [this] () {
+		return State::Ptr (new T (*this, context));
+	};
+}
 

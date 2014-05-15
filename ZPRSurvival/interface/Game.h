@@ -17,6 +17,7 @@
 #include "../map/WorldMapView.h"
 #include "../options/GraphicsOptions.h"
 #include "../item/ItemController.h"
+#include "states/StateStack.h"
 #include "Console.h"
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
@@ -31,6 +32,7 @@
 using namespace std;
 
 class Game {
+	friend class GameState;
 public:
 	// Game title.
 	static std::string TITLE;
@@ -61,6 +63,9 @@ public:
 			//PlayerController * getPlayerController ();
 
 private:
+	// Map all available game staes, but not initialize them yet.
+	void registerStates ();
+
 	// Initialize controller with entities from factory.
 	void entitiesInit ();
 
@@ -114,6 +119,7 @@ private:
 	Console * console;		// Displays info about player position, object count, memory etc.
 	WorldMapView * worldMap;
 	CommandQueue commandQueue;
+	StateStack stateStack;
 	GameObject sceneGraph;		// Tree with scene nodes put in render order.
 
 	// Game parameters

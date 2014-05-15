@@ -16,24 +16,24 @@ std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> KeyboardInterfa
 std::map<Commands::ID, Command> KeyboardInterface::actionBindings = std::map<Commands::ID, Command> ();
 
 void KeyboardInterface::assignKeys () {
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, States::PLAYING), Commands::G_EXIT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, States::PLAYING), Commands::CON_TRIGGER));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, States::PLAYING), Commands::RES_UP));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, States::PLAYING), Commands::RES_DOWN));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, States::PLAYING), Commands::SET_FULLSCREEN));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::M, States::PLAYING), Commands::SAVE_MAP_TO_IMG));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, States::GAME), Commands::G_EXIT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, States::GAME), Commands::CON_TRIGGER));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, States::GAME), Commands::RES_UP));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, States::GAME), Commands::RES_DOWN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, States::GAME), Commands::SET_FULLSCREEN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::M, States::GAME), Commands::SAVE_MAP_TO_IMG));
 
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::PLAYING), Commands::MOVE_FORWARD));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::PLAYING), Commands::MOVE_BACKWARD));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::PLAYING), Commands::MOVE_LEFT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::PLAYING), Commands::MOVE_RIGHT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::PLAYING), Commands::START_RUN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::GAME), Commands::MOVE_FORWARD));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::GAME), Commands::MOVE_BACKWARD));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::GAME), Commands::MOVE_LEFT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::GAME), Commands::MOVE_RIGHT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::GAME), Commands::START_RUN));
 
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::PLAYING), Commands::STOP_FORWARD));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::PLAYING), Commands::STOP_BACKWARD));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::PLAYING), Commands::STOP_LEFT));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::PLAYING), Commands::STOP_RIGHT));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::PLAYING), Commands::STOP_RUN));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::GAME), Commands::STOP_FORWARD));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::GAME), Commands::STOP_BACKWARD));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::GAME), Commands::STOP_LEFT));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::GAME), Commands::STOP_RIGHT));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::GAME), Commands::STOP_RUN));
 }
 
 void KeyboardInterface::assignActions () {

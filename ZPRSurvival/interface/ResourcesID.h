@@ -14,12 +14,11 @@
 namespace States {
 	enum ID {
 		NONE = 0,
-		INIT = 1,
-		INTRO = 1 << 1, 
-		MENU = 1 << 3,
-		PLAYING = 1 << 4, 
-		PAUSE = 1 << 5, 
-		EXIT = 1 << 6,
+		TITLE = 1, 
+		MENU = 1 << 1,
+		GAME = 1 << 2, 
+		PAUSE = 1 << 3, 
+		EXIT = 1 << 4,
 	};
 }
 

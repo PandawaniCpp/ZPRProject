@@ -6,27 +6,37 @@
 
 	This software is provided 'as-is', without any express or implied warranty.
 	In no event will the authors be held liable for any damages arising from the use of this software.
-*/
+	*/
 
 #pragma once
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window.hpp>
 #include <memory>
 #include "../ResourcesID.h"
+#include "../ResourceHolder.h"
 
 class StateStack;
+class Game;
 
 /**
 	Base class for every state.
-*/
+	*/
 class State {
 public:
 	// Unique pointer definition for holding States.
 	typedef std::unique_ptr<State> Ptr;
-	
+
 	// Parralel data shared between states.
 	struct Context {
-		// #TODO FILL
+		Context (
+			Game * game,
+			sf::RenderWindow & window,
+			ResourceHolder<sf::Font, Fonts::ID> & fonts);
+
+		Game * game;
+		sf::RenderWindow * window;
+		ResourceHolder<sf::Font, Fonts::ID> * fonts;
 	};
 
 	// Constructor.
@@ -40,6 +50,10 @@ public:
 	virtual bool update (sf::Time dt) = 0;
 	virtual bool handleEvent (const sf::Event& event) = 0;
 
+
+	virtual void onActivate ();
+	virtual void onDestroy ();
+
 protected:
 	// Allow states to alter the stack from within their own code.
 	void requestStackPush (States::ID stateID);
@@ -52,7 +66,7 @@ protected:
 private:
 	// Pointer to StateStack
 	StateStack * stateStack;
-	
+
 	// Context object (parralel data shared between states).
 	Context context;
 };

@@ -9,25 +9,19 @@
 */
 
 #include "Game.h"
+#include "states/GameState.h"
 
 // #TITLE
 std::string Game::TITLE = "#TITLE";
 
-Game::Game () {
+Game::Game ()
+: stateStack (StateStack (State::Context (this, *gameWindow, fontHolder))) {
+
 	// All we need to play.
 	GraphicsOptions::init ();
 	gameWindow = new sf::RenderWindow (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView (time(NULL), 0.65, 5000.0, 8, 5000, 5000);
-
-	// sf::View init.
-	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter (5000.f, 5000.f);		// #SETSPAWN
-	gameWindow->setView (worldView);
-	worldViewPosition = sf::Vector2f (worldView.getCenter().x - worldView.getSize().x / 2.f,
-									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
-
-	state = States::INIT;		// Proper first state
+	worldMap = new WorldMapView (time (NULL), 0.65, 5000.0, 8, 5000, 5000);
 }
 
 Game::~Game () {
@@ -38,13 +32,22 @@ Game::~Game () {
 }
 
 void Game::initialize () {
+	// sf::View init.
+	worldView = gameWindow->getDefaultView ();
+	worldView.setCenter (worldMap->getSpawnPoint ());  // Center the sf::View to player position.
+	                                                   // #SETSPAWN proper method?
+	gameWindow->setView (worldView);
+	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
+									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
+
+	state = States::TITLE;		// Proper first state  #TODO REMOVE
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
 
 	// Initialize factory with prefabs and keyboard interface with key mappings.
 	EntityFactory::prefabInit ();
 	KeyboardInterface::assignKeys ();
 	KeyboardInterface::assignActions ();
-	
+
 	// Set fonts
 	fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
 	fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
@@ -55,12 +58,13 @@ void Game::initialize () {
 	worldBounds.height = 10000;					// World size
 	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
 
-	// Center the sf::View to player position.
-	worldView.setCenter (worldMap->getSpawnPoint());	
+	// Create states hierarchy.
+	registerStates ();
+	stateStack.pushState (States::GAME);  // Initialize first state.
 
 	// Initialize entities
 	entitiesInit ();
-	
+
 	// Initialize main layers.
 	layersInit ();
 
@@ -71,7 +75,7 @@ void Game::initialize () {
 	applyOptions ();
 
 	// If everything's fine, move on to the next state.
-	this->state = States::MENU;
+	this->state = States::MENU;   // #TODO REMOVE
 }
 
 void Game::run () {
@@ -82,8 +86,8 @@ void Game::run () {
 	PlayerController::deltaTime = timePerFrame;
 
 	// Start the Game
-	state = States::PLAYING;
-	
+	state = States::GAME;
+
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
 		processEvents ();
@@ -96,13 +100,14 @@ void Game::run () {
 			if (state == States::EXIT)
 				gameWindow->close ();
 
-			update ();										//...game from lags' consequences. 
+			update ();
+			//stateStack.update (PlayerController::deltaTime);										//...game from lags' consequences. 
 		}
 		render ();
 
 		// Calculate and show the fps value of the previous frame
-		currentFPS = 1000.f / clock.getElapsedTime ().asMilliseconds();
-		console->update ("fps", std::max(currentFPS, (float)GraphicsOptions::fps));
+		currentFPS = 1000.f / (float)clock.getElapsedTime ().asMilliseconds ();
+		console->update ("fps", currentFPS);
 		console->draw (gameWindow);
 	}
 }
@@ -111,10 +116,19 @@ void Game::terminate () {
 
 }
 
+void Game::registerStates () {
+	stateStack.registerState<GameState> (States::GAME);
+	/*stateStack.registerState<TitleState> (States::Title);
+	stateStack.registerState<MenuState> (States::Menu);
+	stateStack.registerState<PauseState> (States::Pause);
+	stateStack.registerState<SettingsState> (States::Settings);
+	stateStack.registerState<GameOverState> (States::GameOver, "Mission Failed!");
+	stateStack.registerState<GameOverState> (States::MissionSuccess, "Mission Successful!");*/
+}
 
 void Game::entitiesInit () {
-	playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50,50));		// #SETSPAWN
-	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i(450, 300));
+	playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50, 50));		// #SETSPAWN
+	itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i (450, 300));
 }
 
 void Game::layersInit () {
@@ -150,9 +164,9 @@ void Game::applyOptions () {
 	timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 
-	if (state != States::INIT)
+	if (state != States::TITLE)
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
-	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
+	console->update ("current resolution", GraphicsOptions::getCurrentResolution ());
 
 	// Set scaling for new resolution ratio
 	//
@@ -173,13 +187,13 @@ void Game::processEvents () {
 	// Capture and process mouse position
 	MouseInterface::capturePosition (*gameWindow);
 	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-	playerController[0]->setTargetRotation (MouseInterface::calculateRotation());		// We know it's player, no need to set up a rotation command.
+	playerController[0]->setTargetRotation (MouseInterface::calculateRotation ());		// We know it's player, no need to set up a rotation command.
 	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
 	gameWindow->draw (*playerController[0]);
 
 	// Handle keyboard input.
 	sf::Event event;
-	
+
 	// Catch event.
 	while (gameWindow->pollEvent (event)) {
 		switch (event.type) {
@@ -217,9 +231,9 @@ void Game::commandInterpret () {
 void Game::gameCommandExecute (Command * command) {
 	// Combination of special keys pressed at that moment.
 	int specialKeys = sf::Keyboard::isKeyPressed (sf::Keyboard::LShift) * KeyboardInterface::SHIFT +
-					sf::Keyboard::isKeyPressed (sf::Keyboard::LControl) * KeyboardInterface::CONTROL +
-					sf::Keyboard::isKeyPressed (sf::Keyboard::LAlt) * KeyboardInterface::ALT +
-					sf::Keyboard::isKeyPressed (sf::Keyboard::LSystem) * KeyboardInterface::SYSTEM;
+		sf::Keyboard::isKeyPressed (sf::Keyboard::LControl) * KeyboardInterface::CONTROL +
+		sf::Keyboard::isKeyPressed (sf::Keyboard::LAlt) * KeyboardInterface::ALT +
+		sf::Keyboard::isKeyPressed (sf::Keyboard::LSystem) * KeyboardInterface::SYSTEM;
 
 	// Check every game command
 	if (command->commandType == Commands::G_EXIT)	// Game termination
@@ -256,7 +270,7 @@ void Game::update () {
 	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
 									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
 
-	worldMap->t += rand()%750/100000.0;
+	worldMap->t += rand () % 750 / 100000.0;
 
 	// Calculate player-mouse offset.		#TODO REMOVE?
 	//MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
@@ -281,8 +295,8 @@ void Game::update () {
 	console->update ("direction", (float)playerController[0]->direction);
 	console->update ("rotation", playerController[0]->boxBody->GetAngle () * RAD_TO_DEG);
 	console->update ("mouse rotation", MouseInterface::calculateRotation () * RAD_TO_DEG);
-	console->update ("force x", playerController[0]->boxBody->GetForce().x);
-	console->update ("force y", playerController[0]->boxBody->GetForce().y);
+	console->update ("force x", playerController[0]->boxBody->GetForce ().x);
+	console->update ("force y", playerController[0]->boxBody->GetForce ().y);
 	console->update ("velocity x", playerController[0]->boxBody->GetLinearVelocity ().x);
 	console->update ("velocity y", playerController[0]->boxBody->GetLinearVelocity ().y);
 	console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
@@ -301,8 +315,8 @@ void Game::update () {
 	// Correct map displacement.
 	worldMap->setPosition (vec);
 	//vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
-	worldMap->setViewPosition (vec);	
-	worldMap->update();
+	worldMap->setViewPosition (vec);
+	worldMap->update ();
 }
 
 void Game::render () {
