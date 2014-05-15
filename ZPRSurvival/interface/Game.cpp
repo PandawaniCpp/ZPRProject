@@ -27,7 +27,7 @@ Game::Game () {
 	worldViewPosition = sf::Vector2f (worldView.getCenter().x - worldView.getSize().x / 2.f,
 									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
 
-	state = GameState::INIT;		// Proper first state
+	state = States::INIT;		// Proper first state
 }
 
 Game::~Game () {
@@ -71,7 +71,7 @@ void Game::initialize () {
 	applyOptions ();
 
 	// If everything's fine, move on to the next state.
-	this->state = GameState::IN_MENU;
+	this->state = States::MENU;
 }
 
 void Game::run () {
@@ -82,7 +82,7 @@ void Game::run () {
 	PlayerController::deltaTime = timePerFrame;
 
 	// Start the Game
-	state = GameState::PLAYING;
+	state = States::PLAYING;
 	
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
@@ -93,7 +93,7 @@ void Game::run () {
 			timeSinceLastUpdate -= timePerFrame;
 			processEvents ();
 
-			if (state == GameState::EXIT)
+			if (state == States::EXIT)
 				gameWindow->close ();
 
 			update ();										//...game from lags' consequences. 
@@ -150,7 +150,7 @@ void Game::applyOptions () {
 	timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 
-	if (state != GameState::INIT)
+	if (state != States::INIT)
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution());
 

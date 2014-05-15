@@ -34,9 +34,12 @@ public:
 	// Update player state, animation and effects
 	void update ();
 
+private:
 	// Managers for different player's features.
 	void controlStates ();
 	void controlEffects ();
+
+	
 };
 
 /**

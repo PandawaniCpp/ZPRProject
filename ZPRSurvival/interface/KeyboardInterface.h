@@ -29,13 +29,13 @@ public:
 	static void assignActions ();
 
 	// Interprets keys based on game state.
-	static Command * pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
-	static Command * releasedKeyHandle (GameState::ID state, sf::Keyboard::Key key);
+	static Command * pressedKeyHandle (States::ID state, sf::Keyboard::Key key);
+	static Command * releasedKeyHandle (States::ID state, sf::Keyboard::Key key);
 
 private:
 	// Associates action with command to be executed.
-	static std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> pressedKeyBindings;
-	static std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> releasedKeyBindings;
+	static std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> pressedKeyBindings;
+	static std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> releasedKeyBindings;
 
 	// Associates key pressed on given state with action to be performed.
 	static std::map<Commands::ID, Command> actionBindings;

@@ -11,29 +11,29 @@
 #include "KeyboardInterface.h"
 
 // Static containers initialization
-std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> KeyboardInterface::pressedKeyBindings = std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> ();
-std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> KeyboardInterface::releasedKeyBindings = std::map<std::pair<sf::Keyboard::Key, GameState::ID>, Commands::ID> ();
+std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> KeyboardInterface::pressedKeyBindings = std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> ();
+std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> KeyboardInterface::releasedKeyBindings = std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> ();
 std::map<Commands::ID, Command> KeyboardInterface::actionBindings = std::map<Commands::ID, Command> ();
 
 void KeyboardInterface::assignKeys () {
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, GameState::PLAYING), Commands::G_EXIT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, GameState::PLAYING), Commands::CON_TRIGGER));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, GameState::PLAYING), Commands::RES_UP));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, GameState::PLAYING), Commands::RES_DOWN));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, GameState::PLAYING), Commands::SET_FULLSCREEN));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::M, GameState::PLAYING), Commands::SAVE_MAP_TO_IMG));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, States::PLAYING), Commands::G_EXIT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, States::PLAYING), Commands::CON_TRIGGER));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, States::PLAYING), Commands::RES_UP));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, States::PLAYING), Commands::RES_DOWN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, States::PLAYING), Commands::SET_FULLSCREEN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::M, States::PLAYING), Commands::SAVE_MAP_TO_IMG));
 
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, GameState::PLAYING), Commands::MOVE_FORWARD));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::MOVE_BACKWARD));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, GameState::PLAYING), Commands::MOVE_LEFT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, GameState::PLAYING), Commands::MOVE_RIGHT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, GameState::PLAYING), Commands::START_RUN));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::PLAYING), Commands::MOVE_FORWARD));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::PLAYING), Commands::MOVE_BACKWARD));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::PLAYING), Commands::MOVE_LEFT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::PLAYING), Commands::MOVE_RIGHT));
+	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::PLAYING), Commands::START_RUN));
 
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, GameState::PLAYING), Commands::STOP_FORWARD));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, GameState::PLAYING), Commands::STOP_BACKWARD));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, GameState::PLAYING), Commands::STOP_LEFT));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, GameState::PLAYING), Commands::STOP_RIGHT));
-	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, GameState::PLAYING), Commands::STOP_RUN));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::PLAYING), Commands::STOP_FORWARD));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::PLAYING), Commands::STOP_BACKWARD));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::A, States::PLAYING), Commands::STOP_LEFT));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::D, States::PLAYING), Commands::STOP_RIGHT));
+	releasedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::LShift, States::PLAYING), Commands::STOP_RUN));
 }
 
 void KeyboardInterface::assignActions () {
@@ -72,7 +72,7 @@ void KeyboardInterface::assignActions () {
 	actionBindings[Commands::STOP_RUN].category = Entities::PLAYER;
 }
 
-Command * KeyboardInterface::pressedKeyHandle (GameState::ID state, sf::Keyboard::Key key) {
+Command * KeyboardInterface::pressedKeyHandle (States::ID state, sf::Keyboard::Key key) {
 	auto found = pressedKeyBindings.find (std::make_pair (key, state));
 	if (found != pressedKeyBindings.end ())
 		return &actionBindings[found->second];
@@ -80,7 +80,7 @@ Command * KeyboardInterface::pressedKeyHandle (GameState::ID state, sf::Keyboard
 		return new Command();
 }
 
-Command * KeyboardInterface::releasedKeyHandle (GameState::ID state, sf::Keyboard::Key key) {
+Command * KeyboardInterface::releasedKeyHandle (States::ID state, sf::Keyboard::Key key) {
 	auto found = releasedKeyBindings.find (std::make_pair (key, state));
 	if (found != releasedKeyBindings.end ())
 		return &actionBindings[found->second];

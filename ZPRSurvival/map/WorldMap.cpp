@@ -72,7 +72,7 @@ double WorldMap::getMap(int x, int y, int z) {
 	for (int i = 0; i < octaves; i++) {
 		t += perlinNoise->noise(x*frequency / zoom, y*frequency / zoom, z / 1000.0)*amplitude;
 		amplitude *= persistence;
-		frequency *= 2.5;
+		frequency *= 2.f;
 	}
 
 	if (t < -1.0) {

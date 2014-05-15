@@ -11,12 +11,12 @@
 #pragma once
 
 // Represents phase of the game.
-namespace GameState {
+namespace States {
 	enum ID {
 		NONE = 0,
 		INIT = 1,
 		INTRO = 1 << 1, 
-		IN_MENU = 1 << 3,
+		MENU = 1 << 3,
 		PLAYING = 1 << 4, 
 		PAUSE = 1 << 5, 
 		EXIT = 1 << 6,
