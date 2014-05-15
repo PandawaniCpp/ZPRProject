@@ -29,14 +29,8 @@ public:
 
 	// Parralel data shared between states.
 	struct Context {
-		Context (
-			Game * game,
-			sf::RenderWindow & window,
-			ResourceHolder<sf::Font, Fonts::ID> & fonts);
-
+		Context (Game * game);
 		Game * game;
-		sf::RenderWindow * window;
-		ResourceHolder<sf::Font, Fonts::ID> * fonts;
 	};
 
 	// Constructor.

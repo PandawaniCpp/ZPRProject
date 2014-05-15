@@ -61,13 +61,13 @@ public:
 	// Check if no state is currently in effect.
 	bool isEmpty () const;
 
-private:
-	// Creates new State andd allocate approptiate resources.
-	State::Ptr createState (States::ID stateID);
-
 	// Wait for right moment to apply any changes.
 	// Prevents the game from switching a state in the middle of executing some commands.
 	void applyPendingChanges ();
+
+private:
+	// Creates new State andd allocate approptiate resources.
+	State::Ptr createState (States::ID stateID);
 
 	// Package used to change state.
 	struct PendingChange {

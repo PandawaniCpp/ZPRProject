@@ -18,8 +18,8 @@ State::State (StateStack & stack, Context context)
 State::~State () {
 }
 
-State::Context::Context (Game * game, sf::RenderWindow & window, ResourceHolder<sf::Font, Fonts::ID> & fonts)
-: game (game), window (&window), fonts (&fonts) {
+State::Context::Context (Game * game)
+: game (game) {
 }
 
 void State::requestStackPush (States::ID stateID) {

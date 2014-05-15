@@ -15,7 +15,7 @@
 std::string Game::TITLE = "#TITLE";
 
 Game::Game ()
-: stateStack (StateStack (State::Context (this, *gameWindow, fontHolder))) {
+: stateStack (StateStack (State::Context (this))) {
 
 	// All we need to play.
 	GraphicsOptions::init ();
@@ -58,21 +58,10 @@ void Game::initialize () {
 	worldBounds.height = 10000;					// World size
 	worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
 
-	// Create states hierarchy.
+	// Create states hierarchy and initialize first state.
 	registerStates ();
 	stateStack.pushState (States::GAME);  // Initialize first state.
-
-	// Initialize entities
-	entitiesInit ();
-
-	// Initialize main layers.
-	layersInit ();
-
-	// Set default parameters of objects owned.
-	objectsInit ();
-
-	// Set default game options.
-	applyOptions ();
+	stateStack.applyPendingChanges ();
 
 	// If everything's fine, move on to the next state.
 	this->state = States::MENU;   // #TODO REMOVE
@@ -101,7 +90,7 @@ void Game::run () {
 				gameWindow->close ();
 
 			update ();
-			//stateStack.update (PlayerController::deltaTime);										//...game from lags' consequences. 
+															//...game from lags' consequences. 
 		}
 		render ();
 
@@ -267,61 +256,12 @@ void Game::gameCommandExecute (Command * command) {
 }
 
 void Game::update () {
-	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
-									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
-
-	worldMap->t += rand () % 750 / 100000.0;
-
-	// Calculate player-mouse offset.		#TODO REMOVE?
-	//MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-
-	//// Pass target rotation to player.
-	//float mouseRotation = MouseInterface::calculateRotation ();
-	//playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
-
-	// Process to taking commands from CommandQueue
-	commandInterpret ();
-
-	// Update player.
-	playerController.update ();
-	itemController.updateEntities ();
-
-	// Apply physics to b2World
-	Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
-
-	// Update console ouput.
-	console->update ("x", playerController[0]->getPosition ().x);
-	console->update ("y", playerController[0]->getPosition ().y);
-	console->update ("direction", (float)playerController[0]->direction);
-	console->update ("rotation", playerController[0]->boxBody->GetAngle () * RAD_TO_DEG);
-	console->update ("mouse rotation", MouseInterface::calculateRotation () * RAD_TO_DEG);
-	console->update ("force x", playerController[0]->boxBody->GetForce ().x);
-	console->update ("force y", playerController[0]->boxBody->GetForce ().y);
-	console->update ("velocity x", playerController[0]->boxBody->GetLinearVelocity ().x);
-	console->update ("velocity y", playerController[0]->boxBody->GetLinearVelocity ().y);
-	console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
-
-	// Set the world displacement vector relatively to player.
-	//worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
-	//worldView.setRotation (45.f);
-	gameWindow->setView (worldView);
-
-	// Vector for displacement correction.
-	sf::Vector2f vec (worldView.getCenter () - worldView.getSize () / 2.0f);
-
-	// Correct console displacement (always in top-left corner).
-	console->setPosition (worldViewPosition);
-
-	// Correct map displacement.
-	worldMap->setPosition (vec);
-	//vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
-	worldMap->setViewPosition (vec);
-	worldMap->update ();
+	stateStack.update (PlayerController::deltaTime);	
 }
 
 void Game::render () {
 	gameWindow->clear ();		// Clear eveything.
-	draw ();
+	stateStack.draw ();
 	gameWindow->display ();
 }
 
