@@ -22,6 +22,10 @@ State::Context::Context (Game * game)
 : game (game) {
 }
 
+States::ID State::getStateID () {
+	return stateID;
+}
+
 void State::requestStackPush (States::ID stateID) {
 	stateStack->pushState (stateID);
 }

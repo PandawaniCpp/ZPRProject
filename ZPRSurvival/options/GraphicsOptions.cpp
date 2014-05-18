@@ -15,6 +15,7 @@ std::vector<VideoMode> GraphicsOptions::videoModesAvailable = VideoMode::getFull
 
 bool GraphicsOptions::fullscreenModeOn = false;
 bool GraphicsOptions::vSyncOn = true;
+bool GraphicsOptions::optionsInitialized = false;
 int GraphicsOptions::fps = 120;
 int GraphicsOptions::videoStyle = sf::Style::Close | sf::Style::Titlebar;
 VideoMode GraphicsOptions::baseVideoMode = VideoMode (1920, 1080, 32);

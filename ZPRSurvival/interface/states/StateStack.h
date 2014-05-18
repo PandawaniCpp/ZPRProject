@@ -61,6 +61,9 @@ public:
 	// Check if no state is currently in effect.
 	bool isEmpty () const;
 
+	// Get the ID of the latest state on the stack.
+	States::ID getCurrentStateID ();
+
 	// Wait for right moment to apply any changes.
 	// Prevents the game from switching a state in the middle of executing some commands.
 	void applyPendingChanges ();

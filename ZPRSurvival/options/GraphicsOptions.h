@@ -37,6 +37,7 @@ public:
 	// Customizable graphics parameters.
 	static bool fullscreenModeOn;			// Toggles fullscreen on/off.
 	static bool vSyncOn;					// Vertical synch. on/off.
+	static bool optionsInitialized;
 	static int fps;							// Frames per second rate.
 	static int videoStyle;					// How the window is shown
 	static VideoMode videoMode;				// Current active Video Mode.

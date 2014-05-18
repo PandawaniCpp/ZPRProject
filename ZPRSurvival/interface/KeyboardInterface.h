@@ -39,5 +39,8 @@ private:
 
 	// Associates key pressed on given state with action to be performed.
 	static std::map<Commands::ID, Command> actionBindings;
+
+	// Automatically creates multi-mappings for keys with more than one state.
+	static void insertKeyBinding (bool pressed, sf::Keyboard::Key key, int stateFlags, Commands::ID command);
 };
 

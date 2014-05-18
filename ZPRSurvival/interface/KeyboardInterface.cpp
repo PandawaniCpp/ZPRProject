@@ -16,8 +16,9 @@ std::map<std::pair<sf::Keyboard::Key, States::ID>, Commands::ID> KeyboardInterfa
 std::map<Commands::ID, Command> KeyboardInterface::actionBindings = std::map<Commands::ID, Command> ();
 
 void KeyboardInterface::assignKeys () {
+	insertKeyBinding (true, sf::Keyboard::F1, States::MENU | States::GAME | States::PAUSE, Commands::CON_TRIGGER);
+	
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Escape, States::GAME), Commands::G_EXIT));
-	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F1, States::GAME), Commands::CON_TRIGGER));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Period, States::GAME), Commands::RES_UP));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, States::GAME), Commands::RES_DOWN));
 	pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, States::GAME), Commands::SET_FULLSCREEN));
@@ -86,4 +87,16 @@ Command * KeyboardInterface::releasedKeyHandle (States::ID state, sf::Keyboard::
 		return &actionBindings[found->second];
 	else
 		return new Command();
+}
+
+void KeyboardInterface::insertKeyBinding (bool pressed, sf::Keyboard::Key key, int stateFlags, Commands::ID command) {
+	for (int i = States::NONE + 1; i < States::LIMIT; i *= 2) {
+		bool flagExist = stateFlags & i;
+		if (flagExist) {
+			if (pressed)
+				pressedKeyBindings.insert (std::make_pair (std::make_pair (key, static_cast<States::ID>(i)), command));
+			else
+				releasedKeyBindings.insert (std::make_pair (std::make_pair (key, static_cast<States::ID>(i)), command));
+		}
+	}
 }

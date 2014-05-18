@@ -33,6 +33,9 @@ using namespace std;
 
 class Game {
 	friend class GameState;
+	friend class TitleState;
+	friend class MenuState;
+	friend class LoadState;
 public:
 	// Game title.
 	static std::string TITLE;
@@ -60,7 +63,7 @@ public:
 	// Objects deallocation, saving data etc.
 	void terminate ();
 
-			//PlayerController * getPlayerController ();
+				//PlayerController * getPlayerController ();
 
 private:
 	// Map all available game staes, but not initialize them yet.

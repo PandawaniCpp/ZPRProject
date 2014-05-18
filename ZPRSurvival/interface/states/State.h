@@ -44,9 +44,12 @@ public:
 	virtual bool update (sf::Time dt) = 0;
 	virtual bool handleEvent (const sf::Event& event) = 0;
 
-
+	// One time triggered methods: on state becoming active and inactive.
 	virtual void onActivate ();
 	virtual void onDestroy ();
+
+	// State ID getter.
+	States::ID getStateID ();
 
 protected:
 	// Allow states to alter the stack from within their own code.
@@ -57,11 +60,14 @@ protected:
 	// Context getter.
 	Context getContext () const;
 
-private:
-	// Pointer to StateStack
-	StateStack * stateStack;
+	// State's ID. Needed for key mapping interpretation.
+	States::ID stateID;
 
 	// Context object (parralel data shared between states).
 	Context context;
+
+private:
+	// Pointer to StateStack
+	StateStack * stateStack;
 };
 

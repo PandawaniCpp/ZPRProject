@@ -10,6 +10,9 @@
 
 #include "Game.h"
 #include "states/GameState.h"
+#include "states/TitleState.h"
+#include "states/MenuState.h"
+#include "states/LoadState.h"
 
 // #TITLE
 std::string Game::TITLE = "#TITLE";
@@ -21,7 +24,6 @@ Game::Game ()
 	GraphicsOptions::init ();
 	gameWindow = new sf::RenderWindow (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);	// Create new Window
 	console = new Console ();
-	worldMap = new WorldMapView (time (NULL), 0.65, 5000.0, 8, 5000, 5000);
 }
 
 Game::~Game () {
@@ -34,13 +36,7 @@ Game::~Game () {
 void Game::initialize () {
 	// sf::View init.
 	worldView = gameWindow->getDefaultView ();
-	worldView.setCenter (worldMap->getSpawnPoint ());  // Center the sf::View to player position.
-	                                                   // #SETSPAWN proper method?
-	gameWindow->setView (worldView);
-	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
-									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
 
-	state = States::TITLE;		// Proper first state  #TODO REMOVE
 	gameWindow->setKeyRepeatEnabled (false);			// Prevents from unintended key repetition
 
 	// Initialize factory with prefabs and keyboard interface with key mappings.
@@ -60,22 +56,17 @@ void Game::initialize () {
 
 	// Create states hierarchy and initialize first state.
 	registerStates ();
-	stateStack.pushState (States::GAME);  // Initialize first state.
+	stateStack.pushState (States::TITLE);  // Initialize first state.
 	stateStack.applyPendingChanges ();
-
-	// If everything's fine, move on to the next state.
-	this->state = States::MENU;   // #TODO REMOVE
 }
 
 void Game::run () {
 	// Calculates time difference between frames and corrects occasional lags (if occured).
 	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	timeSinceLastUpdate += clock.restart ();
 	PlayerController::deltaTime = timePerFrame;
-
-	// Start the Game
-	state = States::GAME;
 
 	// Main game loop (handle events -> update everything -> render eveything)
 	while (gameWindow->isOpen ()) {
@@ -85,9 +76,6 @@ void Game::run () {
 		while (timeSinceLastUpdate > timePerFrame) {
 			timeSinceLastUpdate -= timePerFrame;
 			processEvents ();
-
-			if (state == States::EXIT)
-				gameWindow->close ();
 
 			update ();
 															//...game from lags' consequences. 
@@ -107,9 +95,10 @@ void Game::terminate () {
 
 void Game::registerStates () {
 	stateStack.registerState<GameState> (States::GAME);
-	/*stateStack.registerState<TitleState> (States::Title);
-	stateStack.registerState<MenuState> (States::Menu);
-	stateStack.registerState<PauseState> (States::Pause);
+	stateStack.registerState<TitleState> (States::TITLE);
+	stateStack.registerState<MenuState> (States::MENU);
+	stateStack.registerState<LoadState> (States::LOAD);
+	/*stateStack.registerState<PauseState> (States::Pause);
 	stateStack.registerState<SettingsState> (States::Settings);
 	stateStack.registerState<GameOverState> (States::GameOver, "Mission Failed!");
 	stateStack.registerState<GameOverState> (States::MissionSuccess, "Mission Successful!");*/
@@ -138,7 +127,6 @@ void Game::layersInit () {
 
 void Game::objectsInit () {
 	// Set default console's parameters
-	console->insert ("fps", currentFPS);
 	console->insert ("x", 0);
 	console->insert ("y", 0);
 	console->insert ("direction", 0);
@@ -150,10 +138,9 @@ void Game::objectsInit () {
 }
 
 void Game::applyOptions () {
-	timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
 	GraphicsOptions::vSyncOn ? gameWindow->setVerticalSyncEnabled (true) : gameWindow->setVerticalSyncEnabled (false);
 
-	if (state != States::TITLE)
+	if (GraphicsOptions::optionsInitialized)
 		gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
 	console->update ("current resolution", GraphicsOptions::getCurrentResolution ());
 
@@ -170,34 +157,21 @@ void Game::applyOptions () {
 	gameWindow->setView (worldView);
 	worldViewPosition = sf::Vector2f (worldView.getCenter ().x - worldView.getSize ().x / 2.f,
 									  worldView.getCenter ().y - worldView.getSize ().y / 2.f);
+
+	if (!GraphicsOptions::optionsInitialized)
+		GraphicsOptions::optionsInitialized = true;
 }
 
 void Game::processEvents () {
-	// Capture and process mouse position
-	MouseInterface::capturePosition (*gameWindow);
-	MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-	playerController[0]->setTargetRotation (MouseInterface::calculateRotation ());		// We know it's player, no need to set up a rotation command.
-	worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
-	gameWindow->draw (*playerController[0]);
-
 	// Handle keyboard input.
 	sf::Event event;
 
 	// Catch event.
 	while (gameWindow->pollEvent (event)) {
-		switch (event.type) {
-			case sf::Event::KeyPressed:
-				commandQueue.push (KeyboardInterface::pressedKeyHandle (state, event.key.code));
-				break;
-			case sf::Event::KeyReleased:
-				commandQueue.push (KeyboardInterface::releasedKeyHandle (state, event.key.code));
-				break;
-			case sf::Event::Closed:
-				gameWindow->close ();
-				break;
-			default:
-				break;
-		}
+		stateStack.handleEvent (event);
+
+		if (event.type == sf::Event::Closed)
+			gameWindow->close ();
 	}
 }
 

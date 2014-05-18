@@ -67,10 +67,18 @@ bool StateStack::isEmpty () const
 	return stateStack.empty ();
 }
 
+States::ID StateStack::getCurrentStateID () {
+	if (stateStack.empty ())
+		return States::NONE;
+	else
+		return stateStack.back ()->getStateID ();
+	
+}
+
 State::Ptr StateStack::createState (States::ID stateID)
 {
 	auto found = factories.find (stateID);
-	assert (found != mFactories.end ());
+	assert (found != factories.end ());
 
 	return found->second ();
 }
