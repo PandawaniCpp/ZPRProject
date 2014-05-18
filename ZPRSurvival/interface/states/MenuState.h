@@ -24,6 +24,7 @@ public:
 	virtual void onDestroy ();
 
 private:
+	sf::Text text;
 	sf::Texture texture;
 	sf::Sprite background;
 

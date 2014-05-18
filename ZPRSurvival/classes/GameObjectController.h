@@ -72,11 +72,13 @@ void GameObjectController<Type, Identifier>::createEntity (Entities::ID entityID
 template <class Type, class Identifier>
 void GameObjectController<Type, Identifier>::updateEntities () {
 	for (auto & entity : entityHolder) {
-		//entity->animate (deltaTime);
+		entity->animate (deltaTime);
+
 		if (dynamic_cast<Player*>(entity))
 			entity->rotateInstantly ();
 		else
 			entity->rotateEntity ();
+
 		entity->applyForce ();
 		entity->updateFromBody ();
 	}

@@ -116,10 +116,12 @@ bool GameState::handleEvent (const sf::Event& event) {
 }
 
 void GameState::onActivate () {
-	context.game->worldMap = new WorldMapView (time (NULL), 0.65, 5000.0, 8, 5000, 5000);
+	/*context.game->worldMap = new WorldMapView (time (NULL), 0.65, 5000.0, 8, 5000, 5000);
 	context.game->entitiesInit ();
 	context.game->layersInit ();
 	context.game->objectsInit ();
+	context.game->applyOptions ();*/
+
 	context.game->applyOptions ();
 }
 

@@ -25,6 +25,16 @@ public:
 	virtual void onDestroy ();
 
 private:
+	void init ();
+
+	sf::Time textEffectTime;
+	sf::Text text;
+	sf::Thread thread;
 	Animation loadingAnimation;
+	sf::Sprite loadingDone;
+	sf::Texture loadingDoneTexture;
+	bool loadingFinished = false;
+
+	std::vector<std::string> loadingTexts;
 };
 

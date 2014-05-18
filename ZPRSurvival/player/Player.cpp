@@ -24,7 +24,7 @@ Player::Player () {
 	// Set ID
 	entityId = Entities::PLAYER;
 
-	this->setOrigin (frameData[currentAnimation].x / 2.0, frameData[currentAnimation].y / 2.0);
+	this->setOrigin (frameData[currentAnimation].x / 2.f, frameData[currentAnimation].y / 2.f);
 	this->resetAnimation ();
 }
 
