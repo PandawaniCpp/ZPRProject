@@ -40,9 +40,9 @@ bool TitleState::update (sf::Time dt) {
 	return true;
 }
 
-bool TitleState::handleEvent (const sf::Event& event) {
+bool TitleState::handleEvent (const Command * command) {
 	// "Press any key to continue"
-	if (event.type == sf::Event::KeyPressed) {
+	if (command->commandType == Commands::PRESS_ANY_KEY) {
 		requestStackPop ();
 		requestStackPush (States::MENU);
 	}

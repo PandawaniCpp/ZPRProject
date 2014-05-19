@@ -19,9 +19,9 @@
 #include <cassert>
 #include "State.h"
 #include "../ResourcesID.h"
+#include "../KeyboardInterface.h"
 
 class State;
-//class GameState;
 
 /**
 	Class container for holding and managing states in the game.
@@ -47,7 +47,7 @@ public:
 	// Managing the game differently in every state
 	void update (sf::Time dt);
 	void draw ();
-	void handleEvent (const sf::Event& event);
+	void handleEvent (const Command * command);
 
 	// Insert new state that is currently in effect.
 	void pushState (States::ID stateID);

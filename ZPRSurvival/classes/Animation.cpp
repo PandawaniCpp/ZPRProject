@@ -10,7 +10,6 @@ In no event will the authors be held liable for any damages arising from the use
 #include "Animation.h"
 
 ResourceHolder<sf::Texture, Textures::ANIMATIONS> Animation::animationHolder = ResourceHolder<sf::Texture, Textures::ANIMATIONS> ();
-//std::map<Textures::ANIMATIONS, sf::Vector3<int>> Animation::frameData = std::map<Textures::ANIMATIONS, sf::Vector3<int>> ();
 
 Animation::Animation (Textures::ANIMATIONS id, std::string filename, sf::Vector3<int> frameData, bool repeatable, sf::Time duration) {
 	insertFrameData (id, frameData);

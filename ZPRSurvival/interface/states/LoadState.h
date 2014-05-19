@@ -1,11 +1,11 @@
 /**
-	@date	15.05.2014
+    @date	15.05.2014
 
-	Part of the #TITLE survival game.
+    Part of the #TITLE survival game.
 
-	This software is provided 'as-is', without any express or implied warranty.
-	In no event will the authors be held liable for any damages arising from the use of this software.
-*/
+    This software is provided 'as-is', without any express or implied warranty.
+    In no event will the authors be held liable for any damages arising from the use of this software.
+    */
 
 #pragma once
 #include "State.h"
@@ -14,27 +14,27 @@
 
 class LoadState : public State {
 public:
-	// Constructor.
-	LoadState (StateStack & stack, Context context);
+    // Constructor.
+    LoadState (StateStack & stack, Context context);
 
-	virtual void draw ();
-	virtual bool update (sf::Time dt);
-	virtual bool handleEvent (const sf::Event& event);
+    virtual void draw ();
+    virtual bool update (sf::Time dt);
+    virtual bool handleEvent (const Command * command);
 
-	virtual void onActivate ();
-	virtual void onDestroy ();
+    virtual void onActivate ();
+    virtual void onDestroy ();
 
 private:
-	void init ();
+    void init ();
 
-	sf::Time textEffectTime;
-	sf::Text text;
-	sf::Thread thread;
-	Animation loadingAnimation;
-	sf::Sprite loadingDone;
-	sf::Texture loadingDoneTexture;
-	bool loadingFinished = false;
+    sf::Time textEffectTime;
+    sf::Text text;
+    sf::Thread thread;
+    Animation loadingAnimation;
+    sf::Sprite loadingDone;
+    sf::Texture loadingDoneTexture;
+    bool loadingFinished = false;
 
-	std::vector<std::string> loadingTexts;
+    std::vector<std::string> loadingTexts;
 };
 

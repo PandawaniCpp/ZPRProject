@@ -1,12 +1,12 @@
 /**
-	@author	Pawel Kaczynski
-	@date	15.05.2014
+    @author	Pawel Kaczynski
+    @date	15.05.2014
 
-	Part of the #TITLE survival game.
+    Part of the #TITLE survival game.
 
-	This software is provided 'as-is', without any express or implied warranty.
-	In no event will the authors be held liable for any damages arising from the use of this software.
-	*/
+    This software is provided 'as-is', without any express or implied warranty.
+    In no event will the authors be held liable for any damages arising from the use of this software.
+    */
 
 #pragma once
 #include <SFML/System/Time.hpp>
@@ -15,59 +15,60 @@
 #include <memory>
 #include "../ResourcesID.h"
 #include "../ResourceHolder.h"
+#include "../Command.h"
 
 class StateStack;
 class Game;
 
 /**
-	Base class for every state.
-	*/
+    Base class for every state.
+    */
 class State {
 public:
-	// Unique pointer definition for holding States.
-	typedef std::unique_ptr<State> Ptr;
+    // Unique pointer definition for holding States.
+    typedef std::unique_ptr<State> Ptr;
 
-	// Parralel data shared between states.
-	struct Context {
-		Context (Game * game);
-		Game * game;
-	};
+    // Parralel data shared between states.
+    struct Context {
+        Context (Game * game);
+        Game * game;
+    };
 
-	// Constructor.
-	State (StateStack& stack, Context context);
+    // Constructor.
+    State (StateStack& stack, Context context);
 
-	// Default destructor.
-	virtual ~State ();
+    // Default destructor.
+    virtual ~State ();
 
-	// Managing the game differently in every state
-	virtual void draw () = 0;
-	virtual bool update (sf::Time dt) = 0;
-	virtual bool handleEvent (const sf::Event& event) = 0;
+    // Managing the game differently in every state
+    virtual void draw () = 0;
+    virtual bool update (sf::Time dt) = 0;
+    virtual bool handleEvent (const Command * command) = 0;
 
-	// One time triggered methods: on state becoming active and inactive.
-	virtual void onActivate ();
-	virtual void onDestroy ();
+    // One time triggered methods: on state becoming active and inactive.
+    virtual void onActivate ();
+    virtual void onDestroy ();
 
-	// State ID getter.
-	States::ID getStateID ();
+    // State ID getter.
+    States::ID getStateID ();
 
 protected:
-	// Allow states to alter the stack from within their own code.
-	void requestStackPush (States::ID stateID);
-	void requestStackPop ();
-	void requestStateClear ();
+    // Allow states to alter the stack from within their own code.
+    void requestStackPush (States::ID stateID);
+    void requestStackPop ();
+    void requestStateClear ();
 
-	// Context getter.
-	Context getContext () const;
+    // Context getter.
+    Context getContext () const;
 
-	// State's ID. Needed for key mapping interpretation.
-	States::ID stateID;
+    // State's ID. Needed for key mapping interpretation.
+    States::ID stateID;
 
-	// Context object (parralel data shared between states).
-	Context context;
+    // Context object (parralel data shared between states).
+    Context context;
 
 private:
-	// Pointer to StateStack
-	StateStack * stateStack;
+    // Pointer to StateStack
+    StateStack * stateStack;
 };
 
