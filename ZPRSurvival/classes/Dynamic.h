@@ -29,7 +29,7 @@ public:
 	};
 
 	// Default constructor.
-	Dynamic ();
+	explicit Dynamic ();
 
 	// Default destructor.
 	virtual ~Dynamic ();

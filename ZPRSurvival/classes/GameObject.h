@@ -1,12 +1,12 @@
 /**
-	@author	Pawel Kaczynski
-	@date	03.04.2014
+    @author	Pawel Kaczynski
+    @date	03.04.2014
 
-	Part of the #TITLE survival game.
+    Part of the #TITLE survival game.
 
-	This software is provided 'as-is', without any express or implied warranty.
-	In no event will the authors be held liable for any damages arising from the use of this software.
-*/
+    This software is provided 'as-is', without any express or implied warranty.
+    In no event will the authors be held liable for any damages arising from the use of this software.
+    */
 
 #pragma once
 #include <map>
@@ -25,96 +25,111 @@
 #define RAD_TO_DEG 180.0f / b2_pi
 #define DEG_TO_RAD b2_pi / 180.0f
 
-//class Command;
-
 /**
-	MVC's View for GameObject class. Implements scene graph to draw objects and provides
-	Box2D physics engine functionality
+    MVC's View for GameObject class. Implements scene graph to draw objects and provides
+    Box2D physics engine functionality
 
-	\base class: sf::Sprite
-	\derived: Animated, Effectable, Dynamic, Console, Map
-*/
+    \base class: sf::Sprite
+    \derived: Animated, Effectable, Dynamic, Console, Map
+    */
 class GameObject : public sf::Sprite {
 public:
-	// Prefab structure defining all in-game object.
-	typedef struct Prefab {
-		int width = 1;
-		int height = 1;
-		float originX = 0.f;
-		float originY = 0.f;
-		float density = 0.f;
-		float friction = 0.f;
-		float maxSpeed = 0.f;
-		float rotation = 0.f;
-		float rotationSpeed = 0.f;
-		float acceleration = 0.f;
-		float linearDamping = 1.f;
-		float angularDamping = 1.f;
-		float runModifier = 1.f;
-		bool isTextureRepeatable = false;
-		b2BodyType bodyType = b2_dynamicBody;
-		b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
-		b2CircleShape * circleShape = nullptr;		// nullptr at creation time.
-		union texture {
-			Textures::PLAYER playerTexture;
-			Textures::ITEMS itemTexture;
-			Textures::CREATURES creatureTexture;
-		} texture;
-	} Prefab;
+    // Prefab structure defining all in-game object.
+    typedef struct Prefab {
+        Entities::ID id = Entities::NONE;
+        int width = 1;
+        int height = 1;
+        float originX = 0.f;
+        float originY = 0.f;
+        float density = 0.f;
+        float friction = 0.f;
+        float maxSpeed = 0.f;
+        float rotation = 0.f;
+        float rotationSpeed = 0.f;
+        float acceleration = 0.f;
+        float linearDamping = 1.f;
+        float angularDamping = 1.f;
+        float runModifier = 1.f;
+        bool isTextureRepeatable = false;
+        b2BodyType bodyType = b2_dynamicBody;
+        b2PolygonShape * polyShape = nullptr;		// ONLY ONE shape can and should be
+        b2CircleShape * circleShape = nullptr;		// nullptr at creation time.
+        union texture {
+            Textures::PLAYER playerTexture;
+            Textures::ITEMS itemTexture;
+            Textures::CREATURES creatureTexture;
+        } texture;
+    };
 
-	// Used to create scene nodes.
-	typedef std::shared_ptr<GameObject> ObjectPtr;
+    // Identificator of an object.
+    typedef struct EntityInfo {
+        EntityInfo (Entities::ID type, const unsigned int id) : type (type), id (id) {
+        }
+        Entities::ID type;
+        const unsigned int id;
+    };
 
-	// Box2D World
-	static b2World boxWorld;
+    // Used to create scene nodes.
+    typedef std::shared_ptr<GameObject> ObjectPtr;
 
-	// Default constructor.
-	GameObject ();
+    // Global id to distribute to entities.
+    static unsigned int GLOBAL_ID;
 
-	// Default destructor.
-	virtual ~GameObject ();
+    // Assigns unique id to entity.
+    static unsigned int getGlobalID () {
+        return GLOBAL_ID++;
+    }
 
-	// Overloaded sf::Sprite draw method.
-	virtual void draw (sf::RenderWindow * window) const;
+    // Box2D World
+    static b2World boxWorld;
 
-	// Draw this object and all children.
-	virtual void drawAll (sf::RenderWindow* window) const;
+    // Default constructor.
+    GameObject ();
 
-	// Check is this command considers this object and pass it deeper.
-	virtual void passCommand (Command *command, sf::Time dt);
+    // Default destructor.
+    virtual ~GameObject ();
 
-	// Get updated position and rotation from b2Body and apply it to Sprite.
-	void updateFromBody ();
+    // Overloaded sf::Sprite draw method.
+    virtual void draw (sf::RenderWindow * window) const;
 
-	// Adds child to vector 'children'.
-	// Added child has 'parent' set to calling object.
-	void attachChild (ObjectPtr child);
+    // Draw this object and all children.
+    virtual void drawAll (sf::RenderWindow* window) const;
 
-	// Removes node from vector.
-	void detachChild (const GameObject& node);	//remove child from vector
+    // Check is this command considers this object and pass it deeper.
+    virtual void passCommand (Command *command, sf::Time dt);
 
-	// Removes all (if any left) childs.
-	void detachAllChilds ();
+    // Get updated position and rotation from b2Body and apply it to Sprite.
+    void updateFromBody ();
 
-	// Check if had any childs.
-	bool hasChilds ();
+    // Adds child to vector 'children'.
+    // Added child has 'parent' set to calling object.
+    void attachChild (ObjectPtr child);
 
-	// Create b2Body 
-	void createB2Body (Prefab prefab);
+    // Removes node from vector.
+    void detachChild (const GameObject& node);	//remove child from vector
 
-	// Get b2Body of that object
-	b2Body * getBody ();
-	
-protected:	
-	std::vector<ObjectPtr> children;	// All children to draw after this object is drawn.
-	GameObject* parent;			// Pointer ro the parent (one level above).
-	b2Body * boxBody;			// Box2D Dynamic object.
-	Entities::ID entityId;		// Id or category for that object.
+    // Removes all (if any left) childs.
+    void detachAllChilds ();
+
+    // Check if had any childs.
+    bool hasChilds ();
+
+    // Create b2Body 
+    void createB2Body (Prefab prefab);
+
+    // Get b2Body of that object
+    b2Body * getBody ();
+
+protected:
+    std::vector<ObjectPtr> children;	// All children to draw after this object is drawn.
+    GameObject* parent;			// Pointer ro the parent (one level above).
+    b2Body * boxBody;			// Box2D Dynamic object.
+    EntityInfo entityInfo;
 };
 
 /**
-	GameObject has won "The Most Important Class In The Game" award, in particular circles
-	known as TMICITG, but no relation. During the ceremony, one of its rivals (taking its Sprite
-	issues into consideration) congratulate the winner with following words: Now you're the thirst.
-*/
+    GameObject has won "The Most Important Class In The Game" award, in particular circles
+    known as TMICITG, but no relation. During the ceremony, one of its rivals (taking its Sprite
+    issues into consideration) congratulate the winner with following words: Now you're the thirst.
+    */
 

@@ -25,7 +25,7 @@ public:
 	static std::map <Effects::ID, EffectPtr> effectsHolder;
 
 	// Default constructor.
-	Effectable ();
+	explicit Effectable ();
 
 	// Default destructor.
 	virtual ~Effectable ();

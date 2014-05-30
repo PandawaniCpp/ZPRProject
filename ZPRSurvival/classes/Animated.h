@@ -31,7 +31,7 @@ public:
 	static void insertFrameData (Identifier textureID, sf::Vector3<int> frameInfo);
 
 	// Default constructor.
-	Animated ();
+	explicit Animated ();
 
 	// Default destructor.
 	virtual ~Animated ();

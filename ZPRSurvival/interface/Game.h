@@ -18,6 +18,7 @@
 #include "../map/WorldMapView.h"
 #include "../options/GraphicsOptions.h"
 #include "../item/ItemController.h"
+#include "../creature/CreatureController.h"
 #include "Console.h"
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
@@ -43,7 +44,7 @@ public:
 
     // Game layers defining drawing order.
     enum Layer {
-        MAP, ITEMS, PLAYER, LIGHTS, CONSOLE, LAYER_COUNT
+        MAP, ITEMS, CREATURES, PLAYER, LIGHTS, CONSOLE, LAYER_COUNT
     };
 
     // Default constructor.
@@ -119,6 +120,7 @@ private:
     sf::RenderWindow * gameWindow;			// Main window for displaying the game.
     PlayerController playerController;	// MVC's controller of the player.
     ItemController itemController;		// MVC's controller for non static items
+    CreatureController creatureController;		// MVC's controller for non static items
     sf::View worldView;				// Represents part of the world shown to the player.
     Console * console;		// Displays info about player position, object count, memory etc.
     WorldMapView * worldMap;

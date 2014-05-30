@@ -1,5 +1,4 @@
 /**
-	@author	Pawel Kaczynski
 	@date	03.04.2014
 
 	Part of the #TITLE survival game.
@@ -25,8 +24,5 @@ public:
 
 	// Default destructor.
 	virtual ~ItemController ();
-
-	// Creates entity with EntityFactory
-	//void createEntity (Entities::ID entityID, Textures::ITEMS itemTexture, sf::Vector2f position);
 };
 

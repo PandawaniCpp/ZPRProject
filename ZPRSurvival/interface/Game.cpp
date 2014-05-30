@@ -125,6 +125,7 @@ void Game::layersInit () {
     sceneLayers[Game::MAP]->attachChild (GameObject::ObjectPtr (worldMap));
     sceneLayers[Game::PLAYER]->attachChild (GameObject::ObjectPtr (playerController[0]));
     sceneLayers[Game::ITEMS]->attachChild (GameObject::ObjectPtr (itemController[0]));
+    sceneLayers[Game::CREATURES]->attachChild (GameObject::ObjectPtr (creatureController[0]));
 
 }
 

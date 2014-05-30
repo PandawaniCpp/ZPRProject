@@ -76,6 +76,8 @@ namespace Entities {
         NONE,
         PLAYER,
         WALL,
+        PREDATOR,
+        HERBIVORE,
         ENTITIES_COUNT
     };
 }
