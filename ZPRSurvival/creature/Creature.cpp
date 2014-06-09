@@ -22,7 +22,8 @@ Creature::Creature (GameObject::Prefab * prefab) {
     rotationSpeed = prefab->rotationSpeed;
     acceleration = prefab->acceleration;
     runModifier = prefab->runModifier;
-    anglePrecision = prefab->rotationSpeed * DEG_TO_RAD;
+    anglePrecision = prefab->rotationSpeed / 50.f;
+    //anglePrecision = 0;
 
     // Set ID
     entityInfo.type = prefab->id;

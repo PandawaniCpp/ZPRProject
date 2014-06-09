@@ -9,6 +9,7 @@
 #include <climits>
 #include <SFML/Graphics.hpp>
 #include "./../player/Player.h"
+#include "Utility.h"
 
 /**
 	Non-instantiable class for interpreting mouse position and keys.

@@ -26,5 +26,8 @@ public:
     virtual ~CreatureController ();
 
     // Update creatures state, animation and effects.
-    void update ();
+    void update (sf::Vector2f playerPosition);
+
+private:
+    sf::Vector2f playerPosition;        // For creatures to know where to run (if certain conditions are fullfilled)
 };

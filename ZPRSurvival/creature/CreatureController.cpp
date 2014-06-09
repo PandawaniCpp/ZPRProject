@@ -26,7 +26,15 @@ CreatureController::~CreatureController () {
 
 }
 
-void CreatureController::update () {
+void CreatureController::update (sf::Vector2f playerPosition) {
+    this->playerPosition = playerPosition;
+    
+    // #TEMP
+    entityHolder[0]->setDestination (playerPosition);
+    entityHolder[0]->setIsFollowing (true);
+    entityHolder[0]->moveToPoint ();
+    // ------
+
     //controlStates ();
     //controlEffects ();
     updateEntities ();

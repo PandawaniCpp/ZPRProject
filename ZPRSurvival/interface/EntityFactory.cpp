@@ -57,11 +57,11 @@ void EntityFactory::creaturePrefabsInit () {
     prefab.density = 1.0f;
     prefab.friction = 0.7f;
     prefab.rotation = 0.1f;
-    prefab.rotationSpeed = 1.f;
-    prefab.acceleration = 1.f;
-    prefab.linearDamping = 1.f;
-    prefab.angularDamping = 1.f;
-    prefab.runModifier = 0.f;
+    prefab.rotationSpeed = 4.f;
+    prefab.acceleration = 20.f;
+    prefab.linearDamping = 10.f;
+    prefab.angularDamping = 10.f;
+    prefab.runModifier = 1.3f;
     prefab.bodyType = b2_dynamicBody;
     prefab.circleShape = nullptr;
     prefab.isTextureRepeatable = false;

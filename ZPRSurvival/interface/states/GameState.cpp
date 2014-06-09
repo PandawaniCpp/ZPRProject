@@ -46,7 +46,7 @@ bool GameState::update (sf::Time dt) {
     // Update player.
     context.game->playerController.update ();
     context.game->itemController.updateEntities ();
-    context.game->creatureController.update ();
+    context.game->creatureController.update (context.game->playerController[0]->getPosition());
 
     collisionHandle ();
 
