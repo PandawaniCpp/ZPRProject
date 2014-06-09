@@ -69,6 +69,8 @@ void Game::run () {
     timePerFrame = sf::seconds (1.f / GraphicsOptions::fps);			// Static frame, (1 / x) = x fps.
     timeSinceLastUpdate += clock.restart ();
     PlayerController::deltaTime = timePerFrame;
+    ItemController::deltaTime = timePerFrame;
+    CreatureController::deltaTime = timePerFrame;
 
     // Main game loop (handle events -> update everything -> render eveything)
     while (gameWindow->isOpen ()) {
@@ -110,6 +112,7 @@ void Game::registerStates () {
 void Game::entitiesInit () {
     playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50, 50));		// #SETSPAWN
     itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i (450, 300));
+    creatureController.createEntity (Entities::ZOMBIE, Textures::C_ZOMBIE, sf::Vector2f (4500.f, 4800.f), sf::Vector2i (150, 150));
 }
 
 void Game::layersInit () {

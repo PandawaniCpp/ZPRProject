@@ -49,14 +49,14 @@ void EntityFactory::creaturePrefabsInit () {
     GameObject::Prefab prefab;
 
     // Entities::PREDATOR prefab.
-    prefab.id = Entities::PREDATOR;
-    prefab.width = 350;
-    prefab.height = 400;
+    prefab.id = Entities::ZOMBIE;
+    prefab.width = 150;
+    prefab.height = 150;
     prefab.originX = 0.5;
     prefab.originY = 0.5;
     prefab.density = 1.0f;
     prefab.friction = 0.7f;
-    prefab.rotation = 0.f;
+    prefab.rotation = 0.1f;
     prefab.rotationSpeed = 1.f;
     prefab.acceleration = 1.f;
     prefab.linearDamping = 1.f;
@@ -64,13 +64,13 @@ void EntityFactory::creaturePrefabsInit () {
     prefab.runModifier = 0.f;
     prefab.bodyType = b2_dynamicBody;
     prefab.circleShape = nullptr;
-    prefab.isTextureRepeatable = true;
+    prefab.isTextureRepeatable = false;
     prefab.polyShape = new b2PolygonShape;
     prefab.polyShape->SetAsBox (prefab.width / 2.0f / GraphicsOptions::pixelPerMeter,
                                 prefab.height / 2.0f / GraphicsOptions::pixelPerMeter);
-    prefab.texture.itemTexture = Textures::I_WALL;
+    prefab.texture.creatureTexture = Textures::C_ZOMBIE;
 
-    prefabs.insert (std::make_pair (Entities::WALL, prefab));
+    prefabs.insert (std::make_pair (Entities::ZOMBIE, prefab));
 }
 
 void EntityFactory::itemPrefabsInit () {

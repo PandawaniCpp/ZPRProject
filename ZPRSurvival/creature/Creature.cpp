@@ -14,16 +14,20 @@ Creature::Creature () {
 
 Creature::Creature (GameObject::Prefab * prefab) {
     // Current animation parameters
-    frameDuration = sf::seconds (0.5f);
-    currentAnimation = prefab->texture.itemTexture;
+    frameDuration = sf::seconds (0.7f);
+    currentAnimation = prefab->texture.creatureTexture;
     animationRepeat = true;
 
     // Dynamic body parameters.
     rotationSpeed = prefab->rotationSpeed;
     acceleration = prefab->acceleration;
     runModifier = prefab->runModifier;
-    anglePrecision = rotationSpeed / 2.0 * DEG_TO_RAD;
+    anglePrecision = prefab->rotationSpeed * DEG_TO_RAD;
 
+    // Set ID
+    entityInfo.type = prefab->id;
+
+    this->setOrigin (prefab->width * prefab->originX, prefab->height * prefab->originY);
     this->resetAnimation ();
 }
 

@@ -10,19 +10,24 @@
 #include "CreatureController.h"
 
 CreatureController::CreatureController () {
-    Creature::insertFrameData (Textures::, sf::Vector3<int> (450, 100, 1));
+    Creature::insertFrameData (Textures::C_ZOMBIE, sf::Vector3<int> (150, 150, 8));
 
     // Load item textures
-    for (unsigned int i = Textures::I_INIT + 1; i < Textures::I_END; ++i) {		// #TODO INACZEJ !!!!
-        textureHolder.load (static_cast<Textures::ITEMS>(i), "resources/textures/items/wall.png", sf::IntRect (
+    for (unsigned int i = Textures::C_INIT + 1; i < Textures::C_END; ++i) {		        // #TODO INACZEJ !!!!
+        textureHolder.load (static_cast<Textures::CREATURES>(i), "resources/textures/creatures/zombie.png", sf::IntRect (
             0,
-            Item::frameData[static_cast<Textures::ITEMS>(i)].y*(i - Textures::I_INIT - 1),
-            Item::frameData[static_cast<Textures::ITEMS>(i)].x* Item::frameData[static_cast<Textures::ITEMS> (i)].z,
-            Item::frameData[static_cast<Textures::ITEMS>(i)].y));
+            Creature::frameData[static_cast<Textures::CREATURES>(i)].y*(i - Textures::C_INIT - 1),
+            Creature::frameData[static_cast<Textures::CREATURES>(i)].x* Creature::frameData[static_cast<Textures::CREATURES> (i)].z,
+            Creature::frameData[static_cast<Textures::CREATURES>(i)].y));
     }
 }
 
-ItemController::~ItemController () {
+CreatureController::~CreatureController () {
 
 }
 
+void CreatureController::update () {
+    //controlStates ();
+    //controlEffects ();
+    updateEntities ();
+}

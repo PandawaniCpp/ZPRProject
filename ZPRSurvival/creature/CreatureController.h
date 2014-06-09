@@ -24,4 +24,7 @@ public:
 
     // Default destructor.
     virtual ~CreatureController ();
+
+    // Update creatures state, animation and effects.
+    void update ();
 };

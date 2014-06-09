@@ -17,7 +17,7 @@
 
     \base class: Animated, Dynamic, Effectable
     */
-class Creature : public Animated<Textures::ITEMS>, public Dynamic, public Effectable {
+class Creature : public Animated<Textures::CREATURES>, public Dynamic, public Effectable {
 public:
     // Default constructor.
     Creature ();

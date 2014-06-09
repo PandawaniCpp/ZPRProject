@@ -63,11 +63,20 @@ public:
 
     // Identificator of an object.
     typedef struct EntityInfo {
+        EntityInfo () : type (Entities::NONE), id (0) {
+        };
+
         EntityInfo (Entities::ID type, const unsigned int id) : type (type), id (id) {
         }
+
+        EntityInfo operator= (const EntityInfo & entityInfo) {
+            EntityInfo temp (entityInfo.type, entityInfo.id);
+            return temp;
+        }
+
         Entities::ID type;
         const unsigned int id;
-    };
+    } EntityInfo;
 
     // Used to create scene nodes.
     typedef std::shared_ptr<GameObject> ObjectPtr;

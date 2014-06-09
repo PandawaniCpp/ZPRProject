@@ -15,7 +15,7 @@ GameState::GameState (StateStack & stack, Context context)
     stateID = States::GAME;
     
     // Insert possible collision connections between entities.
-    collisionMatches.insert (std::make_pair (Entities::PLAYER, Entities::PREDATOR));
+    collisionMatches.insert (std::make_pair (Entities::PLAYER, Entities::ZOMBIE));
 }
 
 void GameState::draw () {
@@ -46,6 +46,7 @@ bool GameState::update (sf::Time dt) {
     // Update player.
     context.game->playerController.update ();
     context.game->itemController.updateEntities ();
+    context.game->creatureController.update ();
 
     collisionHandle ();
 
@@ -137,7 +138,7 @@ void GameState::onDestroy () {
 }
 
 void GameState::collisionHandle () {
-    checkCollisionMatch (Entities::PLAYER, Entities::PREDATOR);
+    checkCollisionMatch (Entities::PLAYER, Entities::ZOMBIE);
 }
 
 bool GameState::checkCollisionMatch (Entities::ID entityA, Entities::ID entityB) {

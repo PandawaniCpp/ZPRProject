@@ -10,7 +10,7 @@
 
 #include "GameObject.h"
 b2World GameObject::boxWorld = b2World (b2Vec2 (0.0f, 0.0f));
-unsigned int GameObject::GLOBAL_ID = 0;
+unsigned int GameObject::GLOBAL_ID = 1;
 
 GameObject::GameObject () {
 }
