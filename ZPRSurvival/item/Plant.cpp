@@ -5,8 +5,8 @@ sf::Texture Plant::texture = sf::Texture();
 
 Plant::Plant(const sf::Vector2f& position) {
 
-	eatTime = sf::seconds(0.3f);
-	addTime = sf::seconds(0.05f);
+	eatTime = sf::seconds(2.5f);
+	addTime = sf::seconds(0.2f);
 	lastEatTime = sf::seconds(0.f) ;
 	lastAddTime = sf::seconds(0.f);
 	setTexture(texture);
@@ -55,9 +55,8 @@ sf::RectangleShape Plant::getFoodAmountBar() {
 }
 
 
-
 void Plant::loadTexture() {
-	texture.loadFromFile("./content/scenery/bush.png");
+	texture.loadFromFile("./resources/textures/items/bush.png");
 }
 
 void Plant::isEaten() {

@@ -171,55 +171,15 @@ PoissonDiskSampling * WorldMapView::getPoisson (){
 }
 
 void WorldMapView::update() {
-
-	//Logger log = Logger::getInstance();
-	sf::Vector2f midScreen = getPosition();
-	midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
-	midScreen.y = midScreen.y + GraphicsOptions::videoMode.height / 2;
-
-	//calculate chunk position
-	int posX = static_cast<int>(midScreen.x / (CHUNK_SIZE / SQRT2));
-	int posY = static_cast<int>(midScreen.y / (CHUNK_SIZE / SQRT2));
 	int maxX = static_cast<int> (mapa->getWidth() / (CHUNK_SIZE / SQRT2));
 	int maxY = static_cast<int> (mapa->getHeight() / (CHUNK_SIZE / SQRT2));
 
-	//creating chunks
-	if (last.x != posX || last.y != posY) {
-		last.x = posX;
-		last.y = posY;
-
-
-
-		for (int x = posX - 5; x <= posX + 5; ++x) {
-			for (int y = posY - 5; y <= posY + 5; ++y) {
-				// if isn't outside the ma	
-				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
-					// if it's not created yet
-					if (!chunkArray[x][y]) {
-						//create				
-						chunkArray[x][y] = new ChunkView();
-						chunkArray[x][y]->setObiectArray(poisson->getPositions()[x][y]);
-					}
-				}
-
-			}
+	for (int i = 0; i < maxX; ++i) {
+		for (int j = 0; j < maxY; ++j) {
+			chunkArray[i][j]->update();
 		}
-
-		for (int x = posX - 13; x <= posX + 13; ++x) {
-			for (int y = posY - 13; y <= posY + 13; ++y) {
-				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
-					if ((abs(x - posX) == 13 || abs(y - posY) == 13)) {
-						if (chunkArray[x][y] != nullptr) {
-							delete chunkArray[x][y];
-							chunkArray[x][y] = nullptr;
-							//assert(chunkArray[x][y] != nullptr);
-						}
-					}
-				}
-			}
-		}
-
 	}
+
 }
 
 

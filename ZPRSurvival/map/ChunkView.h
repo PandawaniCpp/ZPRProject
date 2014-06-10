@@ -31,6 +31,8 @@ public:
 	*/
 	void setObiectArray(const std::vector<sf::Vector2f*> & vect);
 
+	void update();
+
 private:
 		//pointer to chunk
 		Chunk* chunk;

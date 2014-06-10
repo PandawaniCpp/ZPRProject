@@ -3,7 +3,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "./../interface/Logger.h"
-#include "./../content/scenery/Plant.h"
+#include "./../item/Plant.h"
 
 /*
 	chunk is a sector of the map, on withc are placed plats

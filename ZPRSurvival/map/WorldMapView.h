@@ -6,7 +6,6 @@
 #include "WorldMap.h"
 #include "ChunkView.h"
 #include "./PoissonDiskSampling.h"
-#include "../content/scenery/Plant.h"
 
 #define CHUNK_SIZE 700
 #define SQRT2 1.414213
@@ -46,5 +45,4 @@ private:
 	sf::Vector2i last;
 	PoissonDiskSampling * poisson;
 	ChunkArray chunkArray;
-	Plant* plant;
 };

@@ -17,8 +17,14 @@ void ChunkView::setObiectArray(const std::vector<sf::Vector2f*> & vect) {
 void ChunkView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	std::vector<Plant*> obj = chunk->getObjects();
 	for (auto& iterator : obj) {
-		iterator->update();
 		target.draw(*iterator, states);
 		target.draw(iterator->getFoodAmountBar(), states);
+	}
+}
+
+void ChunkView::update() {
+	std::vector<Plant*> obj = chunk->getObjects();
+	for (auto& iterator : obj) {
+		iterator->update();
 	}
 }

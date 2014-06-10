@@ -1,8 +1,8 @@
 #pragma once
-#include "../../classes/Effectable.h"
+#include "../classes/Effectable.h"
 #include <SFML/Graphics.hpp>
-#include "../../interface/Logger.h"
-#include "../../item/ItemController.h"
+#include "../interface/Logger.h"
+#include "../item/ItemController.h"
 #define MAX_FOOD 100.f
 #define BAR_LENGTH 150.f
 /*
