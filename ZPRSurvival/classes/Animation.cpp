@@ -21,5 +21,5 @@ Animation::Animation (Textures::ANIMATIONS id, std::string filename, sf::Vector3
 	this->setTexture (animationHolder.get (Textures::A_LOADING_ANIM));
 }
 
-Animation::~Animation () {
+Animation::~Animation () { 
 }

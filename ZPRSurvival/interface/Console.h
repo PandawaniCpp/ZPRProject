@@ -44,7 +44,7 @@ public:
 	void setFont (const sf::Font & font);
 
 	// Set new transparent background accordingly to the current VideoMode size.
-	void Console::refresh ();
+	void refresh ();
 
 	// Draw console on the screen with given params.
 	// \see Console::params

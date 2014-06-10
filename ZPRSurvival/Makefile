@@ -5,11 +5,13 @@
 # Każdy nowy plik z rozszerzeniem .cpp trzeba dołączyć do zmiennej OBJECTS z rozszerzeniem .o
 
 OBJECTS=classes/Animated.o \
+classes/Animation.o \
 classes/Dynamic.o \
 classes/Effectable.o \
 classes/GameObject.o \
 classes/Effect.o \
 creature/Creature.o \
+creature/CreatureController.o \
 interface/KeyboardInterface.o \
 interface/MouseInterface.o \
 interface/EntityFactory.o \
@@ -17,8 +19,18 @@ interface/Game.o \
 interface/Logger.o \
 interface/Console.o \
 interface/CommandQueue.o \
+interface/ContactListener.o \
+interface/Utility.o \
+interface/states/GameState.o \
+interface/states/PauseState.o \
+interface/states/LoadState.o \
+interface/states/MenuState.o \
+interface/states/State.o \
+interface/states/StateStack.o \
+interface/states/TitleState.o \
 item/Item.o \
 item/ItemController.o \
+item/Plant.o \
 map/Chunk.o \
 map/ChunkView.o \
 map/PoissonDiskSampling.o \

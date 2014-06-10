@@ -49,7 +49,7 @@ public:
 
 private:
 	// Resource container - type and pointer.
-	std::map<Identifier, std::unique_ptr<Resource >> resourceMap;
+	std::map<Identifier, Resource*> resourceMap;
 };
 
 //------------------------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ ResourceHolder<Resource, Identifier>::~ResourceHolder () {
 template <typename Resource, typename Identifier>
 void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::string& filename)
 {
-	std::unique_ptr<Resource> resource (new Resource ());
+	Resource* resource (new Resource ());
 		//if file doesn't exist, we must terminate the game
 	if (!resource->loadFromFile (filename))		
 		throw std::runtime_error ("ResourceHolder::load - Failed to load " + filename);
@@ -79,7 +79,7 @@ template <typename Resource, typename Identifier>
 template <typename Parameter>
 void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::string& filename, const Parameter& secondParam)
 {
-	std::unique_ptr<Resource> resource (new Resource ());
+	Resource resource (new Resource ());
 	if (!resource->loadFromFile (filename, secondParam))
 		throw std::runtime_error ("ResourceHolder::load - Failed to load " + filename);
 	auto inserted = resourceMap.insert (std::make_pair (id, std::move (resource)));
