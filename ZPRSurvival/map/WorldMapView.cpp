@@ -52,6 +52,9 @@ void WorldMapView::initialize() {
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
 	Logger::getInstance() << "koniec";
 	Logger::getInstance() << std::endl;
+
+	plant = new Plant();
+	plant->setPosition(5100, 5100);
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -96,6 +99,8 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 
+	target.draw(*plant, states);
+	
 	
 }
 

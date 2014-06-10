@@ -9,7 +9,7 @@
 #define KMAX 30
 #define PI 3.1415
 #define DEFAULT_SEED 12483201
-#define DISTANCE 100.0
+#define DISTANCE 300.0
 /*
 Poisson Disk Sampling class is a class wich computes positions of all objects inluded in game, like trees, stones, buildings and so on.
 It also return in vector size of point (trees are bigger than blades of grass)

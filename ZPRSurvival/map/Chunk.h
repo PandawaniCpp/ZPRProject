@@ -3,6 +3,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "./../interface/Logger.h"
+#include "./../content/scenery/Plant.h"
 class Chunk:
 	public GameObject {
 public:
@@ -12,11 +13,11 @@ public:
 	void unload();
 	void setPositionsVector(const std::vector<sf::Vector2f*> & vect);
 	void setObjcets(const sf::Vector2f * wsp);
-	std::vector<sf::CircleShape*> getObjects();
+	std::vector<Plant*> getObjects();
 private:
 	//teksturyyyyyy
 	std::vector<sf::Vector2f*> positions;
-	std::vector<sf::CircleShape*> objects;
+	std::vector<Plant*> objects;
 
 };
 
