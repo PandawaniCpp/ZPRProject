@@ -1,5 +1,5 @@
 /**
-	@author	Pawel Kaczynski
+	
 	@date	15.05.2014
 
 	Part of the #TITLE survival game.
