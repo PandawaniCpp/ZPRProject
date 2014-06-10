@@ -36,7 +36,7 @@ namespace Textures {
 
     enum CREATURES {
         C_INIT,
-        C_WOLF,
+        C_ZOMBIE,
         C_END
     };
 
@@ -76,6 +76,9 @@ namespace Entities {
         NONE,
         PLAYER,
         WALL,
+        PREDATOR,
+        HERBIVORE,
+        ZOMBIE,
         ENTITIES_COUNT
     };
 }

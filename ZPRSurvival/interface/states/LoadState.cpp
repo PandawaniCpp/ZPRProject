@@ -96,7 +96,7 @@ void LoadState::onDestroy () {
 }
 
 void LoadState::init () {
-    context.game->worldMap = new WorldMapView (time (NULL), 0.65, 5000.0, 8, 5000, 5000);
+    context.game->worldMap = new WorldMapView (time (NULL), 0.9, 5000.0, 2, 5000, 5000);
     context.game->entitiesInit ();
     context.game->layersInit ();
     context.game->objectsInit ();

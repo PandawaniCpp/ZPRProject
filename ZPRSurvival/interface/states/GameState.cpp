@@ -13,6 +13,9 @@
 GameState::GameState (StateStack & stack, Context context)
 : State (stack, context) {
     stateID = States::GAME;
+    
+    // Insert possible collision connections between entities.
+    collisionMatches.insert (std::make_pair (Entities::PLAYER, Entities::ZOMBIE));
 }
 
 void GameState::draw () {
@@ -43,6 +46,9 @@ bool GameState::update (sf::Time dt) {
     // Update player.
     context.game->playerController.update ();
     context.game->itemController.updateEntities ();
+    context.game->creatureController.update (context.game->playerController[0]->getPosition());
+
+    collisionHandle ();
 
     // Apply physics to b2World
     Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
@@ -129,4 +135,18 @@ void GameState::onActivate () {
 
 void GameState::onDestroy () {
 
+}
+
+void GameState::collisionHandle () {
+    checkCollisionMatch (Entities::PLAYER, Entities::ZOMBIE);
+}
+
+bool GameState::checkCollisionMatch (Entities::ID entityA, Entities::ID entityB) {
+    auto matchA = collisionMatches.find (std::make_pair (entityA, entityB));
+    auto matchB = collisionMatches.find (std::make_pair (entityB, entityA));
+
+    if (matchA != collisionMatches.end () || matchB != collisionMatches.end ())
+        return true;
+    else
+        return false;
 }

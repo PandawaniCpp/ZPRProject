@@ -1,11 +1,11 @@
 /**
-	@date	15.05.2014
+    @date	15.05.2014
 
-	Part of the #TITLE survival game.
+    Part of the #TITLE survival game.
 
-	This software is provided 'as-is', without any express or implied warranty.
-	In no event will the authors be held liable for any damages arising from the use of this software.
-	*/
+    This software is provided 'as-is', without any express or implied warranty.
+    In no event will the authors be held liable for any damages arising from the use of this software.
+    */
 
 #pragma once
 #include "State.h"
@@ -13,22 +13,22 @@
 
 class TitleState : public State {
 public:
-	// Constructor.
-	TitleState (StateStack & stack, Context context);
+    // Constructor.
+    TitleState (StateStack & stack, Context context);
 
-	virtual void draw ();
-	virtual bool update (sf::Time dt);
+    virtual void draw ();
+    virtual bool update (sf::Time dt);
     virtual bool handleEvent (const Command * command);
 
-	virtual void onActivate ();
-	virtual void onDestroy ();
+    virtual void onActivate ();
+    virtual void onDestroy ();
 
 private:
-	sf::Text text;
-	sf::Texture texture;
-	sf::Sprite background;
-	sf::Time textEffectTime;
-	bool textVisible;
-	
+    sf::Text text;
+    sf::Texture texture;
+    sf::Sprite background;
+    sf::Time textEffectTime;
+    bool textVisible;
+    
 };
 
