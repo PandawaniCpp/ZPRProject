@@ -27,10 +27,10 @@ void GameObject::attachChild (ObjectPtr child)
 void GameObject::detachChild (const GameObject& node)
 {
     // Lambda-expression search for child; return true if found.
-    auto found = std::find_if (children.begin (), children.end (), [&] (ObjectPtr& p) -> bool { return p.get () == &node; });
+    auto found = std::find_if (children.begin (), children.end (), [&] (ObjectPtr& p) -> bool { return p == &node; });
     assert (found != children.end ());
-    ObjectPtr result = std::move (*found);		// Assign child pointer to 'result'.
-    result->parent = nullptr;				// Erase parent.
+    //ObjectPtr result = std::move (*found);		// Assign child pointer to 'result'.
+    //node->parent = nullptr;				// Erase parent.
     children.erase (found);					// Erase child.
 }
 
@@ -40,6 +40,18 @@ void GameObject::detachAllChilds () {
             children[i]->detachAllChilds ();
         detachChild (*children[i]);
     }
+}
+
+void GameObject::detachById (const unsigned id) {
+    if (children.size () > 0)
+        for (const ObjectPtr& child : children) {
+            if (child->entityInfo.id == id) {
+                detachChild (*child);
+                break;
+            }
+            else
+                child->detachById (id);
+        }                
 }
 
 void GameObject::draw (sf::RenderWindow* window) const {
@@ -91,7 +103,8 @@ void GameObject::createB2Body (Prefab prefab) {
     boxBody->SetTransform (boxBody->GetPosition (), prefab.rotation);
     boxBody->SetAngularDamping (prefab.angularDamping);
     boxBody->SetLinearDamping (prefab.linearDamping);
-    entityInfo = EntityInfo (prefab.id, getGlobalID());
+    entityInfo.type = prefab.id;
+    entityInfo.id = getGlobalID();
     boxBody->SetUserData (&entityInfo);
 
     // Fixture definition.
@@ -110,4 +123,8 @@ void GameObject::createB2Body (Prefab prefab) {
 
 b2Body * GameObject::getBody () {
     return boxBody;
+}
+
+GameObject::EntityInfo & GameObject::getEntityInfo () {
+    return entityInfo;
 }

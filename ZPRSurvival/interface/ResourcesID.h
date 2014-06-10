@@ -95,6 +95,7 @@ namespace Commands {
         RES_DOWN,
         SET_FULLSCREEN,
         SAVE_MAP_TO_IMG,
+        START_SIMULATION,
 
         MOVE_FORWARD,
         STOP_FORWARD,

@@ -130,10 +130,9 @@ private:
     // Game parameters
     std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).
     sf::Time timePerFrame;			// Keep the frame duration fixed.
-    float currentFPS = 0;				// Keeps current (actual) fps value
+    float currentFPS = 0.f;				// Keeps current (actual) fps value
     States::ID state;				// Describe, in which state the game is in the moment.
-    sf::FloatRect worldBounds;			// World size (in px).
-    //Vector2f mousePosition;			// Mouse position
+    //sf::FloatRect worldBounds;			// World size (in px).
     ResourceHolder<sf::Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 
     // Additional variables
