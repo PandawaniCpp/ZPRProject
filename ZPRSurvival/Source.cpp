@@ -13,8 +13,6 @@
 #include "player/Player.h"
 #include "interface/Game.h"
 #include "interface/Logger.h"
-#include "MidpointDisplacementNoise.h"
-#include "MapGenerator.h"
 
 /**
 	Mainly the game main function.
