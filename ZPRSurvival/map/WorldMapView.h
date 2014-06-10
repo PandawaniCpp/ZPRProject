@@ -8,7 +8,7 @@
 #include "./PoissonDiskSampling.h"
 #include "../content/scenery/Plant.h"
 
-#define CHUNK_SIZE 300
+#define CHUNK_SIZE 700
 #define SQRT2 1.414213
 
 class WorldMapView :

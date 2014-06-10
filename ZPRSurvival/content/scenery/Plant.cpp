@@ -1,6 +1,5 @@
 #include "Plant.h"
 
-bool Plant::isTexture = false;
 sf::Texture Plant::texture = sf::Texture();
 
 
@@ -81,5 +80,5 @@ void Plant::setBar() {
 	float colorParameter;
 	colorParameter = foodAmount / MAX_FOOD;
 	foodAmountBar.setFillColor(sf::Color((255 - static_cast<int>(colorParameter * 255)), (static_cast<int>(colorParameter * 255)), 0));
-	foodAmountBar.setSize(sf::Vector2f(static_cast<int>(colorParameter * 255), 10));
+	foodAmountBar.setSize(sf::Vector2f(static_cast<int>(colorParameter * 155), 10));
 }
