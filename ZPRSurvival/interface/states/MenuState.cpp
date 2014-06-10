@@ -43,7 +43,7 @@ void MenuState::onActivate () {
 
     text.setFont (game->fontHolder.get (Fonts::F_MENU));
     text.setStyle (sf::Text::Bold);
-    text.setColor (sf::Color (50, 50, 50, 255));
+    text.setColor (sf::Color (200, 200, 200, 255));
     text.setCharacterSize (25);
     text.setString ("MENU\nPress any key to continue...");
     centerOrigin (text);
