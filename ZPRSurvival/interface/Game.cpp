@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,8 +14,8 @@
 #include "states/LoadState.h"
 #include "states/PauseState.h"
 
-// #TITLE
-std::string Game::TITLE = "#TITLE";
+// Game Title
+std::string Game::TITLE = "Vege Zombies";
 
 Game::Game ()
 : stateStack (new StateStack (this)) {
@@ -31,7 +31,6 @@ Game::~Game () {
     delete stateStack;
 
     // Scene graph's destructor deallocates all graph's objects (all views).
-    // #TODO CHECK THIS
 }
 
 void Game::initialize () {
@@ -48,12 +47,6 @@ void Game::initialize () {
     // Set fonts
     fontHolder.load (Fonts::F_MENU, "resources/segoeuil.ttf");
     fontHolder.load (Fonts::F_CONSOLE, "resources/droidmono.ttf");
-
-    // World information 
-    // #TODO Delete this crap?
-    //worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
-    //worldBounds.height = 10000;					// World size
-    //worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
 
     // Create states hierarchy and initialize first state.
     registerStates ();
@@ -106,9 +99,6 @@ void Game::registerStates () {
     stateStack->registerState<MenuState> (States::MENU);
     stateStack->registerState<LoadState> (States::LOAD);
     stateStack->registerState<PauseState> (States::PAUSE);
-    /*stateStack->registerState<SettingsState> (States::Settings);
-    stateStack->registerState<GameOverState> (States::GameOver, "Mission Failed!");
-    stateStack->registerState<GameOverState> (States::MissionSuccess, "Mission Successful!");*/
 }
 
 void Game::entitiesInit () {
@@ -130,8 +120,6 @@ void Game::layersInit () {
     sceneLayers[Game::MAP]->attachChild (GameObject::ObjectPtr (worldMap));
     sceneLayers[Game::PLAYER]->attachChild (GameObject::ObjectPtr (playerController[0]));
     sceneLayers[Game::ITEMS]->attachChild (GameObject::ObjectPtr (itemController[0]));
-    //sceneLayers[Game::CREATURES]->attachChild (GameObject::ObjectPtr (creatureController[0]));
-
 }
 
 void Game::objectsInit () {
@@ -152,13 +140,6 @@ void Game::applyOptions () {
     if (GraphicsOptions::optionsInitialized)
         gameWindow->create (GraphicsOptions::videoMode, Game::TITLE, GraphicsOptions::videoStyle);
     console->update ("current resolution", GraphicsOptions::getCurrentResolution ());
-
-    // Set scaling for new resolution ratio
-    //
-
-    // #TODO Do we need this?
-    // If needed, set black stripes at the top and bottom of the screen
-    //
 
     // Update sf::View
     worldView = gameWindow->getDefaultView ();
@@ -214,10 +195,6 @@ void Game::commandInterpret () {
             sceneGraph.passCommand (command, PlayerController::deltaTime);
         }
     }
-}
-
-void Game::gameCommandExecute (Command * command) {
-   // #TODO REMOVE !!!
 }
 
 void Game::update () {

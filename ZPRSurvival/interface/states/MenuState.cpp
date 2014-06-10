@@ -1,7 +1,7 @@
 /**
     @date	15.05.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,7 +25,7 @@ bool MenuState::update (sf::Time dt) {
 }
 
 bool MenuState::handleEvent (const Command * command) {
-    // "Press any key to continue"      #TODO IMPLEMENT BUTTONS
+    // "Press any key to continue"      
     if (command->commandType == Commands::PRESS_ANY_KEY) {
         requestStackPop ();
         requestStackPush (States::LOAD);

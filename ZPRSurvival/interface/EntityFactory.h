@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -26,7 +26,6 @@ public:
     static std::map<Entities::ID, GameObject::Prefab> prefabs;
 
     // Initialize all prefabs.
-    // #TODO make this to load prefab from binary file/-s.
     static void prefabInit ();
 
     template <class Type>	// Creates entity matching template parameter and arguments.
@@ -60,7 +59,7 @@ Type * EntityFactory::createEntity (Entities::ID entityId, sf::Texture & texture
                                                    size.y / 2.f / GraphicsOptions::pixelPerMeter);
         }
         else if (prefabs[entityId].circleShape != nullptr) {
-            // #TODO Fill this
+            
         }
     }
 

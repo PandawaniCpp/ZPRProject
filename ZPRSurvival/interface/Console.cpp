@@ -1,7 +1,7 @@
 /**
 	@date	03.04.2014
 
-	Part of the #TITLE survival game.
+	Part of the Vege Zombies survival game.
 
 	This software is provided 'as-is', without any express or implied warranty.
 	In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,7 +28,7 @@ Console::Console () {
 	dy = fontSize + 5;
 
 	// Set available keys.
-	keys.push_back ("#TITLE v.");
+	keys.push_back ("Vege Zombies v.");
 	keys.push_back ("fps");
 	keys.push_back ("x");
 	keys.push_back ("y");
@@ -45,7 +45,7 @@ Console::Console () {
 	keys.push_back ("avail. resolutions");		// <- Should be the last one
 
 	// Set default param to game title and version.
-	this->insert ("#TITLE v.", "0.8.1");
+	this->insert ("Vege Zombies v.", "1.0.1");
 }
 
 Console::~Console () {
@@ -129,7 +129,7 @@ void Console::draw (sf::RenderWindow * window) const {
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::Yellow);
 		tempText.setString (it->second);
-		tempText.setPosition (vec.x + 150, vec.y + pos);	// #TODO Set scaling to window accordingly
+		tempText.setPosition (vec.x + 150, vec.y + pos);	
 		window->draw (tempText);
 		if (it->first == "current resolution")
 			tempText.setColor (sf::Color::White);

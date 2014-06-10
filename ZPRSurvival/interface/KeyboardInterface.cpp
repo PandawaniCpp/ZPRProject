@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -81,7 +81,7 @@ Command * KeyboardInterface::pressedKeyHandle (States::ID state, sf::Keyboard::K
     if (found != pressedKeyBindings.end ())
         return &actionBindings[found->second];
     else 
-        return new Command();   //  #TODO RETURN Commands::NONE command instead of this
+        return new Command();   
 }
 
 Command * KeyboardInterface::releasedKeyHandle (States::ID state, sf::Keyboard::Key key) {
@@ -89,7 +89,7 @@ Command * KeyboardInterface::releasedKeyHandle (States::ID state, sf::Keyboard::
     if (found != releasedKeyBindings.end ())
         return &actionBindings[found->second];
     else
-        return new Command();   //  #TODO RETURN Commands::NONE command instead of this
+        return new Command();   
 }
 
 void KeyboardInterface::insertKeyBinding (bool pressed, sf::Keyboard::Key key, int stateFlags, Commands::ID command) {

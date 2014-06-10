@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -41,7 +41,7 @@ void PlayerController::controlStates () {
     Textures::PLAYER textureOld = entityHolder[0]->getCurrentAnimation ();
     Textures::PLAYER textureNew;
     if (entityHolder[0]->getDirection() == 0) {
-        if (HYPOTEN_VEC (entityHolder[0]->getBody ()->GetLinearVelocity ()) > 0.1f)	// #TODO CHANGE THIS TO SOME CONSTANT
+        if (HYPOTEN_VEC (entityHolder[0]->getBody ()->GetLinearVelocity ()) > 0.1f)	
             textureNew = Textures::P_WALK;
         else
             textureNew = Textures::P_IDLE;

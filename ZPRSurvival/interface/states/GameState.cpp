@@ -1,7 +1,7 @@
 /**
     @date	15.05.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -146,7 +146,7 @@ void GameState::collisionHandle () {
             GameObject::EntityInfo * infoA = static_cast<GameObject::EntityInfo*>(bA->GetUserData ());
             GameObject::EntityInfo * infoB = static_cast<GameObject::EntityInfo*>(bB->GetUserData ());
             if (checkCollisionMatch (infoA->type, infoB->type)) {
-                // #TEMP
+               
                 contact = contact->GetNext ();
                 if (infoA->type == Entities::ZOMBIE || infoB->type == Entities::ZOMBIE) {
                     if (infoA->type == Entities::PLAYER || infoB->type == Entities::PLAYER)

@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,7 +13,7 @@ CreatureController::CreatureController () {
     Creature::insertFrameData (Textures::C_ZOMBIE, sf::Vector3<int> (150, 150, 8));
 
     // Load item textures
-    for (unsigned int i = Textures::C_INIT + 1; i < Textures::C_END; ++i) {		        // #TODO INACZEJ !!!!
+    for (unsigned int i = Textures::C_INIT + 1; i < Textures::C_END; ++i) {		       
         textureHolder.load (static_cast<Textures::CREATURES>(i), "resources/textures/creatures/zombie.png", sf::IntRect (
             0,
             Creature::frameData[static_cast<Textures::CREATURES>(i)].y*(i - Textures::C_INIT - 1),
@@ -29,15 +29,10 @@ CreatureController::~CreatureController () {
 void CreatureController::update (sf::Vector2f playerPosition) {
     this->playerPosition = playerPosition;
     
-    // #TEMP
     for (auto & entity : entityHolder)
         entity->moveToPoint ();
-    // ------
-
-    //controlStates ();
-    //controlEffects ();
+  
     updateEntities ();
-    //->sceneGraph.detachById (infoA->type == Entities::ZOMBIE ? infoA->id : infoB->id);
 }
 
 void CreatureController::start () {

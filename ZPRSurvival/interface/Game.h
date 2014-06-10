@@ -1,7 +1,7 @@
 /**
     @date	03.04.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -89,9 +89,6 @@ private:
     // Interprets commands and pass them into scene graph if necessary.
     void commandInterpret ();
 
-    // Execute commands for Game and interface.
-    void gameCommandExecute (Command * command);
-
     // Interprets keys actions depending on state.
     // \param  key - key pressed/released
     void keyboardInput (const sf::Event event);
@@ -106,7 +103,7 @@ private:
     // Draw the whole gameScene on the screen.
     void render ();
 
-    // #TEMP
+    // Draw all objects.
     void draw ();
 
     // Attach new GameObject to given layer.
@@ -134,7 +131,6 @@ private:
     sf::Time timePerFrame;			// Keep the frame duration fixed.
     float currentFPS = 0.f;				// Keeps current (actual) fps value
     States::ID state;				// Describe, in which state the game is in the moment.
-    //sf::FloatRect worldBounds;			// World size (in px).
     ResourceHolder<sf::Font, Fonts::ID> fontHolder;		//Keep all game's fonts. Pass them lower if necessary.
 
     // Additional variables

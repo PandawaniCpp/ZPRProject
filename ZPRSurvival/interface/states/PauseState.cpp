@@ -1,7 +1,7 @@
 /**
     @date	15.05.2014
 
-    Part of the #TITLE survival game.
+    Part of the Vege Zombies survival game.
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,7 +25,7 @@ bool PauseState::update (sf::Time dt) {
 }
 
 bool PauseState::handleEvent (const Command * command) {
-    // "Press any key to continue"	#TODO Implement buttons
+    // "Press any key to continue"	
     switch (command->commandType) {
         case Commands::G_RESUME: requestStackPop (); break;
         case Commands::G_EXIT: requestStateClear (); game->gameWindow->close (); break;
