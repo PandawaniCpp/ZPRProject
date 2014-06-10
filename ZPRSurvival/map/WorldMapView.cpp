@@ -196,3 +196,14 @@ void WorldMapView::createChunks() {
 		}
 	}
 }
+
+void WorldMapView::decreaseFoodAmount(const unsigned long long id){
+	int maxX = static_cast<int> (mapa->getWidth() / (CHUNK_SIZE / SQRT2));
+	int maxY = static_cast<int> (mapa->getHeight() / (CHUNK_SIZE / SQRT2));
+	for (int i = 0; i < maxX; ++i) {
+		for (int j = 0; j < maxY; ++j) {
+			chunkArray[i][j]->decreaseFood(id);
+		}
+	}
+
+}

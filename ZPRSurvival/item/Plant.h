@@ -43,12 +43,7 @@ public:
 	*/
 	void isEaten();
 
-	/*
-	increases amount of food
-	*/
-	void addFood();
 private:
-	
 	// amount of food
 	float foodAmount;
 	//bar which represents amount of food
@@ -68,4 +63,10 @@ private:
 		sets length and color of foodAmountBar
 	*/
 	void setBar();
+
+	/*
+	increases amount of food
+	*/
+	void addFood();
+	
 };

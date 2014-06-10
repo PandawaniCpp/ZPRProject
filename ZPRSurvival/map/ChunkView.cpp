@@ -28,3 +28,12 @@ void ChunkView::update() {
 		iterator->update();
 	}
 }
+
+void ChunkView::decreaseFood(const unsigned long long id) {
+	std::vector<Plant*> obj = chunk->getObjects();
+	for (auto& iterator : obj) {
+		if (iterator->getEntityInfo().id == id)
+			iterator->isEaten();
+	}
+
+}
