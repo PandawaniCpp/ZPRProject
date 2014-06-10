@@ -19,5 +19,6 @@ void ChunkView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 	for (auto& iterator : obj) {
 		iterator->update();
 		target.draw(*iterator, states);
+		target.draw(iterator->getFoodAmountBar(), states);
 	}
 }

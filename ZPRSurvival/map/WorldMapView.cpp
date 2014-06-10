@@ -54,8 +54,6 @@ void WorldMapView::initialize() {
 	Logger::getInstance() << std::endl;
 	Plant::loadTexture();
 	createChunks();
-	//plant = new Plant();
-	//plant->setPosition(5100, 5100);
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
