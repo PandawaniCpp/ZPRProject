@@ -44,10 +44,6 @@ void Plant::update() {
 		lastAddTime = sf::seconds(0.f);
 		addFood();
 	}
-	if (lastEatTime > eatTime) {
-		lastEatTime = sf::seconds(0.f);
-		isEaten();
-	}
 }
 
 sf::RectangleShape Plant::getFoodAmountBar() {
@@ -60,11 +56,14 @@ void Plant::loadTexture() {
 }
 
 void Plant::isEaten() {
-	foodAmount -= 40;
-	if (foodAmount < 0) {
-		foodAmount = 0;
+	if (lastEatTime > eatTime) {
+		lastEatTime = sf::seconds(0.f);
+		foodAmount -= 40;
+		if (foodAmount < 0) {
+			foodAmount = 0;
+		}
+		setBar();
 	}
-	setBar();
 }
 
 void Plant::addFood() {

@@ -33,6 +33,8 @@ public:
 
 	void update();
 
+	void decreaseFood(const unsigned long long id);
+
 private:
 		//pointer to chunk
 		Chunk* chunk;

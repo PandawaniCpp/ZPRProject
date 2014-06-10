@@ -25,6 +25,7 @@ public:
 	sf::Vector2f getViewPosition();
 	sf::Vector2f getWorldBounds();
 	PoissonDiskSampling * getPoisson ();
+	void decreaseFoodAmount(const unsigned long long id);
 	
 private:
 	void initialize();
