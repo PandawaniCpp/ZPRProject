@@ -78,6 +78,7 @@ namespace Entities {
         PREDATOR,
         HERBIVORE,
         ZOMBIE,
+        PLANT,
         ENTITIES_COUNT
     };
 }

@@ -52,9 +52,10 @@ void WorldMapView::initialize() {
 	chunkArray.resize(chunksInX, std::vector<ChunkView*>(chunksInY, nullptr));
 	Logger::getInstance() << "koniec";
 	Logger::getInstance() << std::endl;
-
-	plant = new Plant();
-	plant->setPosition(5100, 5100);
+	Plant::loadTexture();
+	createChunks();
+	//plant = new Plant();
+	//plant->setPosition(5100, 5100);
 }
 
 void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -99,7 +100,7 @@ void WorldMapView::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 
-	target.draw(*plant, states);
+	//target.draw(*plant, states);
 	
 	
 }
@@ -172,6 +173,7 @@ PoissonDiskSampling * WorldMapView::getPoisson (){
 }
 
 void WorldMapView::update() {
+
 	//Logger log = Logger::getInstance();
 	sf::Vector2f midScreen = getPosition();
 	midScreen.x = midScreen.x + GraphicsOptions::videoMode.width / 2;
@@ -205,10 +207,10 @@ void WorldMapView::update() {
 			}
 		}
 
-		for (int x = posX - 6; x <= posX + 6; ++x) {
-			for (int y = posY - 6; y <= posY + 6; ++y) {
+		for (int x = posX - 13; x <= posX + 13; ++x) {
+			for (int y = posY - 13; y <= posY + 13; ++y) {
 				if ((x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)) {
-					if ((abs(x - posX) == 6 || abs(y - posY) == 6)) {
+					if ((abs(x - posX) == 13 || abs(y - posY) == 13)) {
 						if (chunkArray[x][y] != nullptr) {
 							delete chunkArray[x][y];
 							chunkArray[x][y] = nullptr;
@@ -219,5 +221,20 @@ void WorldMapView::update() {
 			}
 		}
 
+	}
+}
+
+
+void WorldMapView::createChunks() {
+
+	int maxX = static_cast<int> (mapa->getWidth() / (CHUNK_SIZE / SQRT2));
+	int maxY = static_cast<int> (mapa->getHeight() / (CHUNK_SIZE / SQRT2));
+
+
+	for (int i = 0; i < maxX; ++i) {
+		for (int j = 0; j < maxY; ++j) {
+			chunkArray[i][j] = new ChunkView();
+			chunkArray[i][j]->setObiectArray(poisson->getPositions()[i][j]);
+		}
 	}
 }
