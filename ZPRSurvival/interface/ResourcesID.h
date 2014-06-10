@@ -80,6 +80,7 @@ namespace Entities {
         ZOMBIE,
         
         VISION_RANGE,
+        PLANT,
         ENTITIES_COUNT
     };
 }

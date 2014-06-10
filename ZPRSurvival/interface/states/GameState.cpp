@@ -70,8 +70,8 @@ bool GameState::update (sf::Time dt) {
     game->worldMap->setPosition (vec);
     //vec.y -= worldMap->getWorldBounds().y - GraphicsOptions::videoMode.height;		// !!!!!
     game->worldMap->setViewPosition (vec);
-    game->worldMap->update ();
-
+ /*   game->worldMap->update ();
+    */
     return true;
 }
 

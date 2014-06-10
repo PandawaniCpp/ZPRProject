@@ -29,6 +29,7 @@ public:
 	
 private:
 	void initialize();
+	void createChunks();
 
 	sf::Image* waterImage;
 	sf::Texture* waterTexture;
