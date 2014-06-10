@@ -44,6 +44,8 @@ Player::Player (GameObject::Prefab * prefab) {
 
     this->setOrigin (prefab->width * prefab->originX, prefab->height * prefab->originY);
     this->resetAnimation ();
+
+    applyVisionRange (Entities::PLANT, 1000);
 }
 
 Player::~Player () {

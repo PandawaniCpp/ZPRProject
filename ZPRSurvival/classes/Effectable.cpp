@@ -21,6 +21,14 @@ void Effectable::applyVisionRange (const Entities::ID target, const unsigned int
     prefab.id = Entities::VISION_RANGE;
     prefab.circleShape = new b2CircleShape;
     prefab.circleShape->m_radius = range / GraphicsOptions::pixelPerMeter;
-   
-    createB2Body (prefab);
+    
+    visionRange = new GameObject ();
+    visionRange->setOrigin (this->getLocalBounds ().width / 2.f, this->getLocalBounds ().height / 2.f);
+    visionRange->setPosition (this->getPosition ());
+    visionRange->createB2Body (prefab);
+}
+
+void Effectable::update () {
+    if (visionRange != nullptr)
+        visionRange->setPosition (this->getPosition ());
 }

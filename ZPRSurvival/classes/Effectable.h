@@ -33,6 +33,9 @@ public:
     // Creates range for seeking for particular entity.
     void applyVisionRange (const Entities::ID target, const unsigned int range);
 
+    // Updated vision range.
+    void update ();
+
 protected:
     Effect * effect;				// Stores current effect
     Effects::ID currentEffect;		// Current effect ID

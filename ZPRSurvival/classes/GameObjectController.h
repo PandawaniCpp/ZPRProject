@@ -103,8 +103,10 @@ void GameObjectController<Type, Identifier>::deleteById (const unsigned id) {
         if (x->getEntityInfo().id == id) {
             auto old = x;
             x = entityHolder.back ();
-            delete old;
             entityHolder.pop_back ();
+
+            GameObject::boxWorld.DestroyBody (old->getBody ());
+            delete old;
             break;
         }
 }
