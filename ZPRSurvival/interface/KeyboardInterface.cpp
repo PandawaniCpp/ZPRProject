@@ -25,6 +25,7 @@ void KeyboardInterface::assignKeys () {
     pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Comma, States::GAME), Commands::RES_DOWN));
     pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::F, States::GAME), Commands::SET_FULLSCREEN));
     pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::M, States::GAME), Commands::SAVE_MAP_TO_IMG));
+    pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::Space, States::GAME), Commands::START_SIMULATION));
 
     pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::W, States::GAME), Commands::MOVE_FORWARD));
     pressedKeyBindings.insert (std::make_pair (std::make_pair (sf::Keyboard::S, States::GAME), Commands::MOVE_BACKWARD));

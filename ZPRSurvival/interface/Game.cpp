@@ -51,9 +51,9 @@ void Game::initialize () {
 
     // World information 
     // #TODO Delete this crap?
-    worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
-    worldBounds.height = 10000;					// World size
-    worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
+    //worldBounds.top = worldBounds.left = 0.f;	// Top left corner (0, 0)
+    //worldBounds.height = 10000;					// World size
+    //worldBounds.width = 10000;					// #TODO put proper numbers from WorldMap
 
     // Create states hierarchy and initialize first state.
     registerStates ();
@@ -87,7 +87,8 @@ void Game::run () {
         render ();
 
         // Calculate and show the fps value of the previous frame
-        currentFPS = 1000.f / (float)clock.getElapsedTime ().asMilliseconds ();
+        if (clock.getElapsedTime ().asMilliseconds () != 0)
+            currentFPS = 1000.f / (float)clock.getElapsedTime ().asMilliseconds ();
         console->update ("fps", currentFPS);
         console->draw (gameWindow);
     }
@@ -109,16 +110,16 @@ void Game::registerStates () {
 }
 
 void Game::entitiesInit () {
-    playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (5000.f, 5000.f), sf::Vector2i (50, 50));		// #SETSPAWN
+    playerController.createEntity (Entities::PLAYER, Textures::P_IDLE, sf::Vector2f (4000.f, 4000.f), sf::Vector2i (50, 50));		// #SETSPAWN
     itemController.createEntity (Entities::WALL, Textures::I_WALL, sf::Vector2f (4500.f, 5000.f), sf::Vector2i (450, 300));
-    creatureController.createEntity (Entities::ZOMBIE, Textures::C_ZOMBIE, sf::Vector2f (4500.f, 4800.f), sf::Vector2i (150, 150));
+    creatureController.createEntity (Entities::ZOMBIE, Textures::C_ZOMBIE, sf::Vector2f (3000.f, 3000.f), sf::Vector2i (150, 150));
 }
 
 void Game::layersInit () {
     // Initialize game scene graph
     for (std::size_t i = 0; i < LAYER_COUNT; ++i) {
         GameObject::ObjectPtr layer (new GameObject ());
-        sceneLayers[i] = layer.get ();
+        sceneLayers[i] = layer;
         sceneGraph.attachChild (layer);
     }
 
@@ -127,7 +128,7 @@ void Game::layersInit () {
     sceneLayers[Game::MAP]->attachChild (GameObject::ObjectPtr (worldMap));
     sceneLayers[Game::PLAYER]->attachChild (GameObject::ObjectPtr (playerController[0]));
     sceneLayers[Game::ITEMS]->attachChild (GameObject::ObjectPtr (itemController[0]));
-    sceneLayers[Game::CREATURES]->attachChild (GameObject::ObjectPtr (creatureController[0]));
+    //sceneLayers[Game::CREATURES]->attachChild (GameObject::ObjectPtr (creatureController[0]));
 
 }
 

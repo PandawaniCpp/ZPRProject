@@ -30,12 +30,19 @@ void CreatureController::update (sf::Vector2f playerPosition) {
     this->playerPosition = playerPosition;
     
     // #TEMP
-    entityHolder[0]->setDestination (playerPosition);
-    entityHolder[0]->setIsFollowing (true);
-    entityHolder[0]->moveToPoint ();
+    for (auto & entity : entityHolder)
+        entity->moveToPoint ();
     // ------
 
     //controlStates ();
     //controlEffects ();
     updateEntities ();
+    //->sceneGraph.detachById (infoA->type == Entities::ZOMBIE ? infoA->id : infoB->id);
+}
+
+void CreatureController::start () {
+    for (auto & entity : entityHolder) {
+        entity->setDestination (playerPosition);
+        entity->setIsFollowing (true);
+    }
 }

@@ -28,6 +28,9 @@ public:
     // Update creatures state, animation and effects.
     void update (sf::Vector2f playerPosition);
 
+    // Starts simulation.
+    void start ();
+
 private:
     sf::Vector2f playerPosition;        // For creatures to know where to run (if certain conditions are fullfilled)
 };

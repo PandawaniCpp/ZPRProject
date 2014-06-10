@@ -34,19 +34,12 @@ bool GameState::update (sf::Time dt) {
 
     game->worldMap->t += rand () % 750 / 100000.0;
 
-    // Calculate player-mouse offset.		#TODO REMOVE?
-    //MouseInterface::calculatePlayerOffset (playerController[0]->getPosition () - worldViewPosition);
-
-    //// Pass target rotation to player.
-    //float mouseRotation = MouseInterface::calculateRotation ();
-    //playerController[0]->setTargetRotation (mouseRotation);		// We know it's player, no need to set up a rotation command.
-
-
     // Update player.
     game->playerController.update ();
     game->itemController.updateEntities ();
     game->creatureController.update (game->playerController[0]->getPosition());
 
+    // Check every contact and interpret it.
     collisionHandle ();
 
     // Apply physics to b2World
@@ -65,8 +58,6 @@ bool GameState::update (sf::Time dt) {
     game->console->update ("b2Body counter", Player::boxWorld.GetBodyCount ());
 
     // Set the world displacement vector relatively to player.
-    //worldView.setCenter (playerController[0]->getPosition () + MouseInterface::playerOffset);
-    //worldView.setRotation (45.f);
     game->gameWindow->setView (game->worldView);
 
     // Vector for displacement correction.
@@ -121,6 +112,12 @@ bool GameState::handleEvent (const Command * command) {
             if (Console::visible && command->specialKeys == specialKeys)
                 game->worldMap->getMapImage ().saveToFile ("./resources/zrzut_mapy.png");
             break;
+        case Commands::START_SIMULATION:
+            game->creatureController.createEntity (Entities::ZOMBIE, Textures::C_ZOMBIE, game->playerController[0]->getPosition() + sf::Vector2f(300,300), sf::Vector2i (150, 150));
+            game->sceneLayers[Game::CREATURES]->attachChild (GameObject::ObjectPtr (game->creatureController[game->creatureController.getSize() -1]));
+            game->creatureController.start ();
+            break;
+
         default: break;
     }
 
@@ -137,7 +134,25 @@ void GameState::onDestroy () {
 }
 
 void GameState::collisionHandle () {
-    checkCollisionMatch (Entities::PLAYER, Entities::ZOMBIE);
+    b2Contact * contact;
+    contact = GameObject::boxWorld.GetContactList ();
+    while (contact) {
+        if (contact->IsTouching ()) {
+            b2Body * bA = contact->GetFixtureA ()->GetBody ();
+            b2Body * bB = contact->GetFixtureB ()->GetBody ();
+            GameObject::EntityInfo * infoA = static_cast<GameObject::EntityInfo*>(bA->GetUserData ());
+            GameObject::EntityInfo * infoB = static_cast<GameObject::EntityInfo*>(bB->GetUserData ());
+            if (checkCollisionMatch (infoA->type, infoB->type)) {
+                // #TEMP
+                if (infoA->type == Entities::ZOMBIE || infoB->type == Entities::ZOMBIE) {
+                    unsigned int idToDel = infoA->type == Entities::ZOMBIE ? infoA->id : infoB->id;
+                    //game->creatureController.deleteById (idToDel);
+                    game->sceneGraph.detachById (idToDel);
+                }
+            }
+        }
+        contact = contact->GetNext ();
+    }
 }
 
 bool GameState::checkCollisionMatch (Entities::ID entityA, Entities::ID entityB) {

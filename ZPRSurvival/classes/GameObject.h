@@ -5,7 +5,7 @@
 
     This software is provided 'as-is', without any express or implied warranty.
     In no event will the authors be held liable for any damages arising from the use of this software.
-    */
+*/
 
 #pragma once
 #include <map>
@@ -30,7 +30,8 @@
 
     \base class: sf::Sprite
     \derived: Animated, Effectable, Dynamic, Console, Map
-    */
+*/
+
 class GameObject : public sf::Sprite {
 public:
     // Prefab structure defining all in-game object.
@@ -74,18 +75,23 @@ public:
         }
 
         Entities::ID type;
-        const unsigned int id;
+        unsigned int id;
     } EntityInfo;
 
+    // EntityInfo getter
+    EntityInfo & getEntityInfo ();
+
     // Used to create scene nodes.
-    typedef std::shared_ptr<GameObject> ObjectPtr;
+    //typedef std::shared_ptr<GameObject> ObjectPtr;
+    typedef GameObject* ObjectPtr;
 
     // Global id to distribute to entities.
     static unsigned int GLOBAL_ID;
 
     // Assigns unique id to entity.
     static unsigned int getGlobalID () {
-        return GLOBAL_ID++;
+        GLOBAL_ID++;
+        return (GLOBAL_ID - 1);
     }
 
     // Box2D World
@@ -119,6 +125,9 @@ public:
     // Removes all (if any left) childs.
     void detachAllChilds ();
 
+    // Remove object by searching graph for given ID.
+    void detachById (const unsigned id);
+
     // Check if had any childs.
     bool hasChilds ();
 
@@ -139,5 +148,5 @@ protected:
     GameObject has won "The Most Important Class In The Game" award, in particular circles
     known as TMICITG, but no relation. During the ceremony, one of its rivals (taking its Sprite
     issues into consideration) congratulate the winner with following words: Now you're the thirst.
-    */
+*/
 
