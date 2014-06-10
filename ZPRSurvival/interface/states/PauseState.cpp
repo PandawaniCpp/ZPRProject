@@ -10,14 +10,14 @@
 #include "PauseState.h"
 #include "../Utility.h"
 
-PauseState::PauseState (StateStack & stack, Context context)
-: State (stack, context) {
+PauseState::PauseState (StateStack & stack, Game * game)
+: State (stack, game) {
     stateID = States::PAUSE;
 }
 
 void PauseState::draw () {
-    context.game->gameWindow->draw (background);
-    context.game->gameWindow->draw (text);
+    game->gameWindow->draw (background);
+    game->gameWindow->draw (text);
 }
 
 bool PauseState::update (sf::Time dt) {
@@ -28,7 +28,7 @@ bool PauseState::handleEvent (const Command * command) {
     // "Press any key to continue"	#TODO Implement buttons
     switch (command->commandType) {
         case Commands::G_RESUME: requestStackPop (); break;
-        case Commands::G_EXIT: requestStateClear (); context.game->gameWindow->close (); break;
+        case Commands::G_EXIT: requestStateClear (); game->gameWindow->close (); break;
         default: break;
     }
 
@@ -41,20 +41,20 @@ void PauseState::onActivate () {
     background.setScale ((float)GraphicsOptions::videoMode.width / texture.getSize ().x,
                          (float)GraphicsOptions::videoMode.height / texture.getSize ().y);
 
-    text.setFont (context.game->fontHolder.get (Fonts::F_MENU));
+    text.setFont (game->fontHolder.get (Fonts::F_MENU));
     text.setStyle (sf::Text::Bold);
     text.setColor (sf::Color (255, 255, 255, 255));
     text.setCharacterSize (25);
     text.setString ("Press ENTER to continue\n   Press ESCAPE to exit");
     centerOrigin (text);
 
-    context.game->gameWindow->setView (context.game->worldView);
-    context.game->worldViewPosition = sf::Vector2f (context.game->worldView.getCenter ().x - context.game->worldView.getSize ().x / 2.f,
-                                                    context.game->worldView.getCenter ().y - context.game->worldView.getSize ().y / 2.f);
+    game->gameWindow->setView (game->worldView);
+    game->worldViewPosition = sf::Vector2f (game->worldView.getCenter ().x - game->worldView.getSize ().x / 2.f,
+                                                    game->worldView.getCenter ().y - game->worldView.getSize ().y / 2.f);
 
-    background.setPosition (context.game->worldViewPosition);
-    text.setPosition ((float)GraphicsOptions::videoMode.width / 2.f + context.game->worldViewPosition.x,
-                      (float)GraphicsOptions::videoMode.height / 6.f * 5.f + context.game->worldViewPosition.y);
+    background.setPosition (game->worldViewPosition);
+    text.setPosition ((float)GraphicsOptions::videoMode.width / 2.f + game->worldViewPosition.x,
+                      (float)GraphicsOptions::videoMode.height / 6.f * 5.f + game->worldViewPosition.y);
 }
 
 void PauseState::onDestroy () {

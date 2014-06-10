@@ -1,5 +1,4 @@
 /**
-    @author	Pawel Kaczynski
     @date	15.05.2014
 
     Part of the #TITLE survival game.
@@ -16,7 +15,7 @@
 class GameState : public State {
 public:
     // Constructor.
-    GameState (StateStack & stack, Context context);
+    GameState (StateStack & stack, Game * game);
 
     virtual void draw ();
     virtual bool update (sf::Time dt);

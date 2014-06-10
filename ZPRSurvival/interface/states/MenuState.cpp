@@ -10,14 +10,14 @@
 #include "MenuState.h"
 #include "../Utility.h"
 
-MenuState::MenuState (StateStack & stack, Context context)
-: State (stack, context) {
+MenuState::MenuState (StateStack & stack, Game * game)
+: State (stack, game) {
     stateID = States::MENU;
 }
 
 void MenuState::draw () {
-    context.game->gameWindow->draw (background);
-    context.game->gameWindow->draw (text);
+    game->gameWindow->draw (background);
+    game->gameWindow->draw (text);
 }
 
 bool MenuState::update (sf::Time dt) {
@@ -41,7 +41,7 @@ void MenuState::onActivate () {
     background.setScale ((float)GraphicsOptions::videoMode.width / texture.getSize ().x,
                          (float)GraphicsOptions::videoMode.height / texture.getSize ().y);
 
-    text.setFont (context.game->fontHolder.get (Fonts::F_MENU));
+    text.setFont (game->fontHolder.get (Fonts::F_MENU));
     text.setStyle (sf::Text::Bold);
     text.setColor (sf::Color (50, 50, 50, 255));
     text.setCharacterSize (25);
@@ -50,11 +50,11 @@ void MenuState::onActivate () {
     text.setPosition ((float)GraphicsOptions::videoMode.width / 2.f,
                       (float)GraphicsOptions::videoMode.height / 6.f * 5.f);
 
-    context.game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
+    game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
                                        (float)GraphicsOptions::videoMode.height / 2.f);
-    context.game->gameWindow->setView (context.game->worldView);
-    context.game->worldViewPosition = sf::Vector2f (context.game->worldView.getCenter ().x - context.game->worldView.getSize ().x / 2.f,
-                                                    context.game->worldView.getCenter ().y - context.game->worldView.getSize ().y / 2.f);
+    game->gameWindow->setView (game->worldView);
+    game->worldViewPosition = sf::Vector2f (game->worldView.getCenter ().x - game->worldView.getSize ().x / 2.f,
+                                                    game->worldView.getCenter ().y - game->worldView.getSize ().y / 2.f);
 }
 
 void MenuState::onDestroy () {

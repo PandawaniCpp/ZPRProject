@@ -10,15 +10,15 @@
 #include "TitleState.h"
 #include "../Utility.h"
 
-TitleState::TitleState (StateStack & stack, Context context)
-	: State (stack, context), textVisible (true), textEffectTime (sf::Time::Zero) {
+TitleState::TitleState (StateStack & stack, Game * game)
+	: State (stack, game), textVisible (true), textEffectTime (sf::Time::Zero) {
 	stateID = States::TITLE;
 }
 
 void TitleState::draw () {
-	context.game->gameWindow->draw (background);
+	game->gameWindow->draw (background);
 	if (textVisible)
-		context.game->gameWindow->draw (text);
+		game->gameWindow->draw (text);
 }
 
 bool TitleState::update (sf::Time dt) {
@@ -57,7 +57,7 @@ void TitleState::onActivate () {
 	background.setScale ((float)GraphicsOptions::videoMode.width / texture.getSize ().x,
 						 (float)GraphicsOptions::videoMode.height / texture.getSize ().y);
 
-	text.setFont (context.game->fontHolder.get (Fonts::F_MENU));
+	text.setFont (game->fontHolder.get (Fonts::F_MENU));
 	text.setStyle (sf::Text::Bold);
 	text.setColor (sf::Color (220, 220, 220, 255));
 	text.setCharacterSize (16);
@@ -67,11 +67,11 @@ void TitleState::onActivate () {
 					  (float)GraphicsOptions::videoMode.height / 4.f * 3.f);
 
 
-	context.game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
+	game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
 									   (float)GraphicsOptions::videoMode.height / 2.f);
-	context.game->gameWindow->setView (context.game->worldView);
-	context.game->worldViewPosition = sf::Vector2f (context.game->worldView.getCenter ().x - context.game->worldView.getSize ().x / 2.f,
-													context.game->worldView.getCenter ().y - context.game->worldView.getSize ().y / 2.f);
+	game->gameWindow->setView (game->worldView);
+	game->worldViewPosition = sf::Vector2f (game->worldView.getCenter ().x - game->worldView.getSize ().x / 2.f,
+													game->worldView.getCenter ().y - game->worldView.getSize ().y / 2.f);
 }
 
 void TitleState::onDestroy () {

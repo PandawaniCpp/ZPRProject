@@ -15,7 +15,7 @@
 class LoadState : public State {
 public:
     // Constructor.
-    LoadState (StateStack & stack, Context context);
+    LoadState (StateStack & stack, Game * game);
 
     virtual void draw ();
     virtual bool update (sf::Time dt);

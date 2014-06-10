@@ -14,7 +14,7 @@
 class PauseState : public State {
 public:
     // Constructor.
-    PauseState (StateStack & stack, Context context);
+    PauseState (StateStack & stack, Game * game);
 
     virtual void draw ();
     virtual bool update (sf::Time dt);

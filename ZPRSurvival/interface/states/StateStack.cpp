@@ -15,8 +15,8 @@ StateStack::~StateStack () {
 }
 
 
-StateStack::StateStack (State::Context context)
-: stateStack (), pendingList (), context (context), factories () {
+StateStack::StateStack (Game * game)
+: stateStack (), pendingList (), game (game), factories () {
 }
 
 void StateStack::update (sf::Time dt) {

@@ -1,17 +1,17 @@
 /**
-@date	15.05.2014
+    @date	15.05.2014
 
-Part of the #TITLE survival game.
+    Part of the #TITLE survival game.
 
-This software is provided 'as-is', without any express or implied warranty.
-In no event will the authors be held liable for any damages arising from the use of this software.
+    This software is provided 'as-is', without any express or implied warranty.
+    In no event will the authors be held liable for any damages arising from the use of this software.
 */
 
 #include "LoadState.h"
 #include "../Utility.h"
 
-LoadState::LoadState (StateStack & stack, Context context)
-: State (stack, context),
+LoadState::LoadState (StateStack & stack, Game * game)
+: State (stack, game),
 loadingAnimation (Textures::A_LOADING_ANIM, "resources/textures/load/compass.png",
 sf::Vector3<int> (100, 100, 6), true, sf::seconds (0.5f)),
 thread (&LoadState::init, this),
@@ -21,11 +21,11 @@ loadingTexts ({"Painting the grass", "Spinning the compass", "Frothing the seawa
 
 void LoadState::draw () {
     if (!loadingFinished)
-        context.game->gameWindow->draw (loadingAnimation);
+        game->gameWindow->draw (loadingAnimation);
     else
-        context.game->gameWindow->draw (loadingDone);
+        game->gameWindow->draw (loadingDone);
 
-    context.game->gameWindow->draw (text);
+    game->gameWindow->draw (text);
 }
 
 bool LoadState::update (sf::Time dt) {
@@ -61,15 +61,15 @@ bool LoadState::handleEvent (const Command * command) {
 }
 
 void LoadState::onActivate () {
-    context.game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
+    game->worldView.setCenter ((float)GraphicsOptions::videoMode.width / 2.f,
                                        (float)GraphicsOptions::videoMode.height / 2.f);
-    context.game->gameWindow->setView (context.game->worldView);
-    context.game->worldViewPosition = sf::Vector2f (context.game->worldView.getCenter ().x - context.game->worldView.getSize ().x / 2.f,
-                                                    context.game->worldView.getCenter ().y - context.game->worldView.getSize ().y / 2.f);
+    game->gameWindow->setView (game->worldView);
+    game->worldViewPosition = sf::Vector2f (game->worldView.getCenter ().x - game->worldView.getSize ().x / 2.f,
+                                                    game->worldView.getCenter ().y - game->worldView.getSize ().y / 2.f);
 
     srand ((unsigned)std::time (NULL));
 
-    text.setFont (context.game->fontHolder.get (Fonts::F_MENU));
+    text.setFont (game->fontHolder.get (Fonts::F_MENU));
     text.setStyle (sf::Text::Bold);
     text.setColor (sf::Color (220, 220, 220, 255));
     text.setCharacterSize (25);
@@ -79,14 +79,14 @@ void LoadState::onActivate () {
                       (float)GraphicsOptions::videoMode.height / 3.f * 2.f);
 
     loadingAnimation.setOrigin (50.f, 50.f);
-    loadingAnimation.setPosition (context.game->worldView.getCenter ());
+    loadingAnimation.setPosition (game->worldView.getCenter ());
 
     textEffectTime = sf::Time::Zero;
 
     loadingDoneTexture.loadFromFile ("resources/textures/load/compassDone.png");
     loadingDone.setTexture (loadingDoneTexture);
     centerOrigin (loadingDone);
-    loadingDone.setPosition (context.game->worldView.getCenter ());
+    loadingDone.setPosition (game->worldView.getCenter ());
 
     thread.launch ();
 }
@@ -96,9 +96,9 @@ void LoadState::onDestroy () {
 }
 
 void LoadState::init () {
-    context.game->worldMap = new WorldMapView (time (NULL), 0.9, 5000.0, 2, 5000, 5000);
-    context.game->entitiesInit ();
-    context.game->layersInit ();
-    context.game->objectsInit ();
+    game->worldMap = new WorldMapView (time (NULL), 0.9, 5000.0, 2, 5000, 5000);
+    game->entitiesInit ();
+    game->layersInit ();
+    game->objectsInit ();
     loadingFinished = true;
 }

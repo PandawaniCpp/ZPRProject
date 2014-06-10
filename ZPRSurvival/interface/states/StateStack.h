@@ -36,7 +36,7 @@ public:
 	};
 
 	// Constructor.
-	explicit StateStack (State::Context context);
+	explicit StateStack (Game * game);
 
 	// Default destructor.
 	virtual ~StateStack ();
@@ -86,7 +86,7 @@ private:
 	std::vector<PendingChange> pendingList;
 
 	// Parralel data shared between states.
-	State::Context context;
+	Game * game;
 	
 	// Maps state IDs to factory functions.
 	std::map<States::ID, std::function<State::Ptr ()> > factories;
@@ -96,7 +96,7 @@ template <typename T>
 void StateStack::registerState (States::ID stateID)
 {
 	factories[stateID] = [this] () {
-		return State::Ptr (new T (*this, context));
+		return State::Ptr (new T (*this, game));
 	};
 }
 

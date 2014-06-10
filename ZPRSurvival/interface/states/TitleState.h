@@ -14,7 +14,7 @@
 class TitleState : public State {
 public:
     // Constructor.
-    TitleState (StateStack & stack, Context context);
+    TitleState (StateStack & stack, Game * game);
 
     virtual void draw ();
     virtual bool update (sf::Time dt);

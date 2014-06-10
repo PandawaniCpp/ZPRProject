@@ -19,7 +19,7 @@
 std::string Game::TITLE = "#TITLE";
 
 Game::Game ()
-: stateStack (new StateStack (State::Context (this))) {
+: stateStack (new StateStack (this)) {
 
     // All we need to play.
     GraphicsOptions::init ();

@@ -11,15 +11,11 @@
 #include "State.h"
 #include "StateStack.h"
 
-State::State (StateStack & stack, Context context)
-: stateStack (&stack), context (context) {
+State::State (StateStack & stack, Game * game)
+: stateStack (&stack), game (game) {
 }
 
 State::~State () {
-}
-
-State::Context::Context (Game * game)
-: game (game) {
 }
 
 States::ID State::getStateID () {
@@ -38,8 +34,8 @@ void State::requestStateClear () {
 	stateStack->clearStates ();
 }
 
-State::Context State::getContext () const {
-	return context;
+Game * State::getGame () const {
+	return game;
 }
 
 void State::onActivate () {

@@ -28,14 +28,8 @@ public:
     // Unique pointer definition for holding States.
     typedef std::unique_ptr<State> Ptr;
 
-    // Parralel data shared between states.
-    struct Context {
-        Context (Game * game);
-        Game * game;
-    };
-
     // Constructor.
-    State (StateStack& stack, Context context);
+    State (StateStack& stack, Game * game);
 
     // Default destructor.
     virtual ~State ();
@@ -59,13 +53,13 @@ protected:
     void requestStateClear ();
 
     // Context getter.
-    Context getContext () const;
+    Game * getGame () const;    // #TODO Used?
 
     // State's ID. Needed for key mapping interpretation.
     States::ID stateID;
 
     // Context object (parralel data shared between states).
-    Context context;
+    Game * game;
 
 private:
     // Pointer to StateStack
