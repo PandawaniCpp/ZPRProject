@@ -59,6 +59,8 @@ void Game::initialize () {
     registerStates ();
     stateStack->pushState (States::TITLE);  // Initialize first state.
     stateStack->applyPendingChanges ();
+
+    GameObject::boxWorld.SetContactListener (&contactListener);
 }
 
 void Game::run () {

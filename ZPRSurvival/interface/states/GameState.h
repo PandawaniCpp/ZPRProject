@@ -26,7 +26,10 @@ public:
 
 private:
     std::set <std::pair <Entities::ID, Entities::ID> > collisionMatches;
+    std::set <b2Body*> entitiesScheduledForRemoval;
     void collisionHandle ();
     bool checkCollisionMatch (Entities::ID entityA, Entities::ID entityB);
+
+    void applyPendingEntitiesRemoval ();
 };
 

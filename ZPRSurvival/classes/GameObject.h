@@ -66,7 +66,7 @@ public:
         EntityInfo () : type (Entities::NONE), id (0) {
         };
 
-        EntityInfo (Entities::ID type, const unsigned int id) : type (type), id (id) {
+        EntityInfo (Entities::ID type, const unsigned long long id) : type (type), id (id) {
         }
 
         EntityInfo operator= (const EntityInfo & entityInfo) {
@@ -75,7 +75,7 @@ public:
         }
 
         Entities::ID type;
-        unsigned int id;
+        unsigned long long id;
     } EntityInfo;
 
     // EntityInfo getter
@@ -86,10 +86,10 @@ public:
     typedef GameObject* ObjectPtr;
 
     // Global id to distribute to entities.
-    static unsigned int GLOBAL_ID;
+    static unsigned long long GLOBAL_ID;
 
     // Assigns unique id to entity.
-    static unsigned int getGlobalID () {
+    static unsigned long long getGlobalID () {
         GLOBAL_ID++;
         return (GLOBAL_ID - 1);
     }
@@ -126,7 +126,7 @@ public:
     void detachAllChilds ();
 
     // Remove object by searching graph for given ID.
-    void detachById (const unsigned id);
+    void detachById (const unsigned long long id);
 
     // Check if had any childs.
     bool hasChilds ();

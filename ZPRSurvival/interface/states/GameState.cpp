@@ -45,6 +45,9 @@ bool GameState::update (sf::Time dt) {
     // Apply physics to b2World
     Player::boxWorld.Step (1.0 / GraphicsOptions::fps, 8, 3);
 
+    // Remove scheduled entities.
+    //applyPendingEntitiesRemoval ();
+
     // Update console ouput.
     game->console->update ("x", game->playerController[0]->getPosition ().x);
     game->console->update ("y", game->playerController[0]->getPosition ().y);
@@ -144,11 +147,11 @@ void GameState::collisionHandle () {
             GameObject::EntityInfo * infoB = static_cast<GameObject::EntityInfo*>(bB->GetUserData ());
             if (checkCollisionMatch (infoA->type, infoB->type)) {
                 // #TEMP
+                contact = contact->GetNext ();
                 if (infoA->type == Entities::ZOMBIE || infoB->type == Entities::ZOMBIE) {
-                    unsigned int idToDel = infoA->type == Entities::ZOMBIE ? infoA->id : infoB->id;
-                    //game->creatureController.deleteById (idToDel);
-                    game->sceneGraph.detachById (idToDel);
+                    entitiesScheduledForRemoval.insert (infoA->type == Entities::ZOMBIE ? bA : bB);
                 }
+                continue;
             }
         }
         contact = contact->GetNext ();
@@ -163,4 +166,13 @@ bool GameState::checkCollisionMatch (Entities::ID entityA, Entities::ID entityB)
         return true;
     else
         return false;
+}
+
+void GameState::applyPendingEntitiesRemoval () {
+    for (auto & entity : entitiesScheduledForRemoval) {
+        GameObject::EntityInfo * info = static_cast<GameObject::EntityInfo*>(entity->GetUserData ());
+        game->sceneGraph.detachById (info->id);
+        GameObject::boxWorld.DestroyBody (entity);
+        game->creatureController.deleteById (info->id);
+    }
 }
