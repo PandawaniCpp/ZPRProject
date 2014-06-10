@@ -22,6 +22,7 @@
 #include "KeyboardInterface.h"
 #include "MouseInterface.h"
 #include "CommandQueue.h"
+#include "ContactListener.h"
 
 /**
     Main game class. Responsible for rendering graphics, events handling,
@@ -126,6 +127,7 @@ private:
     CommandQueue commandQueue;
     StateStack * stateStack;    
     GameObject sceneGraph;		// Tree with scene nodes put in render order.
+    ContactListener contactListener;
 
     // Game parameters
     std::array<GameObject*, LAYER_COUNT> sceneLayers;		// Different render levels (starting from the bottom).

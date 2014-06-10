@@ -9,7 +9,7 @@
 
 #include "GameObject.h"
 b2World GameObject::boxWorld = b2World (b2Vec2 (0.0f, 0.0f));
-unsigned int GameObject::GLOBAL_ID = 1;
+unsigned long long GameObject::GLOBAL_ID = 1;
 
 GameObject::GameObject () {
 }
@@ -42,7 +42,7 @@ void GameObject::detachAllChilds () {
     }
 }
 
-void GameObject::detachById (const unsigned id) {
+void GameObject::detachById (const unsigned long long id) {
     if (children.size () > 0)
         for (const ObjectPtr& child : children) {
             if (child->entityInfo.id == id) {
