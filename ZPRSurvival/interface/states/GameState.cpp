@@ -149,7 +149,10 @@ void GameState::collisionHandle () {
                 // #TEMP
                 contact = contact->GetNext ();
                 if (infoA->type == Entities::ZOMBIE || infoB->type == Entities::ZOMBIE) {
-                    entitiesScheduledForRemoval.insert (infoA->type == Entities::ZOMBIE ? bA : bB);
+                    if (infoA->type == Entities::PLAYER || infoB->type == Entities::PLAYER)
+                        entitiesScheduledForRemoval.insert (infoA->type == Entities::ZOMBIE ? bA : bB);
+                    if (infoA->type == Entities::PLANT || infoB->type == Entities::PLANT)
+                        game->worldMap->decreaseFoodAmount (infoA->type == Entities::PLANT ? infoA->id : infoB->id);
                 }
                 continue;
             }

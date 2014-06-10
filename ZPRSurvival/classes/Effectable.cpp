@@ -29,6 +29,10 @@ void Effectable::applyVisionRange (const Entities::ID target, const unsigned int
 }
 
 void Effectable::update () {
-    if (visionRange != nullptr)
+    if (visionRange != nullptr) {
         visionRange->setPosition (this->getPosition ());
+        b2Vec2 posVector = b2Vec2 (this->getPosition ().x / GraphicsOptions::pixelPerMeter,
+                                   this->getPosition ().y / GraphicsOptions::pixelPerMeter);
+        visionRange->getBody ()->SetTransform (posVector, 0.f);
+    }
 }

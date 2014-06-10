@@ -79,7 +79,7 @@ template <typename Resource, typename Identifier>
 template <typename Parameter>
 void ResourceHolder<Resource, Identifier>::load (Identifier id, const std::string& filename, const Parameter& secondParam)
 {
-	Resource resource (new Resource ());
+	Resource * resource (new Resource ());
 	if (!resource->loadFromFile (filename, secondParam))
 		throw std::runtime_error ("ResourceHolder::load - Failed to load " + filename);
 	auto inserted = resourceMap.insert (std::make_pair (id, std::move (resource)));
