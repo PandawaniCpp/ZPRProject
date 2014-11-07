@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{43A29C39-AEDA-4133-8A65-F3950F0E067E}</ProjectGuid>
+    <RootNamespace>ZPRSurvival</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)ZPRSurvival\Box2D\include;$(SolutionDir)ZPRSurvival\SFML-2.1\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)ZPRSurvival\Box2D\lib\Debug;$(SolutionDir)ZPRSurvival\SFML-build\lib\Debug;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)ZPRSurvival\Box2D\include;$(SolutionDir)ZPRSurvival\SFML-2.1\include;</AdditionalIncludeDirectories>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)ZPRSurvival\Box2D\lib\Release;$(SolutionDir)ZPRSurvival\SFML-build\lib\Release;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;sfml-main.lib; sfml-graphics.lib; sfml-window.lib; sfml-system.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="classes\Animated.cpp" />
+    <ClCompile Include="classes\Animation.cpp" />
+    <ClCompile Include="classes\Dynamic.cpp" />
+    <ClCompile Include="classes\Effect.cpp" />
+    <ClCompile Include="classes\Effectable.cpp" />
+    <ClCompile Include="classes\GameObject.cpp" />
+    <ClCompile Include="classes\GameObjectModel.cpp" />
+    <ClCompile Include="creature\Creature.cpp" />
+    <ClCompile Include="creature\CreatureController.cpp" />
+    <ClCompile Include="interface\CommandQueue.cpp" />
+    <ClCompile Include="interface\Console.cpp" />
+    <ClCompile Include="interface\ContactListener.cpp" />
+    <ClCompile Include="interface\EntityFactory.cpp" />
+    <ClCompile Include="interface\Game.cpp" />
+    <ClCompile Include="interface\KeyboardInterface.cpp" />
+    <ClCompile Include="interface\Logger.cpp" />
+    <ClCompile Include="interface\MouseInterface.cpp" />
+    <ClCompile Include="interface\states\GameState.cpp" />
+    <ClCompile Include="interface\states\LoadState.cpp" />
+    <ClCompile Include="interface\states\MenuState.cpp" />
+    <ClCompile Include="interface\states\PauseState.cpp" />
+    <ClCompile Include="interface\states\State.cpp" />
+    <ClCompile Include="interface\states\StateStack.cpp" />
+    <ClCompile Include="interface\states\TitleState.cpp" />
+    <ClCompile Include="interface\Utility.cpp" />
+    <ClCompile Include="item\Item.cpp" />
+    <ClCompile Include="item\ItemController.cpp" />
+    <ClCompile Include="item\Plant.cpp" />
+    <ClCompile Include="map\Chunk.cpp" />
+    <ClCompile Include="map\ChunkView.cpp" />
+    <ClCompile Include="map\PerlinNoise.cpp" />
+    <ClCompile Include="map\PoissonDiskSampling.cpp" />
+    <ClCompile Include="map\WorldMap.cpp" />
+    <ClCompile Include="map\WorldMapView.cpp" />
+    <ClCompile Include="options\GraphicsOptions.cpp" />
+    <ClCompile Include="player\Player.cpp" />
+    <ClCompile Include="player\PlayerController.cpp" />
+    <ClCompile Include="player\PlayerModel.cpp" />
+    <ClCompile Include="Source.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="classes\Animated.h" />
+    <ClInclude Include="classes\Animation.h" />
+    <ClInclude Include="classes\Dynamic.h" />
+    <ClInclude Include="classes\Effect.h" />
+    <ClInclude Include="classes\Effectable.h" />
+    <ClInclude Include="classes\GameObject.h" />
+    <ClInclude Include="classes\GameObjectController.h" />
+    <ClInclude Include="classes\GameObjectModel.h" />
+    <ClInclude Include="creature\Creature.h" />
+    <ClInclude Include="creature\CreatureController.h" />
+    <ClInclude Include="interface\Command.h" />
+    <ClInclude Include="interface\CommandQueue.h" />
+    <ClInclude Include="interface\Console.h" />
+    <ClInclude Include="interface\ContactListener.h" />
+    <ClInclude Include="interface\EntityFactory.h" />
+    <ClInclude Include="interface\Game.h" />
+    <ClInclude Include="interface\KeyboardInterface.h" />
+    <ClInclude Include="interface\Logger.h" />
+    <ClInclude Include="interface\MouseInterface.h" />
+    <ClInclude Include="interface\ResourceHolder.h" />
+    <ClInclude Include="interface\ResourcesID.h" />
+    <ClInclude Include="interface\states\GameState.h" />
+    <ClInclude Include="interface\states\LoadState.h" />
+    <ClInclude Include="interface\states\MenuState.h" />
+    <ClInclude Include="interface\states\PauseState.h" />
+    <ClInclude Include="interface\states\State.h" />
+    <ClInclude Include="interface\states\StateStack.h" />
+    <ClInclude Include="interface\states\TitleState.h" />
+    <ClInclude Include="interface\Utility.h" />
+    <ClInclude Include="item\Item.h" />
+    <ClInclude Include="item\ItemController.h" />
+    <ClInclude Include="item\Plant.h" />
+    <ClInclude Include="map\Chunk.h" />
+    <ClInclude Include="map\ChunkView.h" />
+    <ClInclude Include="map\PerlinNoise.h" />
+    <ClInclude Include="map\PoissonDiskSampling.h" />
+    <ClInclude Include="map\WorldMap.h" />
+    <ClInclude Include="map\WorldMapView.h" />
+    <ClInclude Include="options\GraphicsOptions.h" />
+    <ClInclude Include="player\Player.h" />
+    <ClInclude Include="player\PlayerController.h" />
+    <ClInclude Include="player\PlayerModel.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
